@@ -1,0 +1,262 @@
+<div class="card">
+    <h5>Général</h5>
+    <p-tabView orientation="left">
+         <p-tabPanel header="Devises" class="line-height-3 m-0">
+            <div class="grid">
+                <div class="col-10">
+                    <div class="card px-6 py-6">
+                        <p-toast></p-toast> 
+                        <p-table #dt [value]="devises" [columns]="cols" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['nom',]" [rows]="10" [paginator]="false" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" currentPageReportTemplate="Liste de {first} / {last} des {totalRecords} devises" >
+                            <ng-template pTemplate="caption">
+                                <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                                    <div class="my-2">
+                                        <button pButton pRipple label="" icon="pi pi-plus" class="p-button-success mr-2" (click)="openDeviseDialog()"></button>
+                                     </div> 
+                                </div>
+                            </ng-template>
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th style="width: 3rem">
+                                        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                                    </th>
+                                     <th pSortableColumn="nom">Nom <p-sortIcon field="nom"></p-sortIcon></th>
+                                    <th pSortableColumn="nom">Tag <p-sortIcon field="nom"></p-sortIcon></th>
+
+                                    <th>Action</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-devise>
+                                <tr>
+                                    <td>
+                                        <p-tableCheckbox [value]="devise"></p-tableCheckbox>
+                                    </td>
+                                    <td style="width:16%; min-width:18rem;"><span class="p-column-title">Code</span>
+                                        {{devise.nom}}
+                                    </td> 
+                                    <td style="width:16%; min-width:18rem;"><span class="p-column-title">Code</span>
+                                        {{devise.tag}}
+                                    </td> 
+                                    
+                                    <td>
+                                        <div class="flex">
+                                            <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"  ></button>
+                                            <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"  ></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+            
+                   
+                </div>
+            </div>
+              
+        </p-tabPanel>  
+
+
+
+        <p-tabPanel header="Taux" class="line-height-3 m-0">
+            <div class="grid">
+                <div class="col-10">
+                    <div class="card px-6 py-6">
+                        <p-toast></p-toast> 
+                        <p-table #dt [value]="manyTaux" [columns]="cols" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['nom',]" [rows]="10" [paginator]="false" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" currentPageReportTemplate="Liste de {first} / {last} des {totalRecords} manyTaux" >
+                            <ng-template pTemplate="caption">
+                                <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                                    <div class="my-2">
+                                        <button pButton pRipple label="" icon="pi pi-plus" class="p-button-success mr-2" (click)="openTauxDialog()"></button>
+                                     </div> 
+                                </div>
+                            </ng-template>
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th style="width: 3rem">
+                                        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                                    </th>
+                                     <th pSortableColumn="nom">Devise soruce <p-sortIcon field="nom"></p-sortIcon></th>
+                                     <th pSortableColumn="nom">Devise cible <p-sortIcon field="nom"></p-sortIcon></th>
+                                     <th pSortableColumn="nom">Valeur <p-sortIcon field="nom"></p-sortIcon></th>
+
+                                    <th>Action</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-oneTaux>
+                                <tr>
+                                    <td>
+                                        <p-tableCheckbox [value]="oneTaux"></p-tableCheckbox>
+                                    </td>
+                                    <td style="width:14%; min-width:14rem;"><span class="p-column-title">Code</span>
+                                        {{oneTaux.devise_source.nom}} 
+                                    </td> 
+                                    <td style="width:14%; min-width:14rem;"><span class="p-column-title">Code</span>
+                                        {{oneTaux.devise_cible.nom}} 
+                                    </td>  
+                                    <td style="width:14%; min-width:14rem;"><span class="p-column-title">Code</span>
+                                        {{oneTaux.taux}}
+                                    </td>
+                                    
+                                    <td>
+                                        <div class="flex">
+                                            <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"  ></button>
+                                            <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="confirmDelateTaux()"  ></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div> 
+                </div>
+            </div>
+              
+        </p-tabPanel>
+
+
+        <p-tabPanel header="Frais" class="line-height-3 m-0">
+            <div class="grid">
+                <div class="col-10">
+                    <div class="card px-6 py-6">
+                        <p-toast></p-toast> 
+                        <p-table #dt [value]="manyFrais" [columns]="cols" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['nom',]" [rows]="10" [paginator]="false" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" currentPageReportTemplate="Liste de {first} / {last} des {totalRecords} manyFrais" >
+                            <ng-template pTemplate="caption">
+                                <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                                    <div class="my-2">
+                                        <button pButton pRipple label="" icon="pi pi-plus" class="p-button-success mr-2" (click)="openFraisDialog()"></button>
+                                     </div> 
+                                </div>
+                            </ng-template>
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th style="width: 3rem">
+                                        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                                    </th>
+                                     <th pSortableColumn="nom">Nom<p-sortIcon field="nom"></p-sortIcon></th>
+                                     <th pSortableColumn="type">Type <p-sortIcon field="type"></p-sortIcon></th>
+                                     <th pSortableColumn="valeur">Valeur <p-sortIcon field="valeur"></p-sortIcon></th>
+
+                                    <th>Action</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-oneFrais>
+                                <tr>
+                                    <td>
+                                        <p-tableCheckbox [value]="oneFrais"></p-tableCheckbox>
+                                    </td>
+                                    <td style="width:14%; min-width:14rem;"><span class="p-column-title">Code</span>
+                                        {{oneFrais.nom}} 
+                                    </td> 
+                                    <td style="width:14%; min-width:14rem;"><span class="p-column-title">Code</span>
+                                        {{oneFrais.type}} 
+                                    </td>  
+                                    <td style="width:14%; min-width:14rem;"><span class="p-column-title">Code</span>
+                                        {{oneFrais.valeur}}
+                                    </td>
+                                    
+                                    <td>
+                                        <div class="flex">
+                                            <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"  ></button>
+                                            <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="confirmDelateTaux()"  ></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div> 
+                </div>
+            </div>
+        </p-tabPanel>
+    </p-tabView>
+</div>
+
+
+
+
+<!-- GESTION TAUX -->
+<p-dialog [(visible)]="tauxDialog" [style]="{width: '550px'}" header="Détails du Taux" [modal]="true" class="p-fluid">
+    <ng-template pTemplate="content"> 
+        <!-- ✅ Sélection de la Devise Source -->
+        <div class="field">
+            <label for="deviseSource">Devise source</label>
+            <p-dropdown 
+                [(ngModel)]="oneTaux.devise_source"  
+                [options]="devises"  
+                optionLabel="nom" 
+                optionValue="id"
+                placeholder="Sélectionner une devise source"
+                [ngClass]="{'ng-invalid ng-dirty' : submitted && !oneTaux.devise_source}">
+            </p-dropdown> 
+            <small *ngIf="submitted && !oneTaux.devise_source" class="text-red-500">Veuillez sélectionner une devise source.</small>
+        </div> 
+
+        <!-- ✅ Sélection de la Devise Cible -->
+        <div class="field">
+            <label for="deviseCible">Devise cible</label>
+            <p-dropdown 
+                [(ngModel)]="oneTaux.devise_cible"  
+                [options]="devises"  
+                optionLabel="nom" 
+                optionValue="id"
+                placeholder="Sélectionner une devise cible"
+                [ngClass]="{'ng-invalid ng-dirty' : submitted && !oneTaux.devise_cible}">
+            </p-dropdown> 
+            <small *ngIf="submitted && !oneTaux.devise_cible" class="text-red-500">Veuillez sélectionner une devise cible.</small>
+        </div>
+
+            <!-- ✅ Champ Montant du taux -->
+            <div class="field">
+                <label for="oneTaux">Montant du taux :</label>
+                <input type="text" pInputText id="oneTaux" [(ngModel)]="oneTaux.taux" required autofocus 
+                       [ngClass]="{'ng-invalid ng-dirty' : submitted && !oneTaux.taux}"/>
+                <small class="ng-dirty ng-invalid" *ngIf="submitted && !oneTaux.taux">Le montant est obligatoire.</small>
+            </div>  
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-text" (click)="hideTauxDialog()"></button>
+        <button pButton pRipple label="Enregistrer" icon="pi pi-check" class="p-button-text" (click)="confirmCreationTaux()"></button>
+    </ng-template>
+</p-dialog>
+
+
+
+
+<!-- GESTION Frais -->
+<p-dialog [(visible)]="fraisDialog" [style]="{width: '550px'}" header="Détails du Frais" [modal]="true" class="p-fluid">
+    <ng-template pTemplate="content"> 
+       <!-- ✅ Champ nom du frais -->
+       <div class="field">
+        <label for="oneTaux">Nom du frais :</label>
+        <input type="text" pInputText id="oneTaux" [(ngModel)]="oneFrais.nom" required autofocus 
+               [ngClass]="{'ng-invalid ng-dirty' : submitted && !oneFrais.nom}"/>
+        <small class="ng-dirty ng-invalid" *ngIf="submitted && !oneFrais.nom">Le montant est obligatoire.</small>
+    </div>  
+
+        <!-- ✅ Sélection de la Devise Cible -->
+        <div class="field">
+            <label for="deviseCible">Type</label>
+            <p-dropdown 
+                [(ngModel)]="oneTaux.devise_cible"  
+                [options]="devises"  
+                optionLabel="nom" 
+                optionValue="id"
+                placeholder="Sélectionner une devise cible"
+                [ngClass]="{'ng-invalid ng-dirty' : submitted && !oneTaux.devise_cible}">
+            </p-dropdown> 
+         </div>
+
+            <!-- ✅ Champ Montant du taux -->
+            <div class="field">
+                <label for="oneTaux">Valeur :</label>
+                <input type="text" pInputText id="oneTaux" [(ngModel)]="oneTaux.taux" required autofocus 
+                       [ngClass]="{'ng-invalid ng-dirty' : submitted && !oneTaux.taux}"/>
+                <small class="ng-dirty ng-invalid" *ngIf="submitted && !oneTaux.taux">Le montant est obligatoire.</small>
+            </div>  
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-text" (click)="hideTauxDialog()"></button>
+        <button pButton pRipple label="Enregistrer" icon="pi pi-check" class="p-button-text" (click)="confirmCreationTaux()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-confirmDialog></p-confirmDialog>

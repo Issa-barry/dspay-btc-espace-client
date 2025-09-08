@@ -1,0 +1,230 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button
+                            pButton
+                            pRipple
+                            label=""
+                            icon="pi pi-plus"
+                            class="p-button-success mr-2"
+                            (click)="openNew()"
+                        ></button>
+                    </div>
+                </ng-template>
+            </p-toolbar>
+
+            <!-- Section de chargement -->
+            <div
+                *ngIf="loading"
+                class="flex justify-content-center align-items-center"
+            >
+                <p-progressSpinner></p-progressSpinner>
+                <span class="ml-3">Chargement des Rôles...</span>
+            </div>
+
+            <p-table
+                *ngIf="!loading"
+                #dt
+                [value]="roles" 
+                [columns]="cols"
+                responsiveLayout="scroll"
+                [rows]="10"
+                [globalFilterFields]="['name']"
+                [rows]="10"
+                [paginator]="true"
+                [rowsPerPageOptions]="[10, 20, 30]"
+                [showCurrentPageReport]="true"
+                currentPageReportTemplate="Liste de {first} / {last} des {totalRecords} roles"
+                [(selection)]="selectedRoles"
+                selectionMode="multiple"
+                [rowHover]="true"
+                dataKey="id"
+            >
+                <ng-template pTemplate="caption">
+                    <div
+                        class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
+                    >
+                        <h5 class="m-0">Roles</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input
+                                pInputText
+                                type="text"
+                                (input)="onGlobalFilter(dt, $event)"
+                                placeholder="Search..."
+                                class="w-full sm:w-auto"
+                           
+                            />
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 3rem">
+                            <!-- <p-tableHeaderCheckbox></p-tableHeaderCheckbox> -->
+                            <span></span>
+                        </th>
+                        <th pSortableColumn="reference">Role</th>
+                        <th pSortableColumn="nom">Description</th>
+                        <th>Action</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-role>
+                    <tr style="cursor: pointer">
+                        <td>
+                            <p-tableCheckbox [value]="role"></p-tableCheckbox>
+                        </td>
+                        <td
+                            style="
+                                width: 30%;
+                                min-width: 15rem;
+                                cursor: pointer;
+                            "
+                            (click)="onGoToDetail(role.id)"
+                        >
+                            <span class="p-column-title">Name</span>
+                            {{ role.name }}
+                        </td>
+                        <td
+                            style="width: 50%; min-width: 15rem"
+                            (click)="onGoToDetail(role.id)"
+                        >
+                            <span class="p-column-title">description</span>
+                        </td>
+                        <td>
+                            <div class="flex">
+                                <!-- <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-primary mr-2" (click)="onGoToDetail(role.id)"></button> -->
+                                <button
+                                    pButton
+                                    pRipple
+                                    icon="pi pi-pencil"
+                                    class="p-button-rounded p-button-success mr-2"
+                                    (click)="editRole(role)"
+                                ></button>
+                                <button
+                                    pButton
+                                    pRipple
+                                    icon="pi pi-trash"
+                                    class="p-button-rounded p-button-warning"
+                                    (click)="deleteRole(role)"
+                                ></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog
+            [(visible)]="roleDialog"
+            [style]="{ width: '450px' }"
+            header="Role Details"
+            [modal]="true"
+            class="p-fluid"
+        >
+            <ng-template pTemplate="content"> 
+                <div class="field">
+                    <label for="name">Nom</label>
+                    <input type="text" pInputText id="name" [(ngModel)]="role.name" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !role.name}"/>
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !role.name">Le nom du role est obligatoire.</small>
+                </div>  
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button
+                    pButton
+                    pRipple
+                    label="Annuler"
+                    icon="pi pi-times"
+                    class="p-button-text"
+                    (click)="hideDialog()"
+                ></button>
+                <button
+                    pButton
+                    pRipple
+                    label="Enregistrer"
+                    icon="pi pi-check"
+                    class="p-button-text"
+                    (click)="saveRole()"
+                ></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog
+            [(visible)]="deleteRoleDialog"
+            header="Confirm"
+            [modal]="true"
+            [style]="{ width: '450px' }"
+        >
+            <div class="flex align-items-center justify-content-center">
+                <i
+                    class="pi pi-exclamation-triangle mr-3"
+                    style="font-size: 2rem"
+                ></i>
+                <span *ngIf="product"
+                    >Êtes-vous sûr de vouloir supprimer le role
+                    <b>{{ role.name }}</b
+                    >?</span
+                >
+            </div>
+            <ng-template pTemplate="footer">
+                <button
+                    pButton
+                    pRipple
+                    icon="pi pi-times"
+                    class="p-button-text"
+                    label="Non"
+                    (click)="deleteRoleDialog = false"
+                ></button>
+                <button
+                    pButton
+                    pRipple
+                    icon="pi pi-check"
+                    class="p-button-text"
+                    label="Oui"
+                    (click)="confirmDelete()"
+                ></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog
+            [(visible)]="deleteRolesDialog"
+            header="Confirm"
+            [modal]="true"
+            [style]="{ width: '450px' }"
+        >
+            <div class="flex align-items-center justify-content-center">
+                <i
+                    class="pi pi-exclamation-triangle mr-3"
+                    style="font-size: 2rem"
+                ></i>
+                <span
+                    >Êtes-vous sûr de vouloir supprimer les roles
+                    sélectionnés?</span
+                >
+            </div>
+            <ng-template pTemplate="footer">
+                <button
+                    pButton
+                    pRipple
+                    icon="pi pi-times"
+                    class="p-button-text"
+                    label="Non"
+                    (click)="deleteRolesDialog = false"
+                ></button>
+                <button
+                    pButton
+                    pRipple
+                    icon="pi pi-check"
+                    class="p-button-text"
+                    label="Oui"
+                    (click)="confirmDeleteSelected()"
+                ></button>
+            </ng-template>
+        </p-dialog>
+    </div>
+</div>

@@ -1,0 +1,168 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-confirmDialog></p-confirmDialog>
+
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button
+                            pButton
+                            pRipple
+                            label="Envoie"
+                            icon="pi pi-arrow-up-right"
+                            class="p-button-success mr-2"
+                            (click)="goToTransfertEnvoie()"
+                        ></button>
+                        <button
+                            pButton
+                            pRipple
+                            label="Retrait"
+                            icon="pi pi-arrow-down-left"
+                            class="p-button-primary mr-2"
+                            (click)="goToTransfertRetrait()"
+                        ></button>
+                        <!-- <button pButton pRipple icon="pi pi-trash" class="p-button-danger" (click)="confirmDeleteSelectedTransferts()" [disabled]="!selectedTransferts || !selectedTransferts.length"></button> -->
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="right">
+                    <button
+                        pButton
+                        pRipple
+                        label="Export"
+                        icon="pi pi-upload"
+                        class="p-button-help"
+                        (click)="dt.exportCSV()"
+                    ></button>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table
+                #dt
+                [value]="loading ? skeletonRows : transferts"
+                responsiveLayout="scroll"
+                [paginator]="true"
+                [rows]="10"
+                [rowsPerPageOptions]="[10, 20, 30]"
+                [(selection)]="selectedTransferts"
+                selectionMode="multiple"
+                [rowHover]="true"
+                [globalFilterFields]="[
+                    'code',
+                    'receveur_nom_complet',
+                    'receveur_phone',
+                    'expediteur_nom_complet',
+                    'expediteur_phone',
+                    'expediteur_email',
+                    'montant_converti',
+                    'montant',
+                    'statut'
+                ]"
+                dataKey="id"
+            >
+                <ng-template pTemplate="caption">
+                    <div
+                        class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
+                    >
+                        <h5 class="m-0">Liste des Transferts</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input
+                                pInputText
+                                type="text"
+                                (input)="onGlobalFilter(dt, $event)"
+                                placeholder="Rechercher..."
+                                class="w-full sm:w-auto"
+                            />
+                        </span>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 3rem">
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                        </th>
+                        <th pSortableColumn="id">
+                            Code <p-sortIcon field="id"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="receveur_nom">
+                            Receveur
+                            <p-sortIcon field="receveur_nom"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="receveur_phone">
+                            Phone receveur
+                            <p-sortIcon field="receveur_phone"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="montant">
+                            Montant <p-sortIcon field="montant"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="expediteur_nom">
+                            Expéditeur
+                            <p-sortIcon field="expediteur_nom"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="statut">
+                            Statut <p-sortIcon field="statut"></p-sortIcon>
+                        </th>
+                        <th>Action</th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-transfert>
+                    <tr *ngIf="loading">
+                        <td><p-skeleton width="6rem" /></td>
+                        <td><p-skeleton width="10rem" /></td>
+                        <td><p-skeleton width="8rem" /></td>
+                        <td><p-skeleton width="12rem" /></td>
+                        <td><p-skeleton width="10rem" /></td>
+                        <td><p-skeleton width="6rem" /></td>
+                        <td>
+                            <p-skeleton
+                                width="5rem"
+                                height="2rem"
+                                borderRadius="1rem"
+                            />
+                        </td>
+                    </tr>
+
+                    <tr *ngIf="!loading">
+                        <td>
+                            <p-tableCheckbox
+                                [value]="transfert"
+                            ></p-tableCheckbox>
+                        </td>
+                        <td>{{ transfert.code || "/" }}</td>
+                        <td>{{ transfert.receveur_nom_complet }}</td>
+                        <td>{{ transfert.receveur_phone }}</td>
+                        <td>
+                            {{ transfert.montant_receveur }}
+                            {{ transfert.devise_cible?.tag }}
+                        </td>
+                        <td>{{ transfert.expediteur_nom_complet }}</td>
+                        <td>{{ transfert.statut }}</td>
+                        <td>
+                            <div class="flex">
+                                <button
+                                    pButton
+                                    pRipple
+                                    icon="pi pi-eye"
+                                    class="p-button-rounded p-button-success mr-2"
+                                    (click)="goToTransfertDetail(transfert)"
+                                ></button>
+                                <button
+                                    pButton
+                                    pRipple
+                                    icon="pi pi-trash"
+                                    class="p-button-rounded p-button-danger"
+                                    (click)="confirmDeleteTransfert(transfert)"
+                                ></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>

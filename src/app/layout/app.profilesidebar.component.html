@@ -1,0 +1,47 @@
+ 
+<p-sidebar [(visible)]="visible" position="right" [transitionOptions]="'.3s cubic-bezier(0, 0, 0.2, 1)'" styleClass="layout-profile-sidebar w-full sm:w-25rem">
+    <div class="flex flex-column mx-auto md:mx-0">
+        <span class="mb-2 font-semibold">Bienvenue</span>
+        <span class="text-color-secondary font-medium mb-5">{{ contact.nom_complet }}</span>
+
+        <ul class="list-none m-0 p-0">
+            <li>
+                <a class="cursor-pointer flex surface-border mb-3 p-3 align-items-center border-1 surface-border border-round hover:surface-hover transition-colors transition-duration-150">
+                    <span>
+                        <i class="pi pi-id-card text-xl text-primary"></i>
+                    </span>
+                    <div class="ml-3">
+                        <span class="mb-2 font-semibold">Profile</span>
+                        <p class="text-color-secondary m-0">Reference : {{ contact.reference }}</p>
+                        <p class="text-color-secondary m-0">Role : {{ contact.role }}</p>
+                    </div>
+                </a>
+            </li> 
+            <li>
+                <a class="cursor-pointer flex surface-border mb-3 p-3 align-items-center border-1 surface-border border-round hover:surface-hover transition-colors transition-duration-150">
+                    <span>
+                        <i class="pi pi-cog text-xl text-primary"></i>
+                    </span>
+                    <div class="ml-3">
+                        <span class="mb-2 font-semibold">Paramètre du profile</span>
+                        <p class="text-color-secondary m-0">gérez vos paramètres</p>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a class="cursor-pointer flex surface-border mb-3 p-3 align-items-center border-1 surface-border border-round hover:surface-hover transition-colors transition-duration-150">
+                    <span>
+                        <i class="pi pi-power-off text-xl text-primary"></i>
+                    </span>
+                    <div class="ml-3" (click)="logout()">
+                        <span class="mb-2 font-semibold">Déconnexion</span>
+                        <p class="text-color-secondary m-0">vous aller être deconnecter</p>
+                        <small *ngIf="errorMessage" class="alert alert-danger p-3 mt-3"> {{ errorMessage }}</small>
+                    </div>
+                </a> 
+            </li>
+        </ul>
+    </div>
+
+      
+</p-sidebar>

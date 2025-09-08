@@ -1,0 +1,92 @@
+<div class="grid">
+    <div class="col-12">
+      <div class="card px-6 py-6">
+        <p-toast></p-toast>
+        <p-toolbar styleClass="mb-4">
+          <ng-template pTemplate="left">
+            <div class="my-2">
+              <button 
+                pButton 
+                pRipple 
+                label="Retour Rôles" 
+                icon="pi pi-arrow-left" 
+                class="p-button-secondary mr-2" 
+                (click)="onGoToRoleListe()">
+              </button>
+            </div>
+          </ng-template>
+  
+          <ng-template pTemplate="right">
+            <button 
+              [disabled]="isAdmin" 
+              pButton 
+              pRipple 
+              label="Sauvegarder" 
+              icon="pi pi-save" 
+              class="p-button-help" 
+              (click)="saveSelectedPermissions()">
+            </button>
+          </ng-template>
+        </p-toolbar>
+  
+        <!-- Section principale avec chargement -->
+        <div *ngIf="loading" class="flex justify-content-center align-items-center">
+          <p-progressSpinner></p-progressSpinner>
+          <span class="ml-3">Chargement des permissions...</span>
+        </div>
+  
+        <!-- Tableau des permissions -->
+        <p-table *ngIf="!loading" #dt 
+                 [value]="permissions | keyvalue"
+                 responsiveLayout="scroll"
+                 [globalFilterFields]="['key']"
+                 [rows]="10"
+                 [paginator]="true"
+                 [rowsPerPageOptions]="[10,20,30]"
+                 [showCurrentPageReport]="true"
+                 currentPageReportTemplate="Liste de {first} / {last} des {totalRecords} permissions"
+                 [(selection)]="selectedPermissions"
+                 selectionMode="multiple"
+                 [rowHover]="true"
+                 dataKey="id">
+          <ng-template pTemplate="caption">
+            <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+              <h5 class="m-0">
+                Permissions du Rôle : <span class="text-primary">{{ role.name }}</span>
+              </h5>
+              <span class="block mt-2 md:mt-0 p-input-icon-left">
+                <i class="pi pi-search"></i>
+                <input 
+                  pInputText 
+                  type="text" 
+                  (input)="onGlobalFilter(dt, $event)" 
+                  placeholder="Rechercher..."  
+                  class="w-full sm:w-auto"/>
+              </span>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th pSortableColumn="name">Modèle</th>
+              <th pSortableColumn="afficher">Afficher</th>
+              <th pSortableColumn="créer">Créer</th>
+              <th pSortableColumn="modifier">Modifier</th>
+              <th pSortableColumn="supprimer">Supprimer</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-rowData>
+            <tr>
+              <td style="width:50%; min-width:15rem; font-weight: 700;">{{ rowData.key }}</td>
+              <td style="width:50%; min-width:15rem;" *ngFor="let permission of rowData.value">
+                <p-tableCheckbox 
+                  [value]="permission" 
+                  [disabled]="isAdmin">
+                </p-tableCheckbox>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </div>
+  

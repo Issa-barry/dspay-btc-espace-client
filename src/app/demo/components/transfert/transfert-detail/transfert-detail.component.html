@@ -1,0 +1,106 @@
+<div class="card">
+    <p-toast></p-toast> 
+
+    <div class="text-900  text-xl my-2">Statut : <span class="font-medium text-xl text-blue-500">({{ transfert.statut }})</span></div>  
+    <!-- <div class="text-900 font-bold text-4xl my-2">Transfert 🚀</div> -->
+    <!-- <p class="text-700 text-xl mt-0 mb-4 p-0">Your order is on the way. It'll be shipped today. We'll inform you.</p> -->
+    <div style="height:3px;background:linear-gradient(90deg, var(--primary-color) 0%, rgba(33, 150, 243, 0) 50%);"></div>
+
+    <div class="flex flex-column sm:flex-row sm:align-items-center sm:justify-content-between py-5">
+        <div class="mb-3 sm:mb-0">
+            <span class="font-medium text-xl text-900 mr-2">Code :</span>
+            <span class="font-medium text-xl text-blue-500">{{ transfert.code || 'pas de code'}}</span>
+        </div>
+        <div>
+            <p-confirmDialog></p-confirmDialog>
+<button 
+  pButton 
+  pRipple 
+  label="Modifier" 
+  icon="pi pi-pencil" 
+  class="p-button-outlined p-button-primary mr-3" 
+  (click)="goToEditTransfert()"
+  [disabled]="transfert?.statut === 'retiré'">
+</button>
+            <button pButton pRipple label="Annuler le transfert" icon="pi pi-times-circle" class="p-button-outlined p-button-danger" 
+                  (click)="confirmAnnulationTransfert()"
+                  [disabled]="!transfert || transfert.statut !== 'en_cours'"
+            ></button>
+             
+        </div>
+    </div>
+    <div class="border-round surface-border border-1">
+        <ul class="list-none p-0 m-0">
+            <li  class="p-3 surface-border flex align-items-start sm:align-items-center"  style="border-bottom: 1px solid #e0e0e0;">
+                <div class="flex flex-column">
+                   <span class="text-900 font-semibold text-xl mb-2">Bénéficiaire</span>
+                   <span class="text-800 mb-2">{{ transfert.receveur_nom_complet }}</span>
+                   <span class="text-800">Tel : {{ transfert.receveur_phone }}</span>
+                </div>
+               <span class="text-900 font-medium text-lg ml-auto">Guinée</span>
+           </li>
+           <li  class="p-3 surface-border flex align-items-start sm:align-items-center"  style="border-bottom: 1px solid #e0e0e0;">
+            <div class="flex flex-column">
+               <span class="text-900 font-semibold text-xl mb-2">Expéditeur</span>
+               <span class="text-800 mb-2">{{ transfert.expediteur_nom_complet }}</span>
+               <span class="text-800 mb-2">Tel : {{ transfert.expediteur_phone }}</span>
+               <span class="text-800">Email : {{ transfert.expediteur_email }}</span>
+           </div>
+           <span class="text-900 font-medium text-lg ml-auto">France</span>
+       </li> 
+        </ul>
+    </div>
+    <div class="flex flex-wrap mt-5 pb-3">
+        <div class="w-full lg:w-6 pl-3">
+            <!-- <span class="font-bold text-900">Agence source</span>
+            <div class="flex flex-column text-900 mt-2 mb-5">
+                <span class="mb-1">Ibrahima Ostwald</span>
+                <span class="mb-1">+33 06 85 74 96</span>
+                <span class="mb-1">ibostwald&#64;gmail.com</span> 
+                <span class="mb-1">Adresse : 55 rue d'Ostwald</span>
+                <span class="mb-1">54400, Strasbourg</span>
+            </div> -->
+
+            <span class="font-bold text-900">Agent expéditeur</span>
+            <div class="flex align-items-center mt-0">
+                 <div class="flex flex-column text-900 mt-2 mb-2">
+                    <span class="text-800 mb-2">{{ agent.nom_complet }}</span>
+                    <span class="text-800 mb-2">{{ agent.phone }}</span>
+                    <span class="text-800  mb-2">{{ agent.email }}</span>
+                    <span class="text-800  mb-2 "> Agence : <span class="text-blue-500">{{ agence.nom_agence }}</span></span>
+                </div>
+            </div>
+        </div>
+        <div class="w-full lg:w-6 pl-3 lg:pl-0 lg:pr-3 flex align-items-end mt-5 lg:mt-0">
+            <ul class="list-none p-0 m-0 w-full">
+                <li class="mb-3"><span class="font-medium text-900">Montant</span></li>
+                <li class="flex justify-content-between mb-3">
+                    <span class="text-900">A retiré</span>
+                    <span class="text-900 font-medium text-lg">{{ transfert.montant_receveur }} {{ transfert.devise_cible.tag }}</span>
+                </li>
+                <li class="flex justify-content-between mb-3">
+                    <span class="text-900">Envoyé</span>
+                    <span class="text-900 font-medium text-lg">{{ transfert.montant_expediteur }} {{ transfert.devise_source.tag }}</span>
+                </li>
+                <li class="flex justify-content-between mb-3">
+                    <span class="text-900">Frais</span>
+                    <span class="text-900 font-medium text-lg">{{ transfert.frais }} {{ transfert.devise_source.tag }}</span>
+                </li>
+                <li class="flex justify-content-between mb-3">
+                    <span class="text-900">Taux d'échange</span>
+                    <span class="text-900 font-medium text-lg">1 {{ transfert.devise_source.tag }} = 9500 {{ transfert.devise_cible.tag }}</span>
+                </li>
+                <li class="flex justify-content-between border-top-1 surface-border py-3">
+                    <span class="text-900 font-medium">Total payé par expéditeur : </span>
+                    <span class="text-900 font-bold text-lg">{{ transfert.total }} €</span>
+                </li>
+                   <li class="flex justify-content-between mb-3">
+                    <span class="text-900">Date : </span>
+                    <span class="text-900 font-medium text-sm">Transfert du 08/03/2025 à 18:30</span>
+                </li>  
+            </ul>
+        </div>
+    </div>
+</div>
+ 
+ 

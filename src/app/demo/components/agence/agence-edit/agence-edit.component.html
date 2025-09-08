@@ -1,0 +1,150 @@
+<div class="card">
+    <p-toast></p-toast>
+    <span class="text-900 text-xl font-bold mb-6 block">Modifier une agence :</span>
+
+    <p-progressBar mode="indeterminate" *ngIf="loading" class="w-full h-2"></p-progressBar>
+
+    <div class="grid" *ngIf="!loading">
+        <div class="col-12 lg:col-10">
+            <div class="grid formgrid p-fluid">
+
+                <div class="field mb-4 col-12 md:col-12">
+                    <label for="agence.responsable_reference" class="font-medium text-900">Référence du Responsable</label>
+                    <input id="agence.responsable_reference" type="text" pInputText [(ngModel)]="agence.responsable_reference"
+                        [ngClass]="{
+                            'ng-invalid ng-dirty':
+                                (submitted && !agence.responsable_reference) ||
+                                apiErrors['agence.responsable_reference']
+                        }"
+                    />
+                    <small *ngIf="apiErrors['agence.responsable_reference']">{{ apiErrors['agence.responsable_reference'] }}</small>
+                </div>
+
+                <div class="field mb-4 col-12 md:col-12">
+                    <label for="nom_agence" class="font-medium text-900">Nom de l'agence</label>
+                    <input id="nom_agence" type="text" pInputText [(ngModel)]="agence.nom_agence"
+                        [ngClass]="{
+                            'ng-invalid ng-dirty':
+                                (submitted && !agence.nom_agence) ||
+                                apiErrors['nom_agence']
+                        }"
+                    />
+                    <small *ngIf="apiErrors['nom_agence']">{{ apiErrors['nom_agence'] }}</small>
+                </div>
+
+                <div class="field mb-4 col-12 md:col-6">
+                    <label for="email" class="font-medium text-900">Email</label>
+                    <input id="email" type="text" [(ngModel)]="agence.email" pInputText
+                        [ngClass]="{
+                            'ng-invalid ng-dirty':
+                                (submitted && !agence.email) ||
+                                apiErrors['email']
+                        }"
+                    />
+                    <small *ngIf="apiErrors['email']">{{ apiErrors['email'] }}</small>
+                </div>
+
+                <div class="field mb-4 col-12 md:col-6">
+                    <label for="phone" class="font-medium text-900">Téléphone</label>
+                    <input id="phone" type="text" [(ngModel)]="agence.phone" pInputText
+                        [ngClass]="{
+                            'ng-invalid ng-dirty':
+                                (submitted && !agence.phone) ||
+                                apiErrors['phone']
+                        }"
+                    />
+                    <small *ngIf="apiErrors['phone']">{{ apiErrors['phone'] }}</small>
+                </div>
+
+                <div class="field mb-4 col-12 md:col-12">
+                    <label for="country" class="font-medium text-900">Pays</label>
+                    <p-dropdown
+                        [(ngModel)]="agence.adresse.pays"
+                        inputId="country"
+                        [options]="countries"
+                        optionLabel="name"
+                        optionValue="value"
+                        [filter]="true"
+                        filterBy="name"
+                        [showClear]="true"
+                        placeholder="Sélectionnez un pays"
+                        (onChange)="onCountryChange($event)"
+                        [ngClass]="{
+                            'ng-invalid ng-dirty':
+                                (submitted && !agence.adresse.pays) ||
+                                apiErrors['adresse.pays']
+                        }"
+                    >
+                        <ng-template let-country pTemplate="item">
+                            <div class="flex align-items-center">
+                                <img src="assets/demo/images/flag/flag_placeholder.png"
+                                    [class]="'mr-2 flag flag-' + country.code.toLowerCase()" style="width: 18px" />
+                                <div>{{ country.name }}</div>
+                            </div>
+                        </ng-template>
+                    </p-dropdown>
+                    <small *ngIf="apiErrors['adresse.pays']">{{ apiErrors['adresse.pays'] }}</small>
+                </div>
+
+                <div *ngIf="!isGuineeSelected" class="field mb-4 col-12 md:col-12">
+                    <label for="adresse" class="font-medium text-900">Adresse</label>
+                    <input id="adresse" type="text" [(ngModel)]="agence.adresse.adresse" pInputText
+                        [ngClass]="{
+                            'ng-invalid ng-dirty':
+                                (submitted && !agence.adresse.adresse) ||
+                                apiErrors['adresse.adresse']
+                        }"
+                    />
+                    <small *ngIf="apiErrors['adresse.adresse']">{{ apiErrors['adresse.adresse'] }}</small>
+                </div>
+
+                <div *ngIf="!isGuineeSelected" class="field mb-4 col-12 md:col-6">
+                    <label for="code_postal" class="font-medium text-900">Code Postal</label>
+                    <input id="code_postal" type="text" pInputText [(ngModel)]="agence.adresse.code_postal"
+                        [ngClass]="{
+                            'ng-invalid ng-dirty':
+                                (submitted && !agence.adresse.code_postal) ||
+                                apiErrors['adresse.code_postal']
+                        }"
+                    />
+                    <small *ngIf="apiErrors['adresse.code_postal']">{{ apiErrors['adresse.code_postal'] }}</small>
+                </div>
+
+                <div *ngIf="isGuineeSelected" class="field mb-4 col-12 md:col-6">
+                    <label for="quartier" class="font-medium text-900">Quartier</label>
+                    <input id="quartier" type="text" pInputText [(ngModel)]="agence.adresse.quartier"
+                        [ngClass]="{
+                            'ng-invalid ng-dirty':
+                                (submitted && !agence.adresse.quartier) ||
+                                apiErrors['adresse.quartier']
+                        }"
+                    />
+                    <small *ngIf="apiErrors['adresse.quartier']">{{ apiErrors['adresse.quartier'] }}</small>
+                </div>
+
+                <div class="field mb-4 col-12 md:col-6">
+                    <label for="ville" class="font-medium text-900">Ville</label>
+                    <input id="ville" type="text" [(ngModel)]="agence.adresse.ville" pInputText
+                        [ngClass]="{
+                            'ng-invalid ng-dirty':
+                                (submitted && !agence.adresse.ville) ||
+                                apiErrors['adresse.ville']
+                        }"
+                    />
+                    <small *ngIf="apiErrors['adresse.ville']">{{ apiErrors['adresse.ville'] }}</small>
+                </div>
+
+                <div class="col-12">
+                    <button
+                        pButton
+                        pRipple
+                        label="Enregistrer les modifications"
+                        class="w-auto mt-3"
+                        (click)="updateAgence()"
+                        [disabled]="loading"
+                    ></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

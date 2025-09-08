@@ -1,0 +1,97 @@
+
+<div class="card" *ngIf="transfert">
+    <div class="grid grid-nogutter">
+        <div class="col-12 px-4 mt-4 md:mt-6 md:px-6">
+            <span class="text-900 block font-bold text-xl">Retrait</span>
+        </div>
+        <div class="col-12 lg:col-6 h-full px-4 py-4 md:px-6">
+            <ul class="flex list-none flex-wrap p-0 mb-6">
+                <li class="flex align-items-center text-primary mr-2">{{ transfert.statut }} <i class="pi pi-chevron-right text-500 text-xs ml-2"></i></li>
+            </ul>
+            <div class="grid formgrid"> 
+                 <div class="col-12 field mb-6">
+                    <p-inputGroup class="mb-3">
+                        <input type="text" [(ngModel)]="code" pInputText placeholder="Code" class="w-full"
+                         [ngClass]="{'ng-invalid ng-dirty': !code || errorMessage}"/>
+                        <button type="button" icon="pi pi-fw pi-check" pButton pRipple label="" [disabled]="!code" (click)="onCodeRecuperer()"></button>
+                    </p-inputGroup>
+                    <small *ngIf="errorMessage" class="alert alert-danger p-3 mt-3">
+                        {{ errorMessage }}
+                    </small>
+                    
+                </div> 
+            </div>
+        </div> 
+        <!-- RECAPITULATIF -->
+        <div class="col-12 lg:col-6 px-4 py-4 md:px-6">
+            <div class="pb-3 surface-border">
+                <span class="text-900 font-medium text-xl">Ticket : {{ transfert.code }}</span>
+            </div>
+            <p-progressBar mode="indeterminate" *ngIf="loading" class="w-full h-2"></p-progressBar>
+            <div *ngIf="codeRecuperer">
+                <div class="flex flex-column lg:flex-row flex-wrap lg:align-items-center py-2 mt-3 surface-border">
+                    <div class="flex-auto lg:ml-3">
+                        <div class="flex align-items-center justify-content-between mb-3">
+                            <span class="text-900 font-bold">Receveur</span>
+                            <!-- <span class="text-900 font-bold">{{ transfert.montant_converti }}</span> -->
+                        </div>
+                        <div class="text-600 text-sm mb-2" > {{ transfert.receveur_nom_complet }}</div>
+                        <div class="text-600 text-sm mb-2">{{ transfert.receveur_phone}}</div>
+                    </div>
+                </div>
+                <div class="flex flex-column lg:flex-row flex-wrap lg:align-items-center py-2 mt-3 surface-border">
+                    <div class="flex-auto lg:ml-3">
+                        <div class="flex align-items-center justify-content-between mb-3">
+                            <span class="text-900 font-bold">Expéditeur</span>
+                            <span class="text-900 font-bold">France</span>
+                        </div>
+                        <div class="text-600 text-sm mb-2">{{ transfert.expediteur_nom_complet }}</div>
+                        <div class="text-600 text-sm mb-2">{{ transfert.expediteur_phone }}</div>
+                        <div class="text-600 text-sm mb-2">{{ transfert.expediteur_email }}</div>
+
+                    </div>
+                </div>
+                <div class="py-2 mt-3">
+                    <div class="flex justify-content-between align-items-center mb-3">
+                        <span class="text-900 font-medium">Montant à récuperer</span>
+                        <span class="text-900 font-bold"> {{ transfert.montant_receveur }} GNF</span>
+                    </div>
+                    <div class="flex justify-content-between align-items-center mb-3">
+                        <span class="text-900 font-medium">Montant envoyé</span>
+                        <span class="text-900 font-bold">{{ transfert.montant_expediteur }} €</span>
+                    </div>
+                    <div class="flex justify-content-between align-items-center mb-3">
+                        <span class="text-900 font-medium">Frais</span>
+                        <span class="text-900">€ 5</span>
+                    </div>
+                    <div class="flex justify-content-between align-items-center mb-3">
+                        <span class="text-900 font-bold">Total</span>
+                         <span class="text-900 font-medium text-xl text-primary font-bold">€ 105.00</span>
+                    </div>
+                </div>
+                <button pButton pRipple class="col-12" label="Valider le retrait" icon="pi pi-fw pi-check" (click)="openRetraitDialog()"></button>
+            </div>
+            <div *ngIf="!codeRecuperer">
+                <div class="my-4 justify-content-center">
+                    <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                    <span>Veuillez-saisir un code valide, pour afficher 1 ticket.</span>
+                </div>
+            </div>
+        </div>
+
+        <p-dialog [(visible)]="retraitDialog" header="Confirmer" [modal]="true" [style]="{width:'550px'}">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                <span>Voulez-vous confirmer le retrait de <b>{{ transfert.expediteur_nom_complet }}</b> ?</span>
+            </div>
+            <div class="flex align-items-center justify-content-center">
+                <span>Pour un montant de  <b>{{ transfert.montant_receveur }} GNF</b> ?</span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="Non" (click)="hideDialog()"></button>
+                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Oui" (click)="confirmRetrait()" [loading]="loading"></button>
+            </ng-template>
+        </p-dialog>
+        <p-toast></p-toast>
+    </div>  
+</div>
