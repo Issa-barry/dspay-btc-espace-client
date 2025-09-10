@@ -1,195 +1,166 @@
 import { Injectable } from '@angular/core';
 import {
-    HttpClient,
-    HttpErrorResponse,
-    HttpHeaders,
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
 } from '@angular/common/http';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { environment } from 'src/environements/environment.dev';
 import { Transfert } from '../../models/transfert';
 
-const httpOption = {
-    headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'GET,POST,OPTIONS,DELETE,PUT',
-    }),
+export type TransfertCreateDto = {
+  beneficiaire_id: number;
+  taux_echange_id: number;
+  montant_euro: number;
 };
 
-@Injectable({
-    providedIn: 'root',
-})
+const httpOption = {
+  headers: new HttpHeaders({
+    'Content-Type': 'application/json',
+    // Ces entêtes CORS ne sont pas nécessaires côté client, tu peux les retirer :
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Methods': 'GET,POST,OPTIONS,DELETE,PUT,PATCH',
+  }),
+};
+
+@Injectable({ providedIn: 'root' })
 export class TransfertService {
-    private apiUrl = `${environment.apiUrl}/transferts`;
+  private apiUrl = `${environment.apiUrl}/transferts`;
 
-    constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {}
 
-    private log(log: string) {
-        console.info(log);
+  private handleError(error: HttpErrorResponse) {
+    console.error('Erreur API:', error);
+
+    let errorMessage = 'Une erreur inconnue est survenue';
+    let validationErrors: Record<string, string[]> = {};
+
+    if (error.error instanceof ErrorEvent) {
+      errorMessage = `Erreur client : ${error.error.message}`;
+    } else {
+      switch (error.status) {
+        case 400:
+          errorMessage = error.error?.message || 'Requête invalide.';
+          break;
+        case 401:
+          errorMessage = 'Non authentifié. Veuillez vous reconnecter.';
+          break;
+        case 404:
+          errorMessage = error.error?.message || 'Transfert non trouvé.';
+          break;
+        case 422:
+          errorMessage = error.error?.message || 'Validation échouée. Vérifiez les champs.';
+          // Compat : ton backend peut renvoyer data{field:[...]} ou errors{field:[...]}
+          validationErrors =
+            (error.error?.data && typeof error.error.data === 'object'
+              ? error.error.data
+              : (error.error?.errors && typeof error.error.errors === 'object'
+                  ? error.error.errors
+                  : {}));
+          break;
+        case 0:
+          errorMessage = 'Impossible de se connecter au serveur.';
+          break;
+        default:
+          errorMessage = `Erreur serveur ${error.status}: ${error.message}`;
+      }
     }
 
-    /**
-     * ✅ Nouvelle gestion des erreurs améliorée
-     */
-    private handleError(error: HttpErrorResponse) {
-        console.error('Erreur API:', error);
+    return throwError(() => ({ message: errorMessage, validationErrors }));
+  }
 
-        let errorMessage = 'Une erreur inconnue est survenue';
-        let validationErrors: { [key: string]: string[] } = {};
+  /** Liste (si ton endpoint renvoie {success, data: {items, meta}} ou bien {data: Transfert[]} ) */
+  getTransferts(): Observable<Transfert[]> {
+    return this.http
+      .get<any>(`${this.apiUrl}/all`)
+      .pipe(
+        map((res) => {
+          // Compat de formats possibles
+          if (res?.data?.items) return res.data.items as Transfert[];
+          if (Array.isArray(res?.data)) return res.data as Transfert[];
+          if (Array.isArray(res)) return res as Transfert[];
+          return [];
+        }),
+        catchError(this.handleError)
+      );
+  }
 
-        if (error.error instanceof ErrorEvent) {
-            // Erreur côté client
-            errorMessage = `Erreur client : ${error.error.message}`;
-        } else {
-            // Erreur côté serveur
-            switch (error.status) {
-                case 400:
-                    errorMessage = error.error.message || 'Requête invalide.';
-                    break;
-                case 404:
-                    errorMessage = 'Transfert non trouvé. Vérifiez le code.';
-                    break;
-                case 422:
-                    errorMessage = 'Validation échouée. Vérifiez les champs.';
-                    if (error.error && error.error.data) {
-                        validationErrors = error.error.data;
-                    }
-                    break;
-                case 0:
-                    errorMessage =
-                        'Impossible de se connecter au serveur. Vérifiez votre connexion internet.';
-                    break;
-                default:
-                    errorMessage = `Erreur serveur ${error.status}: ${error.message}`;
-            }
-        }
+  getTransfertById(id: number): Observable<Transfert> {
+    return this.http
+      .get<{ success: boolean; data: Transfert }>(`${this.apiUrl}/showById/${id}`)
+      .pipe(map((response) => response.data), catchError(this.handleError));
+  }
 
-        return throwError(() => ({ message: errorMessage, validationErrors }));
-    }
+  getTransfertByCode(code: string): Observable<Transfert> {
+    return this.http
+      .get<{ success: boolean; data: Transfert }>(`${this.apiUrl}/showByCode/${code}`)
+      .pipe(map((response) => response.data), catchError(this.handleError));
+  }
 
-    getTransferts(): Observable<Transfert[]> {
-        return this.http.get<{ data: Transfert[] }>(this.apiUrl + '/all').pipe(
-            map((response) => response.data),
-            catchError(this.handleError)
-        );
-    }
+  /** ✅ Nouvelle création conforme au backend refactoré */
+  createTransfert(payload: TransfertCreateDto): Observable<Transfert> {
+    return this.http
+      .post<{ success: boolean; message: string; data: Transfert }>(`${this.apiUrl}`, payload, httpOption)
+      .pipe(map((res) => res.data), catchError(this.handleError));
+  }
 
-    getTransfertById(id: number): Observable<Transfert> {
-        return this.http
-            .get<{ success: boolean; data: Transfert }>(
-                `${this.apiUrl}/showById/${id}`
-            )
-            .pipe(
-                map((response) => response.data),
-                catchError(this.handleError)
-            );
-    }
+  /** Valider un retrait par code (si endpoint existant) */
+  validerRetrait(code: string): Observable<{ success: boolean; message: string; data: Transfert }> {
+    return this.http
+      .post<{ success: boolean; message: string; data: Transfert }>(
+        `${this.apiUrl}/retrait`,
+        { code },
+        httpOption
+      )
+      .pipe(catchError(this.handleError));
+  }
 
-    getTransfertByCode(code: String): Observable<Transfert> {
-        return this.http
-            .get<{ success: boolean; data: Transfert }>(
-                `${this.apiUrl}/showByCode/${code}`
-            )
-            .pipe(
-                map((response) => response.data),
-                catchError(this.handleError)
-            );
-    }
+  /** Update par code (si endpoint existant) */
+  updateTransfertByCode(code: string, transfert: Partial<Transfert>): Observable<Transfert> {
+    return this.http
+      .put<{ success: boolean; data: Transfert }>(
+        `${this.apiUrl}/updateByCode/${code}`,
+        transfert,
+        httpOption
+      )
+      .pipe(map((r) => r.data), catchError(this.handleError));
+  }
 
-    createTransfert(transfert: Transfert): Observable<Transfert> {
-        return this.http
-            .post<Transfert>(`${this.apiUrl}/envoie`, transfert, httpOption)
-            .pipe(catchError(this.handleError));
-    }
+  /** Update par id (si endpoint existant) */
+  updateTransfertById(id: number, transfert: Partial<Transfert>): Observable<Transfert> {
+    return this.http
+      .put<{ success: boolean; data: Transfert }>(
+        `${this.apiUrl}/updateById/${id}`,
+        transfert,
+        httpOption
+      )
+      .pipe(map((r) => r.data), catchError(this.handleError));
+  }
 
-    validerRetrait(
-        code: string
-    ): Observable<{ success: boolean; message: string; data: Transfert }> {
-        return this.http
-            .post<{ success: boolean; message: string; data: Transfert }>(
-                `${this.apiUrl}/retrait`,
-                { code },
-                httpOption
-            )
-            .pipe(catchError(this.handleError));
-    }
+  /** Annulation (pense à body {} pour ne pas envoyer les headers en body) */
+  annulerTransfert(id: number): Observable<{ success: boolean; message: string }> {
+    return this.http
+      .post<{ success: boolean; message: string }>(`${this.apiUrl}/annuler/${id}`, {}, httpOption)
+      .pipe(catchError(this.handleError));
+  }
 
-    updateTransfertByCode(
-        code: string,
-        transfert: Transfert
-    ): Observable<Transfert> {
-        return this.http
-            .put<Transfert>(
-                `${this.apiUrl}/updateByCode/${code}`,
-                transfert,
-                httpOption
-            )
-            .pipe(catchError(this.handleError));
-    }
+  deleteTransfertById(id: number): Observable<{ success: boolean; message: string }> {
+    return this.http
+      .delete<{ success: boolean; message: string }>(`${this.apiUrl}/deleteById/${id}`, httpOption)
+      .pipe(catchError(this.handleError));
+  }
 
-    updateTransfertById(
-        id: number,
-        transfert: Transfert
-    ): Observable<Transfert> {
-        return this.http
-            .put<Transfert>(
-                `${this.apiUrl}/updateById/${id}`,
-                transfert,
-                httpOption
-            )
-            .pipe(catchError(this.handleError));
-    }
+  deleteTransfertByCode(code: string): Observable<{ success: boolean; message: string }> {
+    return this.http
+      .delete<{ success: boolean; message: string }>(`${this.apiUrl}/deleteByCode/${code}`, httpOption)
+      .pipe(catchError(this.handleError));
+  }
 
-    annulerTransfert(id: number): Observable<void> {
-        return this.http
-            .post<void>(`${this.apiUrl}/annuler/${id}`, httpOption)
-            .pipe(catchError(this.handleError));
-    }
-
-    deleteTransfertById(
-        id: number
-    ): Observable<{ success: boolean; message: string }> {
-        return this.http
-            .delete<{ success: boolean; message: string }>(
-                `${this.apiUrl}/deleteById/${id}`,
-                httpOption
-            )
-            .pipe(catchError(this.handleError));
-    }
-
-    deleteTransfertByCode(
-        code: string
-    ): Observable<{ success: boolean; message: string }> {
-        return this.http
-            .delete<{ success: boolean; message: string }>(
-                `${this.apiUrl}/deleteByCode/${code}`,
-                httpOption
-            )
-            .pipe(catchError(this.handleError));
-    }
-
-    /*   *  méthode statistique global  */
-    getStatistiquesGlobales(): Observable<any> {
-        return this.http
-            .get<{ success: boolean; data: any }>(
-                `${this.apiUrl}/statistiques/globales`
-            )
-            .pipe(
-                map((response) => response.data),
-                catchError(this.handleError)
-            );
-    }
-
-    /*   *  méthode statistique par agence  */
-   /* getStatistiquesParAgence(): Observable<any> {
-        return this.http
-            .get<{ success: boolean; data: any }>(
-                `${this.apiUrl}/transferts/statistiques/agence`
-            )
-            .pipe(
-                map((response) => response.data),
-                catchError(this.handleError)
-            );
-    }*/
+  /* Statistiques globales */
+  getStatistiquesGlobales(): Observable<any> {
+    return this.http
+      .get<{ success: boolean; data: any }>(`${this.apiUrl}/statistiques/globales`)
+      .pipe(map((response) => response.data), catchError(this.handleError));
+  }
 }

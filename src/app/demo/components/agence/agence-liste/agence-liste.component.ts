@@ -17,6 +17,8 @@ export class AgenceListeComponent implements OnInit {
     selectedAgences: Agence[] = [];
     agence: Agence = new Agence();
 
+  
+
     agenceDialog = false;
     deleteAgenceDialog = false;
     deleteAgencesDialog = false;
@@ -36,6 +38,9 @@ export class AgenceListeComponent implements OnInit {
         { label: 'FRANCE', value: 'France' },
     ];
 
+    selectedWeek: any;
+    weeks: any[] = [];
+     barData: any;
     constructor(
         private agenceService: AgenceService,
         private router: Router,
@@ -45,7 +50,36 @@ export class AgenceListeComponent implements OnInit {
 
     ngOnInit() {
         this.getAllAgences();
+
+        this.weeks = [
+            {
+                label: 'Ouverte',
+                value: 0,
+                data: [
+                    [65, 59, 80, 81, 56, 55, 40],
+                    [28, 48, 40, 19, 86, 27, 90],
+                ],
+            },
+            {
+                label: 'fermée',
+                value: 1,
+                data: [
+                    [35, 19, 40, 61, 16, 55, 30],
+                    [48, 78, 10, 29, 76, 77, 10],
+                ],
+            },
+        ];
+
+        this.selectedWeek = this.weeks[0];
     }
+
+     onWeekChange() {
+        let newBarData = { ...this.barData };
+        newBarData.datasets[0].data = this.selectedWeek.data[0];
+        newBarData.datasets[1].data = this.selectedWeek.data[1];
+        this.barData = newBarData;
+    }
+
 
     // 🔁 Navigation
     onGotToNewAgence() {

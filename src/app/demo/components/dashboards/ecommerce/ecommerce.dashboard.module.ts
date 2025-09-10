@@ -12,6 +12,10 @@ import { ChartModule } from 'primeng/chart';
 import { KnobModule } from 'primeng/knob';
 import { RatingModule } from 'primeng/rating';
 import { RippleModule } from 'primeng/ripple';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { InputSwitchModule } from 'primeng/inputswitch';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 
 @NgModule({
 	imports: [
@@ -26,7 +30,12 @@ import { RippleModule } from 'primeng/ripple';
 		InputTextareaModule,
 		ChartModule,
 		RatingModule,
-		KnobModule
+		KnobModule,
+		InputNumberModule,
+		 InputSwitchModule,
+		 InputGroupModule,
+		 InputGroupAddonModule,
+		 DropdownModule
 	],
 	declarations: [EcommerceDashboardComponent]
 })

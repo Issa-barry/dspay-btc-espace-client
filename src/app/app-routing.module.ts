@@ -8,7 +8,7 @@ const routerOptions: ExtraOptions = {
 };
 
 const routes: Routes = [ 
-    { 
+    {  
         path: 'dashboard', 
         component: AppLayoutComponent,
         canActivate: [authGuard],

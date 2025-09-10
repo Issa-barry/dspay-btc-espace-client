@@ -9,7 +9,7 @@
     <div class="flex flex-column sm:flex-row sm:align-items-center sm:justify-content-between py-5">
         <div class="mb-3 sm:mb-0">
             <span class="font-medium text-xl text-900 mr-2">Code :</span>
-            <span class="font-medium text-xl text-blue-500">{{ transfert.code || 'pas de code'}}</span>
+            <span class="font-medium text-xl text-blue-500">225</span>
         </div>
         <div>
             <p-confirmDialog></p-confirmDialog>
@@ -34,17 +34,17 @@
             <li  class="p-3 surface-border flex align-items-start sm:align-items-center"  style="border-bottom: 1px solid #e0e0e0;">
                 <div class="flex flex-column">
                    <span class="text-900 font-semibold text-xl mb-2">Bénéficiaire</span>
-                   <span class="text-800 mb-2">{{ transfert.receveur_nom_complet }}</span>
-                   <span class="text-800">Tel : {{ transfert.receveur_phone }}</span>
+                   <span class="text-800 mb-2">ddd</span>
+                   <span class="text-800">Tel : dddd</span>
                 </div>
                <span class="text-900 font-medium text-lg ml-auto">Guinée</span>
            </li>
            <li  class="p-3 surface-border flex align-items-start sm:align-items-center"  style="border-bottom: 1px solid #e0e0e0;">
             <div class="flex flex-column">
                <span class="text-900 font-semibold text-xl mb-2">Expéditeur</span>
-               <span class="text-800 mb-2">{{ transfert.expediteur_nom_complet }}</span>
-               <span class="text-800 mb-2">Tel : {{ transfert.expediteur_phone }}</span>
-               <span class="text-800">Email : {{ transfert.expediteur_email }}</span>
+               <span class="text-800 mb-2">ddd</span>
+               <span class="text-800 mb-2">Tel : dddd</span>
+               <span class="text-800">Email : dddd</span>
            </div>
            <span class="text-900 font-medium text-lg ml-auto">France</span>
        </li> 
@@ -64,10 +64,10 @@
             <span class="font-bold text-900">Agent expéditeur</span>
             <div class="flex align-items-center mt-0">
                  <div class="flex flex-column text-900 mt-2 mb-2">
-                    <span class="text-800 mb-2">{{ agent.nom_complet }}</span>
-                    <span class="text-800 mb-2">{{ agent.phone }}</span>
-                    <span class="text-800  mb-2">{{ agent.email }}</span>
-                    <span class="text-800  mb-2 "> Agence : <span class="text-blue-500">{{ agence.nom_agence }}</span></span>
+                    <span class="text-800 mb-2">ddd</span>
+                    <span class="text-800 mb-2">ddd</span>
+                    <span class="text-800  mb-2">ddd</span>
+                    <span class="text-800  mb-2 "> Agence : <span class="text-blue-500">ddd</span></span>
                 </div>
             </div>
         </div>
@@ -76,19 +76,19 @@
                 <li class="mb-3"><span class="font-medium text-900">Montant</span></li>
                 <li class="flex justify-content-between mb-3">
                     <span class="text-900">A retiré</span>
-                    <span class="text-900 font-medium text-lg">{{ transfert.montant_receveur }} {{ transfert.devise_cible.tag }}</span>
+                    <span class="text-900 font-medium text-lg">ddd</span>
                 </li>
                 <li class="flex justify-content-between mb-3">
                     <span class="text-900">Envoyé</span>
-                    <span class="text-900 font-medium text-lg">{{ transfert.montant_expediteur }} {{ transfert.devise_source.tag }}</span>
+                    <span class="text-900 font-medium text-lg">ddd</span>
                 </li>
                 <li class="flex justify-content-between mb-3">
                     <span class="text-900">Frais</span>
-                    <span class="text-900 font-medium text-lg">{{ transfert.frais }} {{ transfert.devise_source.tag }}</span>
+                    <span class="text-900 font-medium text-lg">ddd</span>
                 </li>
                 <li class="flex justify-content-between mb-3">
                     <span class="text-900">Taux d'échange</span>
-                    <span class="text-900 font-medium text-lg">1 {{ transfert.devise_source.tag }} = 9500 {{ transfert.devise_cible.tag }}</span>
+                    <span class="text-900 font-medium text-lg">1 ddd = 9500 ddd</span>
                 </li>
                 <li class="flex justify-content-between border-top-1 surface-border py-3">
                     <span class="text-900 font-medium">Total payé par expéditeur : </span>

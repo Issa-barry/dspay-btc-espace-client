@@ -14,6 +14,9 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { DialogModule } from 'primeng/dialog';
 import { ToastModule } from 'primeng/toast';
 import { TransfertEnvoieComponent } from './transfert-envoie.component';
+import { InputSwitchModule } from 'primeng/inputswitch';
+import { CalendarModule } from 'primeng/calendar';
+ import { ChipsModule } from 'primeng/chips';
 
 
 @NgModule({
@@ -32,6 +35,10 @@ import { TransfertEnvoieComponent } from './transfert-envoie.component';
     InputGroupAddonModule,
     DialogModule,
     ToastModule,
+    InputSwitchModule,
+    CalendarModule,
+    ChipsModule
+
   ]
 })
 export class TransfertEnvoieModule { }

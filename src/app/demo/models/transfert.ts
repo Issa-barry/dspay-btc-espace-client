@@ -1,44 +1,40 @@
+// src/app/demo/models/transfert.ts
 import { Devises } from "./Devise";
 
- export class Transfert {
-    id?: number;
-    code?:string;
-    statut?:string;
-    frais?:number;
-    total?:number;
-    taux_echange_id:number;
-    devise_source_id: number;  // id = 2 = euro
-    devise_cible_id: number;   // id  = 3 = franc guinéen
-    montant_expediteur: number;
-    montant_receveur?: number;
-    quartier: string;
-    receveur_nom_complet: string;
-    receveur_phone: string;
-    expediteur_nom_complet: string;
-    expediteur_phone: string;
-    expediteur_email: string;
-    devise_cible : Devises;
-    devise_source : Devises;
-    agent_id?:number;
-    
- 
-    constructor()
-    {
-        this.devise_source_id = 1;
-        this.devise_cible_id = 2;
-        this.frais = 0;
-        this.total=0;
-        this.taux_echange_id=1;
-        this.montant_expediteur=0;
-        this.montant_receveur=0;
-        this.quartier="";
-        this.receveur_nom_complet="";
-        this.receveur_phone="";
-        this.expediteur_nom_complet="";
-        this.expediteur_phone="";
-        this.expediteur_email="";
-        this.devise_cible = new Devises();
-        this.devise_source = new Devises();
-        
-    }
+export class Transfert {
+  id?: number;
+  code?: string;
+  statut?: string;
+
+  // Expéditeur (backend le déduit du token) et bénéficiaire
+  user_id?: number;
+  beneficiaire_id!: number;        // ← requis pour la création
+
+  // Devises (EUR -> GNF)
+  devise_source_id: number = 1;    // 1 = EUR
+  devise_cible_id:  number = 2;    // 2 = GNF
+
+  // Taux
+  taux_echange_id!: number;        // ← requis pour la création
+  taux_applique?: number;
+
+  // Montants
+  montant_euro: number = 0;        // (ex montant_expediteur)
+  montant_gnf?: number;            // (ex montant_receveur) calculé côté API
+  frais: number = 0;
+  total: number = 0;
+
+  // Relations optionnelles (affichage)
+  devise_cible?: Devises;
+  devise_source?: Devises;
+
+  created_at?: string;
+  updated_at?: string;
+
+  constructor(init?: Partial<Transfert>) {
+    Object.assign(this, init);
+  }
 }
+
+// (optionnel) DTO minimal pour l’envoi
+export type TransfertCreateDto = Pick<Transfert, 'beneficiaire_id' | 'taux_echange_id' | 'montant_euro'>;
