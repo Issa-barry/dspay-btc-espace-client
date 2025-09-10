@@ -32,7 +32,7 @@
                 </div> 
                  
                <div class="flex justify-content-end gap-2 mt-4 ml-3">
-                <button pButton label="Continuer" icon="pi pi-chevron-right" iconPos="right"  (click)="next()"></button>
+                <button [disabled]="!isMontantValide" pButton label="Continuer" icon="pi pi-chevron-right" iconPos="right"  (click)="next()"></button>
                 </div>
             </div>
         </div>
@@ -54,7 +54,7 @@
                                 appendTo="body"
                                 [disabled]="loading"
                                 (onChange)="onBeneficiaireChange($event.value)"
-                                [ngClass]="{'ng-invalid ng-dirty': submitted && !selectedBeneficiaireId || errors['beneficiaire']}"
+                                [ngClass]="{'ng-invalid ng-dirty': submitted && !selectedBeneficiaireId || !isBeneficiaireValide || errors['beneficiaire'] }"
                             >
                                 <!-- item -->
                                 <ng-template pTemplate="item" let-opt>
@@ -74,13 +74,14 @@
                             </p-dropdown>
 
                             <small *ngIf="errors['beneficiaire']">{{ errors['beneficiaire'] }}</small>
+                            <small *ngIf="submitted && !isBeneficiaireValide">Veuillez choisir un bénéficiaire.</small>
                   </div>
   
             </div>
             
                  <div class="flex justify-content-between mt-4">
                    <button pButton label="Retour" icon="pi pi-chevron-left" (click)="prev()" class="p-button-secondary"></button>
-                   <button pButton label="Continuer" icon="pi pi-chevron-right" iconPos="right"   (click)="next()"></button>
+                   <button [disabled]="!isBeneficiaireValide" pButton label="Continuer" icon="pi pi-chevron-right" iconPos="right"   (click)="next()"></button>
                 </div>
         </div>
 
@@ -88,42 +89,40 @@
         <!-- RECAPITULATIF -->
         <div class="col-12 lg:col-6 px-4 py-4 md:px-6" *ngIf="activeIndex === 2">
             <div class="pb-3 surface-border">
-                <span class="text-900 font-medium text-xl">Ticket</span>
+                <span class="text-900 font-medium text-xl">Récapitulatif</span>
             </div>
             <div>
                 <div class="flex flex-column lg:flex-row flex-wrap lg:align-items-center py-2 mt-3 surface-border">
                     <div class="flex-auto lg:ml-3">
                         <div class="flex align-items-center justify-content-between mb-3">
-                            <span class="text-900 font-bold">Receveur</span>
-                            <span class="text-900 font-bold">GNF {{ montantGNF }}</span>
+                            <span class="text-900 font-bold">Bénéficiaire</span>
                         </div>
-                        <div class="text-600 text-sm mb-2">{{ transfert }}</div>
-                        <div class="text-600 text-sm mb-2">{{ transfert }}</div>
-                    </div>
-                </div>
-                <div class="flex flex-column lg:flex-row flex-wrap lg:align-items-center py-2 mt-3 surface-border">
-                    <div class="flex-auto lg:ml-3">
-                        <div class="flex align-items-center justify-content-between mb-3">
-                            <span class="text-900 font-bold">Expéditeur</span>
-                            <span class="text-900 font-bold">France</span>
-                        </div>
-                        <div class="text-600 text-sm mb-2">{{ transfert }}</div>
-                        <div class="text-600 text-sm mb-2">{{ transfert }}</div>
-                        <div class="text-600 text-sm mb-2">{{ transfert }}</div>
+                        <div class="text-600 text-sm mb-2">{{ selectedBeneficiaireLabel }}</div>
+                        <div class="text-600 text-sm mb-2">{{ selectedBeneficiairePhone }}</div>
                     </div>
                 </div>
                 <div class="py-2 mt-3">
-                    <div class="flex justify-content-between align-items-center mb-3">
-                        <span class="text-900 font-medium">Montant envoyé</span>
-                        <span class="text-900 font-bold">€ {{ transfert }}</span>
+                       <div class="flex justify-content-between align-items-center mb-3">
+                        <span class="text-900 font-medium">Montant recu</span>
+                        <span class="text-900 font-bold">{{ montantGNF | number:'1.2-2' }} GNF</span>
                     </div>
+                    <!-- <div class="flex justify-content-between align-items-center mb-3">
+                        <span class="text-900 font-medium">Montant envoyé</span>
+                        <span class="text-900 font-bold"> {{ montantEuro | number:'1.2-2' }} €</span>
+                    </div> -->
                     <div class="flex justify-content-between align-items-center mb-3">
-                        <span class="text-900 font-medium">Frais</span>
+                        <span class="flex justify-content-between align-items-center text-900 font-medium">
+                            <span class="mb-0">Frais</span>  
+                            <span  class="mt-2 mx-2" >
+                                <p-inputSwitch  styleClass="switch-sm" [(ngModel)]="includeFrais" (onChange)="majFraisTotal()" [disabled]="!montantEuro"></p-inputSwitch>
+                             </span>  
+                        </span>
+                         
                         <span class="text-900">€ {{ frais }}</span>
                     </div>
                     <div class="flex justify-content-between align-items-center mb-3">
-                        <span class="text-900 font-bold">Total</span>
-                        <span class="text-900 font-medium text-xl text-primary font-bold">{{ total }}</span>
+                        <span class="text-900 font-bold">Total à payer</span>
+                        <span class="text-900 font-medium text-xl text-primary font-bold">€ {{ total | number:'1.2-2' }}</span>
                     </div>
                 </div>
                 
@@ -132,7 +131,8 @@
                 <!-- <button pButton pRipple class="col-12"   label="Valider le transfert" icon="pi pi-fw pi-check" (click)="verifierFormulaire()"></button> -->
     <div class="flex justify-content-between">
       <button pButton label="Retour" icon="pi pi-chevron-left" (click)="prev()" class="p-button-secondary"></button>
-      <button pButton label="Confirmer et payer" icon="pi pi-check" (click)="openPayement()"></button>
+      <button pButton label="Confirmer et payer" icon="pi pi-check" (click)="openPayement()"
+              [disabled]="!isMontantValide || !isBeneficiaireValide"></button>
     </div>
 </div>     
 </div> 

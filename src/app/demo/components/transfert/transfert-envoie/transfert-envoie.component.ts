@@ -23,6 +23,8 @@ export class TransfertEnvoieComponent implements OnInit {
   selectedBeneficiaireId: number | null = null;
   selectedTauxId = 1; // fixe (ou bind sur un dropdown de taux)
 
+  //  frais 
+  readonly tauxDeFrais = 0.05;
   // UI
   payementDialog = false;
   envoieDialog = false;
@@ -34,7 +36,7 @@ export class TransfertEnvoieComponent implements OnInit {
   // Récap
   total = 0;
   frais  = 0;
-  readonly tauxDeFrais = 0.05;
+ includeFrais: boolean = true; 
 
   transfert: Transfert = new Transfert();
 
@@ -73,34 +75,65 @@ export class TransfertEnvoieComponent implements OnInit {
     });
   }
 
+  get selectedBeneficiaireLabel(): string {
+  const b = this.beneficiairesOptions.find(o => o.id === this.selectedBeneficiaireId);
+  return b?.label ?? '—';
+}
+get selectedBeneficiairePhone(): string {
+  const b = this.beneficiairesOptions.find(o => o.id === this.selectedBeneficiaireId);
+  return b?.phone ?? '—';
+}
+
+//formulaire envoie : 
+get isMontantValide(): boolean {
+  const eur = Number(this.montantEuro);
+  return !Number.isNaN(eur) && eur > 0 && eur <= 1000;
+}
+
+get isBeneficiaireValide(): boolean {
+  // vérifie qu’un id est sélectionné et existe dans la liste
+  const id = this.selectedBeneficiaireId;
+  return id != null && this.beneficiairesOptions.some(o => o.id === id);
+}
+
+// (optionnel) un seul getter pour le bouton principal si tu veux centraliser
+get canContinue(): boolean {
+  if (this.activeIndex === 0) return this.isMontantValide;
+  if (this.activeIndex === 1) return this.isBeneficiaireValide;
+  return true;
+}
+
   /** Sélection d’un bénéficiaire */
   onBeneficiaireChange(id: number | null) {
     this.selectedBeneficiaireId = id;
   }
+ 
+ // ---- calcule/maj frais & total
+  majFraisTotal(): void {
+  const eur = +(this.montantEuro || 0);
+  // frais estimés (arrondi 2 décimales)
+  this.frais = Math.round(eur * this.tauxDeFrais * 100) / 100;
 
-  /** Conversion front-only pour l’aperçu */
-  convertirDepuisEuro() {
-    if (this.montantEuro == null) {
-      this.montantGNF = 0;
-      return;
-    }
-    if (this.montantEuro > 1000) this.montantEuro = 1000; // limite max
-    this.montantGNF = Math.floor(this.montantEuro * this.tauxConversion);
-  }
+  // total -> selon le switch
+  const totalEur = this.includeFrais ? (eur + this.frais) : eur;
+  this.total = Math.round(totalEur * 100) / 100;
+}
 
-  convertirDepuisGNF() {
-    if (this.montantGNF == null) {
-      this.montantEuro = 0;
-      return;
-    }
-    let euro = this.montantGNF / this.tauxConversion;
-    if (euro > 1000) {
-      this.montantEuro = 1000;
-      this.montantGNF = 1000 * this.tauxConversion;
-    } else {
-      this.montantEuro = euro;
-    }
-  }
+// appelle déjà majFraisTotal() à la fin de ces 2 méthodes
+convertirDepuisEuro() {
+  if (this.montantEuro == null) { this.montantGNF = 0; this.majFraisTotal(); return; }
+  if (this.montantEuro > 1000) this.montantEuro = 1000;
+  this.montantGNF = Math.floor(this.montantEuro * this.tauxConversion);
+  this.majFraisTotal();
+}
+
+convertirDepuisGNF() {
+  if (this.montantGNF == null) { this.montantEuro = 0; this.majFraisTotal(); return; }
+  const euro = this.montantGNF / this.tauxConversion;
+  if (euro > 1000) { this.montantEuro = 1000; this.montantGNF = 1000 * this.tauxConversion; }
+  else { this.montantEuro = euro; }
+  this.majFraisTotal();
+}
 
   /** Envoi du transfert (nouveau contrat API) */
   save(): void {
@@ -124,6 +157,8 @@ export class TransfertEnvoieComponent implements OnInit {
       montant_euro: Math.round(this.montantEuro * 100) / 100,
     };
 
+    console.log('dto', dto);
+    
     this.loading = true;
     this.transfertService.createTransfert(dto).subscribe({
       next: (t) => {
@@ -134,7 +169,7 @@ export class TransfertEnvoieComponent implements OnInit {
         this.total = Number(t.total ?? 0);
         this.montantGNF = Number((t as any).montant_gnf ?? 0);
         this.messageService.add({ severity: 'success', summary: 'Succès', detail: 'Transfert effectué.' });
-        this.openTicketDialog();
+        this.hideDialog();
       },
       error: (err) => {
         this.loading = false;
@@ -155,7 +190,12 @@ export class TransfertEnvoieComponent implements OnInit {
   }
   hideTicketDialog(): void {}
 
-  next() { this.activeIndex = Math.min(this.activeIndex + 1, 2); }
+  // si tu recalcules en arrivant au récap
+next() {
+  const nextIndex = Math.min(this.activeIndex + 1, 2);
+  if (nextIndex === 2) this.majFraisTotal();
+  this.activeIndex = nextIndex;
+}
   prev() { this.activeIndex = Math.max(this.activeIndex - 1, 0); }
   prevBeneficiaire() { this.router.navigate(['steps/payment']); }
   canNext(): boolean { return this.activeIndex >= 0 && this.activeIndex <= 2 ? true : false; }

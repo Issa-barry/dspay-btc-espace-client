@@ -101,7 +101,7 @@ export class TransfertService {
   /** ✅ Nouvelle création conforme au backend refactoré */
   createTransfert(payload: TransfertCreateDto): Observable<Transfert> {
     return this.http
-      .post<{ success: boolean; message: string; data: Transfert }>(`${this.apiUrl}`, payload, httpOption)
+      .post<{ success: boolean; message: string; data: Transfert }>(`${this.apiUrl}/envoie`, payload, httpOption)
       .pipe(map((res) => res.data), catchError(this.handleError));
   }
 

@@ -23,7 +23,7 @@ export class AppMenuComponent implements OnInit {
                     {
                         label: "Bénéficiaires",
                         icon: 'pi pi-fw pi-users',
-                        routerLink: ['/dashboard/contact']
+                        routerLink: ['/dashboard/beneficiaire']
                     },
                     {
                         label: "Point de retrait",

@@ -1,0 +1,23 @@
+/* Réduit la taille du switch sans déformer l’UI */
+:host ::ng-deep .switch-sm.p-inputswitch {
+  width: 40px;          /* largeur de la piste */
+  height: 18px;         /* hauteur de la piste */
+}
+
+:host ::ng-deep .switch-sm.p-inputswitch .p-inputswitch-slider {
+  height: 20px;         /* même hauteur que le conteneur */
+}
+
+:host ::ng-deep .switch-sm .p-inputswitch-slider:before {
+  width: 18px;          /* diamètre du bouton */
+  height: 18px;
+  left: 2px;            /* centrage vertical/horizontal dans la piste */
+  bottom: 6px;
+}
+
+/* distance parcourue par le bouton quand ON:
+   translateX = largeur piste - (2*padding) - diamètre bouton
+   ici: 36 - 4 - 14 = 18px */
+:host ::ng-deep .switch-sm.p-inputswitch.p-inputswitch-checked .p-inputswitch-slider:before {
+  transform: translateX(18px);
+}

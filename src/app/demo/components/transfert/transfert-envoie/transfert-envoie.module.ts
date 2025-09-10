@@ -37,8 +37,8 @@ import { CalendarModule } from 'primeng/calendar';
     ToastModule,
     InputSwitchModule,
     CalendarModule,
-    ChipsModule
-
+    ChipsModule,
+ 
   ]
 })
 export class TransfertEnvoieModule { }
