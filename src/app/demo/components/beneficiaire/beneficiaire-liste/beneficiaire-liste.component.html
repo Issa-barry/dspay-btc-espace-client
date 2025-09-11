@@ -12,15 +12,15 @@
                             label="Ajouter un bénéficiaire"
                             icon="pi pi-plus"
                             class="p-button-primary mr-2"
-                            (click)="onGotToNewContact()"
+                            (click)="onGotToNewBeneficiaire()"
                         ></button>
                     </div>
-                </ng-template> 
+                </ng-template>  
             </p-toolbar>
 
             <p-table
                 #dt
-                [value]="loading ? skeletonRows : contacts"
+                [value]="loading ? skeletonRows : beneficiaires"
                 responsiveLayout="scroll"
                 [rows]="10"
                 [globalFilterFields]="[
@@ -36,8 +36,8 @@
                 [paginator]="true"
                 [rowsPerPageOptions]="[10, 20, 30]"
                 [showCurrentPageReport]="true"
-                currentPageReportTemplate="Liste de {first} / {last} des {totalRecords} contacts"
-                [(selection)]="selectedContacts"
+                currentPageReportTemplate="Liste de {first} / {last} des {totalRecords} beneficiaires"
+                [(selection)]="selectedBeneficiaires"
                 selectionMode="multiple"
                 [rowHover]="true"
                 dataKey="id"
@@ -46,7 +46,7 @@
                     <div
                         class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
                     >
-                        <h5 class="m-0">Liste des contacts</h5>
+                        <h5 class="m-0">Liste des beneficiaires</h5>
                         <span class="block mt-2 md:mt-0 p-input-icon-left">
                             <i class="pi pi-search"></i>
                             <input
@@ -121,7 +121,7 @@
                             </div>
                         </td>
                     </tr>
-                </ng-template>
+                </ng-template> 
             </p-table>
         </div>
     </div>

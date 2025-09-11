@@ -73,7 +73,7 @@ export class BeneficiaireService {
       )
       .pipe(
         map((res) => res.data),
-        catchError(this.handleError)
+        catchError(this.handleError) 
       );
   }
 

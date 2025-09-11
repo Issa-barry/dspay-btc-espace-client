@@ -8,6 +8,9 @@ import { Role } from '../../../models/Role';
 import { ContactService } from '../../../service/contact/contact.service';
 import { RoleService } from '../../../service/role/role.service';
 import { Statut } from 'src/app/demo/enums/statut.enum';
+import { Beneficiaire } from 'src/app/demo/models/beneficiaire';
+import { PaginationMeta } from 'src/app/demo/models/PaginationMeta';
+import { BeneficiaireService } from 'src/app/demo/service/beneficiaire/beneficiaire.service';
 
 @Component({
   selector: 'app-beneficiaire-liste',
@@ -17,13 +20,27 @@ import { Statut } from 'src/app/demo/enums/statut.enum';
 
 })
 export class BeneficiaireListeComponent implements OnInit {
-  contacts: Contact[] = [];
-  contact: Contact = new Contact();
+
+  beneficiaires: Beneficiaire[] = [];
+   beneficiaireDialog = false;
+    current: Beneficiaire = {} as Beneficiaire;
+    selectedBeneficiaires: Beneficiaire[] = [];
+    page = 1;
+    perPage = 10;
+    searchTerm = '';
+ 
+   meta: PaginationMeta | null = null;
+
   roles: Role[] = [];
   optionPays = [
     { label: 'GUINEE-CONAKRY', value: 'Guinée-Conakry' },
     { label: 'FRANCE', value: 'France' }
   ];
+
+  //
+  contacts: Contact[] = [];
+  contact: Contact = new Contact();
+   
 
   contactDialog = false;
   deleteContactDialog = false;
@@ -46,14 +63,39 @@ export class BeneficiaireListeComponent implements OnInit {
     private roleService: RoleService,
     private router: Router,
     private messageService: MessageService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+     private beneficiaireService: BeneficiaireService,
   ) {}
 
   ngOnInit(): void {
     this.getAllContacts();
     this.getAllRoles();
+    this.loadBeneficiaires();
   }
 
+  /** Chargement liste paginée */
+  loadBeneficiaires(): void {
+    this.loading = true;
+
+    this.beneficiaireService
+      .list({ page: this.page, per_page: this.perPage, search: this.searchTerm || undefined })
+      .subscribe({
+        next: ({ items, meta }) => {
+          this.beneficiaires = items;
+          this.meta = meta;
+          this.loading = false;
+          console.log(this.beneficiaires);
+          
+        },
+        error: (err) => {
+          this.loading = false;
+          this.showMessage('error', 'Erreur', err.message || 'Échec du chargement des bénéficiaires.');
+        }
+      });
+  }
+
+
+  // 
   getAllContacts(): void {
     this.loading = true;
     this.contactService.getContacts().subscribe({
@@ -207,8 +249,8 @@ export class BeneficiaireListeComponent implements OnInit {
     table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
   }
 
-  onGotToNewContact(): void {
-    this.router.navigate(['/dashboard/contact/contact-new']);
+   onGotToNewBeneficiaire(): void {
+    this.router.navigate(['/dashboard/beneficiaire/beneficiaire-new']);
   }
 
   onGotToContactDetail(contact: Contact): void {

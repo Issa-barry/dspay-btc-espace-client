@@ -1,0 +1,33 @@
+<div class="card">
+    <p-toast></p-toast>
+    <span class="text-900 text-xl font-bold mb-4 block">Ajouter un beneficiaire :</span>
+    <p-progressBar mode="indeterminate" *ngIf="loading" class="w-full h-2"></p-progressBar>
+
+    <div class="grid" *ngIf="!loading">
+          
+        <div class="md:col-6 col-6 lg:col-6">
+            <div class="grid formgrid p-fluid">
+                    <div class="field mb-4 col-12 md:col-12">
+                    <label for="state" class="font-medium text-900" >Téléphone</label>
+                    <input id="state" type="text" [(ngModel)]="contact.adresse.ville" [ngClass]="{'ng-invalid ng-dirty' : submitted && !contact.adresse.ville || errors['adresse.ville']}"  pInputText>
+                    <small *ngIf="errors['adresse.ville']">{{ errors['adresse.ville'] }}</small>
+                </div> 
+                <div class="field mb-4 col-12 md:col-6">
+                    <label for="email" class="font-medium text-900">Nom</label>
+                    <input id="email" type="text" [(ngModel)]="contact.email" 
+                    [ngClass]="{'ng-invalid ng-dirty' : submitted && !contact.email || errors['email']}" pInputText>
+                    <small *ngIf="errors['email']">{{ errors['email'] }}</small>
+                </div>
+                <div class="field mb-4 col-12 md:col-6">
+                    <label for="phone" class="font-medium text-900">Prénom</label>
+                    <input id="phone" type="text" [(ngModel)]="contact.phone" [ngClass]="{'ng-invalid ng-dirty' : submitted && !contact.phone || errors['phone']}" pInputText>
+                    <small *ngIf="errors['phone']">{{ errors['phone'] }}</small>
+                </div>  
+                
+                <div class="col-12">
+                    <button pButton pRipple label="Enregistrer" class="w-auto mt-3" (click)="saveContact()"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

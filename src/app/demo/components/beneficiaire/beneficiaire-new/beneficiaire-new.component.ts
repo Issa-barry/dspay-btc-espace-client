@@ -8,13 +8,12 @@ import { ContactService } from 'src/app/demo/service/contact/contact.service';
 import { RoleService } from 'src/app/demo/service/role/role.service';
 
 @Component({
-    selector: 'app-contact-new',
-    standalone: false,
-    templateUrl: './contact-new.component.html',
-    styleUrl: './contact-new.component.scss',
-    providers: [MessageService, ConfirmationService], 
+  selector: 'app-beneficiaire-new',
+  templateUrl: './beneficiaire-new.component.html',
+  styleUrl: './beneficiaire-new.component.scss',
+   providers: [MessageService, ConfirmationService], 
 })
-export class ContactNewComponent implements OnInit {
+export class BeneficiaireNewComponent implements OnInit {
     countries: any[] = [];
     submitted: boolean = false;
     contact: Contact = new Contact();
