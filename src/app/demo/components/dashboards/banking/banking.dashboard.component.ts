@@ -6,6 +6,7 @@ import { Contact } from 'src/app/demo/models/contact';
 import { ContactService } from 'src/app/demo/service/contact/contact.service';
 import { Role } from 'src/app/demo/models/Role';
 import { TransfertService } from 'src/app/demo/service/transfert/transfert.service';
+import { Router } from '@angular/router';
 
 interface MonthlyPayment {
     name?: string;
@@ -35,7 +36,8 @@ export class BankingDashboardComponent implements OnInit, OnDestroy {
         private layoutService: LayoutService,
         private contactService: ContactService,
         private messageService: MessageService,
-        private transfertService: TransfertService
+        private transfertService: TransfertService,
+        private router: Router,
     ) {
         this.subscription = this.layoutService.configUpdate$
             .pipe(debounceTime(25))
@@ -213,5 +215,9 @@ export class BankingDashboardComponent implements OnInit, OnDestroy {
                 console.error('Erreur lors du chargement des stats', err);
             },
         });
+    }
+
+    goToEnvoie(): void {
+        this.router.navigate(['/dashboard/transfert/envoie']);
     }
 }

@@ -9,24 +9,13 @@
                         <button
                             pButton
                             pRipple
-                            label="Nouveau"
+                            label="Ajouter un bénéficiaire"
                             icon="pi pi-plus"
-                            class="p-button-success mr-2"
+                            class="p-button-primary mr-2"
                             (click)="onGotToNewContact()"
                         ></button>
                     </div>
-                </ng-template>
-
-                <ng-template pTemplate="right">
-                    <button
-                        pButton
-                        pRipple
-                        label="Export"
-                        icon="pi pi-upload"
-                        class="p-button-help"
-                        (click)="dt.exportCSV()"
-                    ></button>
-                </ng-template>
+                </ng-template> 
             </p-toolbar>
 
             <p-table
@@ -75,27 +64,14 @@
                     <tr>
                         <th style="width: 3rem">
                             <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-                        </th>
-                        <th pSortableColumn="reference">
-                            Reference
-                            <p-sortIcon field="reference"></p-sortIcon>
-                        </th>
+                        </th> 
                         <th pSortableColumn="nom_complet">
                             Nom <p-sortIcon field="nom_complet"></p-sortIcon>
                         </th>
                         <th pSortableColumn="phone">
                             Téléphone <p-sortIcon field="phone"></p-sortIcon>
                         </th>
-                        <th pSortableColumn="adresse.ville">
-                            Ville
-                            <p-sortIcon field="adresse.ville"></p-sortIcon>
-                        </th>
-                        <th pSortableColumn="adresse.pays">
-                            Pays <p-sortIcon field="adresse.pays"></p-sortIcon>
-                        </th>
-                        <th pSortableColumn="statut">
-                            Statut <p-sortIcon field="statut"></p-sortIcon>
-                        </th>
+                          
                         <th>Actions</th>
                     </tr>
                 </ng-template>
@@ -122,13 +98,9 @@
                                 [value]="contact"
                             ></p-tableCheckbox>
                         </td>
-                        <td>{{ contact.reference }}</td>
-                        <td>{{ contact.nom_complet }}</td>
+                         <td>{{ contact.nom_complet }}</td>
                         <td>{{ contact.phone }}</td>
-                        <td>{{ contact.adresse?.ville }}</td>
-                        <td>{{ contact.adresse?.pays }}</td>
-                        <td>{{ contact.statut }}</td>
-                        <td>
+                         <td>
                             <div class="flex gap-2">
                                 <button
                                     pButton
@@ -136,35 +108,8 @@
                                     icon="pi pi-eye"
                                     class="p-button-rounded p-button-success"
                                     (click)="onGotToContactDetail(contact)"
-                                ></button>
-                                <button
-                                    *ngIf="contact.statut === 'attente'"
-                                    pButton
-                                    pRipple
-                                    icon="pi pi-check"
-                                    class="p-button-rounded p-button-info"
-                                    (click)="validerContact(contact)"
-                                    title="Valider"
-                                ></button>
-                                <button
-                                    *ngIf="contact.statut === 'active'"
-                                    pButton
-                                    pRipple
-                                    icon="pi pi-lock-open"
-                                    class="p-button-rounded p-button-warning"
-                                    (click)="bloquerContact(contact)"
-                                    title="Bloquer"
-                                ></button>
-
-                                <button
-                                    *ngIf="contact.statut === 'bloque'"
-                                    pButton
-                                    pRipple
-                                    icon="pi pi-lock"
-                                    class="p-button-rounded p-button-danger"
-                                    (click)="debloquerContact(contact)"
-                                    title="Débloquer"
-                                ></button>
+                                ></button> 
+ 
 
                                 <button
                                     pButton

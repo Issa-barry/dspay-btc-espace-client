@@ -12,7 +12,7 @@ import { RoleService } from 'src/app/demo/service/role/role.service';
     standalone: false,
     templateUrl: './contact-new.component.html',
     styleUrl: './contact-new.component.scss',
-    providers: [MessageService, ConfirmationService],
+    providers: [MessageService, ConfirmationService], 
 })
 export class ContactNewComponent implements OnInit {
     countries: any[] = [];

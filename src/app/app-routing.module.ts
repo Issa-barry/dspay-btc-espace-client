@@ -8,7 +8,7 @@ const routerOptions: ExtraOptions = {
 };
 
 const routes: Routes = [ 
-    { 
+    {  
         path: 'dashboard', 
         component: AppLayoutComponent,
         canActivate: [authGuard],
@@ -28,6 +28,8 @@ const routes: Routes = [
             { path: 'transfert',data: { breadcrumb: 'Transfert' }, loadChildren: () => import('./demo/components/transfert/transfert.module').then(m => m.TransfertModule) },
             { path: 'facturation', loadChildren: () => import('./demo/components/facturation/facturation.module').then(m => m.FacturationModule) },
             { path: 'parametre', loadChildren: () => import('./demo/components/parametre/parametre.module').then(m => m.ParametreModule) },
+            { path: 'beneficiaire', loadChildren: () => import('./demo/components/beneficiaire/beneficiaire.module').then(m => m.BeneficiaireModule) },
+
         ]
     },
     { path: '', loadChildren: () => import('./demo/components/landing/landing.module').then(m => m.LandingModule) },

@@ -41,6 +41,7 @@ import { SkeletonModule } from 'primeng/skeleton';
         DialogModule,
         ProgressBarModule,
         SkeletonModule,
+        DropdownModule
      ],
 })
 export class AgenceListeModule {}

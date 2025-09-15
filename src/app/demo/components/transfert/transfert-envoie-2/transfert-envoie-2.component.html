@@ -1,0 +1,111 @@
+<!-- reservation-stepper.component.html -->
+<div class="card mb-3">
+    <p-toast />
+  <p-steps [model]="items" [activeIndex]="activeIndex" [readonly]="true"></p-steps>
+</div>
+
+<!-- PANEL CONTENU -->
+<div class="card">
+  <!-- Étape 0 : Montant -->
+  <ng-container *ngIf="activeIndex === 0">
+    <div class="col-12 lg:col-6">
+        <div class="card h-full"> 
+            <div class="flex align-items-center justify-content-between mb-5">
+                <div class="text-900 text-xl font-semibold">Taux actuelle : 1€ = 980GNF</div>
+             </div>
+            <div class="grid formgrid">
+               <div class="col-12 md:col-12 mb-1">
+                    <p-inputGroup class="w-full">
+                        <p-inputGroupAddon>
+                            <i class="pi " style="line-height: 1.25; letter-spacing: 0.1rem;">Euro</i>
+                        </p-inputGroupAddon>
+                        <input type="text" pInputText placeholder="" />
+                    </p-inputGroup>
+                </div>
+                 <div class="col-12 md:col-12 mb-3">
+                    <p-inputGroup class="w-full">
+                        <p-inputGroupAddon>
+                            <i class="pi " style="line-height: 1.25; letter-spacing: 0.1rem;">GNF</i>
+                        </p-inputGroupAddon>
+                        <input type="text" pInputText placeholder="" />
+                    </p-inputGroup>
+                </div>
+               
+
+                <div class="col-12 lg:col-6 field mb-4">
+                    <button pButton pRipple class="p-button-primary w-full lg:w-auto flex-order-1 lg:flex-order-1" label="Envoyer" icon="pi pi-fw pi-arrow-right"></button>
+                </div>
+            </div>
+            <div class="col-12 lg:col-12 field mb-2">
+                    <div class="flex  align-items-center justify-content-end gap-3 my-2">
+                        <span class="text-00 font-semibold p-0">frais inclus</span>
+                     <span><p-inputSwitch  ></p-inputSwitch></span>
+                    </div>
+        </div>
+            <div class="flex flex-row justify-content-end gap-3 my-2">
+                <div class="text-900 text-xl font-semibold">Total à payer = </div>
+                <span class="font-semibold text-m p-text-secondary my-1" style="line-height: 1.25; letter-spacing: 0.1rem;"> 102 €</span>
+          </div>
+           
+    </div>
+    </div>
+
+    <div class="flex justify-content-end gap-2 mt-4">
+      <button pButton label="Next" icon="pi pi-chevron-right" iconPos="right" [disabled]="!canNext()" (click)="next()"></button>
+    </div>
+  </ng-container>
+
+  <!-- Étape 1 : Bénéficiaire -->
+  <ng-container *ngIf="activeIndex === 1">
+    <div class="text-900 text-xl font-semibold mb-4">Bénéficiaire</div>
+ 
+    <form [formGroup]="seatForm" class="grid">
+      <div class="col-12 md:col-12">
+         <p-dropdown formControlName="class" [options]="classes" placeholder="Select a Class" class="w-full"></p-dropdown>
+      </div>
+    </form>
+
+    <div class="flex justify-content-between mt-4">
+      <button pButton label="Back" icon="pi pi-chevron-left" (click)="prev()" class="p-button-secondary"></button>
+      <button pButton label="Next" icon="pi pi-chevron-right" iconPos="right" [disabled]="!canNext()" (click)="next()"></button>
+    </div>
+  </ng-container>
+
+  <!-- Étape 2 : Récapitulatif -->
+  <ng-container *ngIf="activeIndex === 2">
+    <div class="text-900 text-xl font-semibold mb-4">Récapitulatif</div>
+    <p class="mb-5">Bénéficiaire</p>
+   <p class="mb-5">Montant reçu</p>
+    <p class="mb-5">Total à payer</p>
+
+    <div class="flex justify-content-between mt-4">
+      <button pButton label="Back" icon="pi pi-chevron-left" (click)="prev()" class="p-button-secondary"></button>
+      <button pButton label="Next" icon="pi pi-chevron-right" iconPos="right" [disabled]="!canNext()" (click)="next()"></button>
+    </div>
+  </ng-container>
+
+  <!-- Étape 3 : Confirmation et payement -->
+  <ng-container *ngIf="activeIndex === 3">
+    <div class="text-900 text-xl font-semibold mb-4">Payement</div>
+    <p class="mb-5">Everything looks good. Click **Confirm** to finish.</p>
+     <form [formGroup]="paymentForm" class="grid">
+       <div class="col-12 md:col-12 mb-3">
+                    <p-inputGroup class="w-full">
+                        <p-inputGroupAddon>
+                            <i class="pi " style="line-height: 1.25; letter-spacing: 0.1rem;">GNF</i>
+                        </p-inputGroupAddon>
+                        <input type="text" pInputText placeholder="" />
+                    </p-inputGroup>
+                </div>
+               
+      <div class="col-12 md:col-6">
+        <label class="block mb-2">Card holder</label>
+        <input pInputText type="text" class="w-full" formControlName="holder" />
+      </div>
+    </form>
+    <div class="flex justify-content-between">
+      <button pButton label="Back" icon="pi pi-chevron-left" (click)="prev()" class="p-button-secondary"></button>
+      <button pButton label="Confirm" icon="pi pi-check"></button>
+    </div>
+  </ng-container>
+</div>

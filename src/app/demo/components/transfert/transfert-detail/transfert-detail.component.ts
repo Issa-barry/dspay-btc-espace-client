@@ -43,25 +43,25 @@ export class TransfertDetailComponent implements OnInit {
 
     /** Récupérer un transfert par ID */
     getTransfertById(): void {
-        this.transfertService.getTransfertById(this.id).subscribe({
-            next: (resp) => {
-                this.transfert = resp;
-                console.log('Transfert récupéré :', this.transfert.agent_id);
-                const agent_id = this.transfert.agent_id!;
-                this.getAgentById(agent_id);
-            },
-            error: (err) => {
-                console.error(
-                    'Erreur lors de la récupération du transfert:',
-                    err
-                );
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Erreur',
-                    detail: 'Impossible de récupérer le transfert.',
-                });
-            },
-        });
+        // this.transfertService.getTransfertById(this.id).subscribe({
+        //     next: (resp) => {
+        //         this.transfert = resp;
+        //         console.log('Transfert récupéré :', this.transfert.agent_id);
+        //         const agent_id = this.transfert.agent_id!;
+        //         this.getAgentById(agent_id);
+        //     },
+        //     error: (err) => {
+        //         console.error(
+        //             'Erreur lors de la récupération du transfert:',
+        //             err
+        //         );
+        //         this.messageService.add({
+        //             severity: 'error',
+        //             summary: 'Erreur',
+        //             detail: 'Impossible de récupérer le transfert.',
+        //         });
+        //     },
+        // });
     }
 
     getAgentById(id: number) {

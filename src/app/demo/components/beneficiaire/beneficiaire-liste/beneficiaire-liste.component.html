@@ -1,0 +1,229 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button
+                            pButton
+                            pRipple
+                            label="Ajouter un bénéficiaire"
+                            icon="pi pi-plus"
+                            class="p-button-primary mr-2"
+                            (click)="openNew()"
+                        ></button>
+                    </div>
+                </ng-template>  
+            </p-toolbar>
+
+            <p-table
+                #dt
+                [value]="loading ? skeletonRows : beneficiaires"
+                responsiveLayout="scroll"
+                [rows]="10"
+                [globalFilterFields]="[
+                    'nom_complet',
+                    'adresse.ville',
+                    'adresse.pays',
+                    'adresse.quartier',
+                    'adresse.code_postal',
+                    'phone',
+                    'statut',
+                    'reference'
+                ]"
+                [paginator]="true"
+                [rowsPerPageOptions]="[10, 20, 30]"
+                [showCurrentPageReport]="true"
+                currentPageReportTemplate="Liste de {first} / {last} des {totalRecords} beneficiaires"
+                [(selection)]="selectedBeneficiaires"
+                selectionMode="multiple"
+                [rowHover]="true"
+                dataKey="id"
+            >
+                <ng-template pTemplate="caption">
+                    <div
+                        class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
+                    >
+                        <h5 class="m-0">Liste des beneficiaires</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input
+                                pInputText
+                                type="text"
+                                (input)="onGlobalFilter(dt, $event)"
+                                placeholder="Rechercher..."
+                                class="w-full sm:w-auto"
+                            />
+                        </span>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="header">
+                    <tr>
+                        <!-- <th style="width: 3rem">
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                        </th>  -->
+                        <th pSortableColumn="nom_complet">
+                            Nom <p-sortIcon field="nom_complet"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="phone">
+                            Téléphone <p-sortIcon field="phone"></p-sortIcon>
+                        </th>
+                          
+                        <th>Actions</th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-beneficiaire>
+                    <tr *ngIf="loading">
+                        <td><p-skeleton width="6rem" /></td>
+                        <td><p-skeleton width="10rem" /></td>
+                        <td>
+                            <p-skeleton
+                                width="5rem"
+                                height="2rem"
+                                borderRadius="1rem"
+                            />
+                        </td>
+                    </tr>
+                    <tr *ngIf="!loading">
+                        <!-- <td>
+                            <p-tableCheckbox
+                                [value]="beneficiaire"
+                            ></p-tableCheckbox>
+                        </td> -->
+                         <td>{{ beneficiaire.nom_complet }}</td>
+                        <td>{{ beneficiaire.phone }}</td>
+                         <td>
+                            <div class="flex gap-2">
+                                <button
+                                    pButton
+                                    pRipple
+                                    icon="pi pi-pencil"
+                                    class="p-button-rounded p-button-success"
+                                    (click)="editBeneficiaire(beneficiaire)"
+                                ></button> 
+ 
+
+                                <button
+                                    pButton
+                                    pRipple
+                                    icon="pi pi-trash"
+                                    class="p-button-rounded p-button-danger"
+                                     (click)="deleteBeneficiaire(beneficiaire)"
+                                ></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template> 
+            </p-table>
+        </div>
+    </div>
+</div>
+
+
+ <p-dialog
+            [(visible)]="beneficiaireDialog"
+            [style]="{ width: '450px' }"
+            header="Détails du Beneficiaire"
+            [modal]="true"
+            class="p-fluid"
+        >
+            <ng-template pTemplate="content">
+                
+                <div class="field">
+                    <label for="name">Nom</label>
+                    <input
+                        type="text"
+                        pInputText
+                        id="name"
+                        [(ngModel)]="beneficiaire.nom"
+                        required
+                        autofocus
+                        [ngClass]="{
+                            'ng-invalid ng-dirty': submitted && !beneficiaire.nom
+                        }"
+                    />
+                    <small
+                        class="ng-dirty ng-invalid"
+                        *ngIf="submitted && !beneficiaire.nom"
+                        >Nom is required.</small
+                    >
+                </div>
+                <div class="field">
+                    <label for="name">Preom</label>
+                    <input
+                        type="text"
+                        pInputText
+                        id="name"
+                        [(ngModel)]="beneficiaire.prenom"
+                        required
+                        autofocus
+                        [ngClass]="{
+                            'ng-invalid ng-dirty': submitted && !beneficiaire.prenom
+                        }"
+                    />
+                    <small
+                        class="ng-dirty ng-invalid"
+                        *ngIf="submitted && !beneficiaire.prenom"
+                        >Prenom is required.</small
+                    >
+                </div>
+                <div class="field">
+                    <label for="name">Téléphone</label>
+                    <input
+                        type="text"
+                        pInputText
+                        id="name"
+                        [(ngModel)]="beneficiaire.phone"
+                        required
+                        autofocus
+                        [ngClass]="{
+                            'ng-invalid ng-dirty': submitted && !beneficiaire.phone
+                        }"
+                    />
+                    <small
+                        class="ng-dirty ng-invalid"
+                        *ngIf="submitted && !beneficiaire.phone"
+                        >Téléphone is required.</small
+                    >
+                </div>
+           
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button
+                    pButton
+                    pRipple
+                    label="Annuler"
+                    icon="pi pi-times"
+                    class="p-button-text"
+                    (click)="hideDialog()"
+                ></button>
+                <button
+                    pButton
+                    pRipple
+                    label="Enregistrer"
+                    icon="pi pi-check"
+                    class="p-button-text"
+                    (click)="saveBeneficiaire()"
+                ></button>
+            </ng-template>
+        </p-dialog>
+
+
+        <!-- Confirmer suppression unitaire -->
+<p-dialog
+  [(visible)]="deleteBeneficiaireDialog"
+  [style]="{ width: '400px' }"
+  header="Confirmer la suppression"
+  [modal]="true"
+>
+  <p>Voulez-vous vraiment supprimer le bénéficiaire <b>{{ current?.nom_complet || (current?.prenom + ' ' + current?.nom) }}</b> ?</p>
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-text" (click)="deleteBeneficiaireDialog = false"></button>
+    <button pButton pRipple label="Supprimer" icon="pi pi-trash" class="p-button-danger" (click)="confirmDeleteBeneficiaire()"></button>
+  </ng-template>
+</p-dialog>
