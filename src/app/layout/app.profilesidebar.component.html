@@ -11,9 +11,11 @@
                         <i class="pi pi-id-card text-xl text-primary"></i>
                     </span>
                     <div class="ml-3">
-                        <span class="mb-2 font-semibold">Profile</span>
-                        <p class="text-color-secondary m-0">Reference : {{ contact.reference }}</p>
-                        <p class="text-color-secondary m-0">Role : {{ contact.role }}</p>
+                        <span class="mb-2 font-semibold">Infos</span>
+                        <p class="text-color-secondary mb-2">Reference : {{ contact.reference }}</p>
+                        <p class="text-color-secondary mb-2">{{ contact.phone }}</p>
+                        <p class="text-color-secondary m-0">{{ contact.email }}</p>
+
                     </div>
                 </a>
             </li> 
