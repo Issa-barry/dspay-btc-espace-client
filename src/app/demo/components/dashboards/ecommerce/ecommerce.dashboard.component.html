@@ -2,15 +2,15 @@
     <div class="col-12">
         <div class="flex flex-column sm:flex-row align-items-center gap-4">
             <div class="flex flex-column sm:flex-row align-items-center gap-3">
-                <img src="assets/demo/images/avatar/circle/avatar-f-1.png" class="w-4rem h-4rem flex-shrink-0">
+                <img src="assets/demo/images/avatar/circle/utilisateur (1).png" class="w-3rem h-3rem flex-shrink-0">
                 <div class="flex flex-column align-items-center sm:align-items-start">
                     <span class="text-900 font-bold text-2xl"> Hello {{ contact.nom_complet }}</span>
                  </div>
             </div>
             <div class="flex gap-2 sm:ml-auto">
-                <button type="button" pButton pTooltip="Exchange" tooltipPosition="bottom" icon="pi pi-arrows-h" class="p-button-rounded p-button-outlined"></button>
-                <button type="button" pButton pTooltip="Withdraw" tooltipPosition="bottom" icon="pi pi-download" class="p-button-rounded p-button-outlined"></button>
-                <button type="button" pButton pTooltip="Send" tooltipPosition="bottom" icon="pi pi-send" class="p-button-rounded"></button>
+                <!-- <button type="button" pButton pTooltip="Exchange" tooltipPosition="bottom" icon="pi pi-arrows-h" class="p-button-rounded p-button-outlined"></button> -->
+                <!-- <button type="button" pButton pTooltip="Withdraw" tooltipPosition="bottom" icon="pi pi-filter" label class="p-button-rounded p-button-outlined"></button> -->
+                <!-- <button type="button" pButton pTooltip="Send" tooltipPosition="bottom" icon="pi pi-filter" class="p-button-rounded ">Filtre</button> -->
             </div>
         </div>
     </div>  
@@ -34,8 +34,8 @@
              </div>
          </div>
     </div>
-    <div class="col-12 md:col-6 xl:col-4">
-        <div class="card h-full">
+    <div class="col-12 md:col-6 xl:col-4"  >
+        <div class="card h-full" [routerLink]="['/dashboard/transfert/liste']" routerLinkActive="router-link-active" style="cursor: pointer;">
             <div class="flex align-items-center justify-content-between mb-3">
                 <div class="text-900 text-xl font-semibold">Historique </div>
                 <!-- <img src="assets/demo/images/banking/visa.svg" class="h-1rem"> -->

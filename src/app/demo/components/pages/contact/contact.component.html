@@ -15,26 +15,11 @@
     <div class="col-12 mt-5">
         <p class="text-900 font-bold">Envoyer nous un mail</p>
         <div class="grid flex-column md:flex-row formgrid grid-nogutter mt-6" style="row-gap: 2rem; column-gap: 2rem;">
-            <div class="field col">
-                <label for="name" class="block text-indigo-300 font-bold">Name</label>
-                <span class="p-input-icon-left w-full" style="height: 3.5rem;">
-                    <i class="pi pi-user" style="left: 1.5rem;"></i>
-                    <input type="text" pInputText placeholder="Name" class="w-full px-7 text-900 font-semibold" [(ngModel)]="name" style="height: 3.5rem"/>
-                </span>
-            </div>
-
-            <div class="field col">
-                <label for="email" class="block text-indigo-300 font-bold">Email Address</label>
-                <span class="p-input-icon-left w-full" style="height: 3.5rem;">
-                    <i class="pi pi-envelope" style="left: 1.5rem;"></i>
-                    <input type="text" pInputText placeholder="Email" class="w-full px-7 text-900 font-semibold" [(ngModel)]="email" style="height: 3.5rem"/>
-                </span>
-            </div>
 
             <div class="field col-12 flex flex-column">
                 <label for="message" class="block text-indigo-300 font-bold">Message</label>
                 <textarea id="message" rows="5" pInputTextarea class="w-full surface-border p-4 text-900 font-semibold border-round" [autoResize]="true" [(ngModel)]="message"></textarea>
-                <button pButton class="p-button-primary ml-auto mt-3 border-round" label="Send Message"></button>
+                <button pButton class="p-button-primary ml-auto mt-3 border-round" label="Envoyer"></button>
             </div>
         </div>
     </div>

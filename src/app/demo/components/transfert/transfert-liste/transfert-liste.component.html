@@ -4,40 +4,30 @@
             <p-toast></p-toast>
             <p-confirmDialog></p-confirmDialog>
 
-            <p-toolbar styleClass="mb-4">
+            <!-- <p-toolbar styleClass="mb-4">
                 <ng-template pTemplate="left">
-                    <div class="my-2">
+                    <div class="my-2"> 
                         <button
                             pButton
                             pRipple
-                            label="Envoie"
-                            icon="pi pi-arrow-up-right"
-                            class="p-button-success mr-2"
-                            (click)="goToTransfertEnvoie()"
-                        ></button>
-                        <button
-                            pButton
-                            pRipple
-                            label="Retrait"
+                            label="Filtre"
                             icon="pi pi-arrow-down-left"
                             class="p-button-primary mr-2"
-                            (click)="goToTransfertRetrait()"
-                        ></button>
-                        <!-- <button pButton pRipple icon="pi pi-trash" class="p-button-danger" (click)="confirmDeleteSelectedTransferts()" [disabled]="!selectedTransferts || !selectedTransferts.length"></button> -->
-                    </div>
+                         ></button>
+                     </div>
                 </ng-template>
 
                 <ng-template pTemplate="right">
                     <button
                         pButton
                         pRipple
-                        label="Export"
+                        label="Filtre"
                         icon="pi pi-upload"
                         class="p-button-help"
                         (click)="dt.exportCSV()"
                     ></button>
                 </ng-template>
-            </p-toolbar>
+            </p-toolbar> -->
 
             <p-table
                 #dt
@@ -66,7 +56,7 @@
                     <div
                         class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
                     >
-                        <h5 class="m-0">Liste des Transferts</h5>
+                        <h5 class="m-0">Historique des Transferts</h5>
                         <span class="block mt-2 md:mt-0 p-input-icon-left">
                             <i class="pi pi-search"></i>
                             <input
@@ -82,26 +72,16 @@
 
                 <ng-template pTemplate="header">
                     <tr>
-                        <th style="width: 3rem">
-                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-                        </th>
-                        <th pSortableColumn="id">
-                            Code <p-sortIcon field="id"></p-sortIcon>
-                        </th>
                         <th pSortableColumn="receveur_nom">
-                            Receveur
+                            Bénéficiaire
                             <p-sortIcon field="receveur_nom"></p-sortIcon>
                         </th>
                         <th pSortableColumn="receveur_phone">
-                            Phone receveur
+                            Phone
                             <p-sortIcon field="receveur_phone"></p-sortIcon>
                         </th>
                         <th pSortableColumn="montant">
                             Montant <p-sortIcon field="montant"></p-sortIcon>
-                        </th>
-                        <th pSortableColumn="expediteur_nom">
-                            Expéditeur
-                            <p-sortIcon field="expediteur_nom"></p-sortIcon>
                         </th>
                         <th pSortableColumn="statut">
                             Statut <p-sortIcon field="statut"></p-sortIcon>
@@ -117,7 +97,6 @@
                         <td><p-skeleton width="8rem" /></td>
                         <td><p-skeleton width="12rem" /></td>
                         <td><p-skeleton width="10rem" /></td>
-                        <td><p-skeleton width="6rem" /></td>
                         <td>
                             <p-skeleton
                                 width="5rem"
@@ -127,20 +106,13 @@
                         </td>
                     </tr>
 
-                    <tr *ngIf="!loading">
+                    <tr *ngIf="!loading"> 
+                        <td>{{ transfert.beneficiaire.nom_complet }}</td>
+                        <td>{{ transfert.beneficiaire.phone }}</td>
                         <td>
-                            <p-tableCheckbox
-                                [value]="transfert"
-                            ></p-tableCheckbox>
-                        </td>
-                        <td>{{ transfert.code || "/" }}</td>
-                        <td>{{ transfert.receveur_nom_complet }}</td>
-                        <td>{{ transfert.receveur_phone }}</td>
-                        <td>
-                            {{ transfert.montant_receveur }}
+                            {{ transfert.montant_gnf}}
                             {{ transfert.devise_cible?.tag }}
                         </td>
-                        <td>{{ transfert.expediteur_nom_complet }}</td>
                         <td>{{ transfert.statut }}</td>
                         <td>
                             <div class="flex">
@@ -150,13 +122,6 @@
                                     icon="pi pi-eye"
                                     class="p-button-rounded p-button-success mr-2"
                                     (click)="goToTransfertDetail(transfert)"
-                                ></button>
-                                <button
-                                    pButton
-                                    pRipple
-                                    icon="pi pi-trash"
-                                    class="p-button-rounded p-button-danger"
-                                    (click)="confirmDeleteTransfert(transfert)"
                                 ></button>
                             </div>
                         </td>

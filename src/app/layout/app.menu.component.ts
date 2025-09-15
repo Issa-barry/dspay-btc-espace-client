@@ -33,7 +33,7 @@ export class AppMenuComponent implements OnInit {
                     {
                         label: "hostoriques",
                         icon: 'pi pi-fw pi-history',
-                        routerLink: ['/dashboard//pages/crud']
+                        routerLink: ['/dashboard/transfert/liste']
                     }
                 ]
             },

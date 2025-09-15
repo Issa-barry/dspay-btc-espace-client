@@ -38,6 +38,8 @@ export class AgenceListeComponent implements OnInit {
         { label: 'FRANCE', value: 'France' },
     ];
 
+       skeletonRows = Array.from({ length: 5 }, () => ({}));
+
     selectedWeek: any;
     weeks: any[] = [];
      barData: any;
@@ -94,8 +96,7 @@ export class AgenceListeComponent implements OnInit {
         this.router.navigate(['/dashboard/contact/contact-detail', agence.id]);
     }
 
-    skeletonRows = Array.from({ length: 5 }, () => ({}));
-    //  CRUD
+     //  CRUD
    getAllAgences() {
     this.loading = true;
     this.agenceService.getAgences().subscribe({

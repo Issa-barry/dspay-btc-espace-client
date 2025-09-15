@@ -94,7 +94,7 @@ export class BeneficiaireService {
   /** Mettre à jour (PATCH partiel) */
   update(id: number, payload: Partial<Pick<Beneficiaire, 'nom' | 'prenom' | 'phone'>>): Observable<Beneficiaire> {
     return this.http
-      .patch<{ success: boolean; data: Beneficiaire }>(`${this.apiUrl}/update/${id}`, payload, httpOption)
+      .put<{ success: boolean; data: Beneficiaire }>(`${this.apiUrl}/updateById/${id}`, payload, httpOption)
       .pipe(map((res) => res.data), catchError(this.handleError));
   }
 
@@ -116,5 +116,15 @@ export class BeneficiaireService {
     catchError(this.handleError)
   );
 }
+
+  delete(id: number): Observable<void> {
+    return this.http
+      .delete<{ success: boolean; message?: string }>(`${this.apiUrl}/deleteById/${id}`, httpOption)
+      .pipe(
+        map(() => void 0),
+        catchError(this.handleError)
+      );
+  }
+
 
 }

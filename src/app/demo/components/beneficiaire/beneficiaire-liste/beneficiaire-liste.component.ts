@@ -21,8 +21,10 @@ import { BeneficiaireService } from 'src/app/demo/service/beneficiaire/beneficia
 })
 export class BeneficiaireListeComponent implements OnInit {
 
-  beneficiaires: Beneficiaire[] = [];
+    beneficiaires: Beneficiaire[] = [];
+    beneficiaire: Beneficiaire = new Beneficiaire();
    beneficiaireDialog = false;
+   deleteBeneficiaireDialog = false;
     current: Beneficiaire = {} as Beneficiaire;
     selectedBeneficiaires: Beneficiaire[] = [];
     page = 1;
@@ -94,6 +96,10 @@ export class BeneficiaireListeComponent implements OnInit {
       });
   }
 
+  editBeneficiaire(beneficiaire: Beneficiaire): void {
+    this.beneficiaire = { ...beneficiaire };
+    this.beneficiaireDialog = true;
+  }
 
   // 
   getAllContacts(): void {
@@ -174,6 +180,104 @@ export class BeneficiaireListeComponent implements OnInit {
     this.contactDialog = false;
   }
 
+  saveBeneficiaire(): void {
+  this.submitted = true;
+
+  // validation très simple (adapte selon ton modèle)
+  if (!this.beneficiaire?.phone || (!this.beneficiaire.nom && !this.beneficiaire.nom_complet)) {
+    this.messageService.add({
+      severity: 'warn',
+      summary: 'Champs requis',
+      detail: 'Veuillez saisir au moins le Nom (ou Nom complet) et le Téléphone.',
+      life: 3000
+    });
+    return;
+  }
+
+  const payload = {
+    nom: this.beneficiaire.nom ?? '',
+    prenom: this.beneficiaire.prenom ?? '',
+    phone: this.beneficiaire.phone ?? ''
+  };
+
+  const isUpdate = typeof this.beneficiaire.id === 'number' && this.beneficiaire.id > 0;
+
+  const serviceCall = isUpdate
+    ? this.beneficiaireService.update(this.beneficiaire.id!, payload)
+    : this.beneficiaireService.create(payload);
+
+  serviceCall.subscribe({
+    next: () => {
+      this.loadBeneficiaires();
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Succès',
+        detail: isUpdate
+          ? 'Bénéficiaire mis à jour avec succès'
+          : 'Bénéficiaire créé avec succès',
+        life: 3000
+      });
+      this.hideDialog();
+    },
+    error: (err: any) => {
+      console.error('Erreur:', err);
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Erreur',
+        detail: err?.message || "L'opération a échoué",
+        life: 3000
+      });
+    }
+  });
+}
+
+/** Ouvrir la modale de suppression multiple */
+/** Ouvrir la modale de suppression unitaire */
+deleteBeneficiaire(b: Beneficiaire): void {
+  this.current = { ...b };
+  this.deleteBeneficiaireDialog = true;
+}
+
+
+/** Confirmer suppression unitaire */
+confirmDeleteBeneficiaire(): void {
+  // this.deleteBeneficiaireDialog = false;
+
+  if (!this.current?.id) {
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Erreur',
+      detail: "ID du bénéficiaire non défini",
+      life: 3000
+    });
+    return;
+  }
+
+  this.beneficiaireService.delete(this.current.id).subscribe({
+    next: () => {
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Succès',
+        detail: 'Bénéficiaire supprimé avec succès',
+        life: 3000
+      });
+      this.loadBeneficiaires();
+      this.current = {} as Beneficiaire;
+      this.deleteBeneficiaireDialog = false;
+    },
+    error: (err) => {
+      console.error('Erreur suppression bénéficiaire:', err);
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Erreur',
+        detail: err?.message || 'Échec de la suppression',
+        life: 3000
+      });
+    }
+  });
+}
+
+
   editContact(contact: Contact): void {
     this.contact = { ...contact };
     this.contactDialog = true;
@@ -236,12 +340,13 @@ export class BeneficiaireListeComponent implements OnInit {
 
   openNew(): void {
     this.contact = new Contact();
+    this.beneficiaire = new Beneficiaire();
     this.submitted = false;
-    this.contactDialog = true;
+    this.beneficiaireDialog = true;
   }
 
   hideDialog(): void {
-    this.contactDialog = false;
+    this.beneficiaireDialog = false;
     this.submitted = false;
   }
 
