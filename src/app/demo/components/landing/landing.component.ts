@@ -203,31 +203,75 @@ totalToPay = 0;           // total débité (EUR)
 receiveGNF = 0;           // reçu en GNF
 
   
-recalc(): void {
+// --- state pour savoir quel champ a été modifié en dernier (optionnel)
+lastEdited: 'send' | 'receive' = 'send';
+
+// appelé quand "Vous envoyez" change
+onAmountInput(): void {
+  this.lastEdited = 'send';
+  this.recalcFromSend();
+}
+
+// appelé quand "Le destinataire reçoit" change
+onReceiveInput(): void {
+  this.lastEdited = 'receive';
+  this.recalcFromReceive();
+}
+
+// === Calcul quand on saisit le montant envoyé (EUR)
+recalcFromSend(): void {
   const p = Number(this.feePercent) || 0;
   const montant = Number(this.amountInput) || 0;
 
-  // Frais fixes (toujours calculés pareil)
+  // frais toujours calculés de la même façon : p * base
   this.fees = Math.max(this.minFeeEUR, montant * p);
 
   if (this.feesIncluded) {
-    //  SWITCH ON = "Frais inclus ?" désactivé (frais AJOUTÉS AU TOTAL)
-    // -> le destinataire reçoit le montant plein,
-    // -> le total payé = montant + frais
+    // frais AJOUTÉS AU TOTAL (switch ON)
     this.sendAmountEUR = montant;
     this.totalToPay = montant + this.fees;
   } else {
-    //  SWITCH OFF = "Frais inclus ?" activé (frais inclus DANS le total saisi)
-    // -> le destinataire reçoit (montant - frais),
-    // -> le total payé = montant
+    // frais INCLUS dans le montant saisi (switch OFF)
     this.sendAmountEUR = Math.max(0, montant - this.fees);
     this.totalToPay = montant;
   }
 
-  // Conversion EUR -> GNF (arrondi à l’unité)
   const r = Number(this.rate) || 0;
   this.receiveGNF = Math.round(this.sendAmountEUR * r);
 }
+
+// === Calcul inverse quand on saisit le montant reçu (GNF)
+recalcFromReceive(): void {
+  const p = Number(this.feePercent) || 0;
+  const r = Number(this.rate) || 0;
+  const gnf = Math.max(0, Number(this.receiveGNF) || 0);
+
+  const netEUR = r > 0 ? gnf / r : 0; // net que doit recevoir le bénéficiaire en EUR
+
+  if (this.feesIncluded) {
+    // frais AJOUTÉS AU TOTAL (switch ON)
+    // montant saisi = net envoyé ; total = net + frais(net)
+    this.sendAmountEUR = netEUR;
+    this.fees = Math.max(this.minFeeEUR, this.sendAmountEUR * p);
+    this.amountInput = this.sendAmountEUR;
+    this.totalToPay = this.sendAmountEUR + this.fees;
+  } else {
+    // frais INCLUS dans le montant saisi (switch OFF)
+    // on veut: send = amountInput - p*amountInput = amountInput*(1-p) = netEUR
+    const denom = (1 - p) || 1e-9; // garde-fou si p=1
+    this.amountInput = netEUR / denom;
+    this.fees = Math.max(this.minFeeEUR, this.amountInput * p);
+    this.sendAmountEUR = Math.max(0, this.amountInput - this.fees);
+    this.totalToPay = this.amountInput;
+  }
+}
+
+// === appelé au init et quand on change le switch
+recalc(): void {
+  if (this.lastEdited === 'receive') this.recalcFromReceive();
+  else this.recalcFromSend();
+}
+
 
 
 startTransfer(): void {
