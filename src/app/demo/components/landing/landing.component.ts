@@ -189,7 +189,7 @@ export class LandingComponent implements OnDestroy,OnInit {
 amountInput = 0;          // valeur saisie
 feesIncluded = true;      // switch "Frais inclus ?"
 
-feePercent = 0.025;       // 2,5% (à adapter ou charger via API)
+feePercent = 0.05;       // 2,5% (à adapter ou charger via API)
 minFeeEUR = 0;            // optionnel: frais minimum ; laisse 0 si inutile
 
 rateBase = 9500;          // taux de base
@@ -205,26 +205,23 @@ receiveGNF = 0;           // reçu en GNF
  
 
 recalc(): void {
-  const p = this.feePercent;
-  const x = Number(this.amountInput) || 0;
+  const p = Number(this.feePercent) || 0;
+  const montantEnvoye = Number(this.amountInput) || 0;
 
-  if (this.feesIncluded) {
-    // x = total payé ; on sort le net envoyé
-    this.sendAmountEUR = x / (1 + p);
-    this.fees = Math.max(this.minFeeEUR, x - this.sendAmountEUR);
-    // si minFee s’applique, on recalcule le net pour garder total = x
-    if (this.fees > x) this.fees = x; // garde-fou
-    this.sendAmountEUR = x - this.fees;
-    this.totalToPay = x;
-  } else {
-    // x = montant envoyé ; total = x + frais
-    this.sendAmountEUR = x;
-    this.fees = Math.max(this.minFeeEUR, x * p);
-    this.totalToPay = this.sendAmountEUR + this.fees;
-  }
+  // Montant envoyé (ce que l'utilisateur saisit)
+  this.sendAmountEUR = montantEnvoye;
 
-  this.receiveGNF = Math.max(0, this.sendAmountEUR) * (Number(this.rate) || 0);
+  // Frais
+  this.fees = Math.max(this.minFeeEUR, montantEnvoye * p);
+
+  // Total à payer = montant envoyé + frais
+  this.totalToPay = montantEnvoye + this.fees;
+
+  // Conversion EUR -> GNF
+  const r = Number(this.rate) || 0;
+  this.receiveGNF = Math.round(montantEnvoye * r);
 }
+
 
 startTransfer(): void {
   // Redirige vers la page d’envoi avec les infos préremplies

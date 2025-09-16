@@ -74,7 +74,7 @@
                 <li class="flex align-items-center">
                     <button pButton pRipple type="button" pStyleClass="@grandparent" enterFromClass="ng-hidden"
                         enterActiveClass="px-fadein" leaveToClass="ng-hidden" label="Connexion"
-                        class="m-0 mt-3 md:mt-0 md:ml-5 white-space-nowrap"></button>
+                        class="m-0 mt-3 md:mt-0 md:ml-5 white-space-nowrap" (click)="goToLogin()"></button>
                 </li>
             </ul>
          
@@ -84,7 +84,7 @@
         <div class="py-4 px-4 mx-0 md:mx-6 lg:mx-8 lg:px-8 z-2">
 
             <!-- Hero -->
-        <div id="home" class="grid grid-nogutter align-items-center md:mb-8 md:py-4">
+        <div id="home" class="grid grid-nogutter align-items-center md:mb-8 md:py-3">
         <!-- Texte gauche -->
         <div class="col-12 md:col-6 flex flex-column gap-4 flex-order-1 md:flex-order-0
                     align-items-center md:align-items-start text-center md:text-left pr-0 md:pr-6">
@@ -125,22 +125,24 @@
             <!-- Montant saisi en EUR -->
             <label class="block text-700 mb-2">Vous envoyez</label>
             <div class="p-inputgroup mb-3">
-              <p-inputNumber [(ngModel)]="amountInput" (input)="recalc()"
-                             mode="currency" currency="EUR" locale="fr-FR"
-                             [min]="0" [minFractionDigits]="0" [maxFractionDigits]="2"
-                             inputId="amountInput"></p-inputNumber>
+              <p-inputNumber [(ngModel)]="amountInput" (onInput)="recalc()"
+               mode="currency" currency="EUR" locale="fr-FR"
+               [min]="0" [minFractionDigits]="0" [maxFractionDigits]="2"
+               inputId="amountInput"></p-inputNumber>
               <span class="p-inputgroup-addon text-700">EUR</span>
             </div>
 
-            <!-- Reçu -->
-             <label class="block text-700 mb-2">Le destinataire reçoit</label>
-              <div class="p-inputgroup mb-3">
-              <p-inputNumber [(ngModel)]="receiveGNF" (input)="recalc()"
-                             mode="currency" currency="EUR" locale="fr-FR"
-                             [min]="0" [minFractionDigits]="0" [maxFractionDigits]="2"
-                             inputId="receiveGNF"></p-inputNumber>
-              <span class="p-inputgroup-addon text-700">EUR</span>
-            </div>
+            <!-- Reçu --> 
+<label class="block text-700 mb-2">Le destinataire reçoit</label>
+<div class="p-inputgroup mb-3">
+  <p-inputNumber [(ngModel)]="receiveGNF"
+                 [readonly]="true"
+                 mode="currency" currency="GNF" locale="fr-FR"
+                 [min]="0" [minFractionDigits]="0" [maxFractionDigits]="0"
+                 inputId="receiveGNF"></p-inputNumber>
+  <span class="p-inputgroup-addon text-700">GNF</span>
+</div>
+
 
             <!-- Récap -->
             <div class="flex justify-content-between text-700 mb-2 mt-4">
@@ -262,7 +264,7 @@
                                 </ul>
 
                                 <button pButton pRipple label="Choose Plan" class="px-5 w-full mt-6 p-button-outlined"
-                                    icon="pi pi-arrow-right" iconPos="right"></button>
+                                    icon="pi pi-arrow-right" iconPos="right" (click)="goToLogin()"></button>
                             </div>
                         </div>
                     </div>
@@ -270,35 +272,18 @@
             </div>
 
             <div id="features" class="my-6 py-6 md:my-8 md:py-8">
-                <span class="text-900 block font-bold text-5xl mb-4 text-center">Features</span>
+                <span class="text-900 block font-bold text-5xl mb-4 text-center">Services</span>
                 <span class="text-700 block text-xl mb-8 text-center line-height-3">PrimeTek Informatics is the author
                     of PrimeReact, a UI Component vendor with well known vastly popular projects including PrimeFaces,
                     PrimeNG and PrimeVue.</span>
 
                 <div class="grid mt-8">
-                    <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
-                        <div class="box p-4 w-full surface-card surface-border border-1 border-round">
-                            <img src="assets/demo/images/landing/icon-components.svg" alt="components icon"
-                                class="block mb-3" />
-                            <span class="text-900 block font-semibold mb-3 text-lg">90+ UI Components</span>
-                            <p class="m-0 text-secondary text-700">The ultimate set of UI Components to assist you with
-                                90+ impressive Angular Components.</p>
-                        </div>
-                    </div>
-                    <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
-                        <div class="box p-4 w-full surface-card surface-border border-1 border-round">
-                            <img src="assets/demo/images/landing/icon-community.svg" alt="components icon"
-                                class="block mb-3" />
-                            <span class="text-900 block font-semibold mb-3 text-lg">Community</span>
-                            <p class="m-0 text-secondary text-700">Connect with the other open source community members,
-                                collaborate and have a voice in the project roadmap.</p>
-                        </div>
-                    </div>
+                     
                     <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
                         <div class="box p-4 w-full surface-card surface-border border-1 border-round">
                             <img src="assets/demo/images/landing/icon-productivity.svg" alt="components icon"
                                 class="block mb-3" />
-                            <span class="text-900 block font-semibold mb-3 text-lg">Productivity</span>
+                            <span class="text-900 block font-semibold mb-3 text-lg">Transfert</span>
                             <p class="m-0 text-secondary text-700">Boost your productivity by achieving more in less
                                 time and accomplish amazing results.</p>
                         </div>
@@ -307,7 +292,7 @@
                         <div class="box p-4 w-full surface-card surface-border border-1 border-round">
                             <img src="assets/demo/images/landing/icon-accessibility.svg" alt="components icon"
                                 class="block mb-3" />
-                            <span class="text-900 block font-semibold mb-3 text-lg">Accessibility</span>
+                            <span class="text-900 block font-semibold mb-3 text-lg">Retrait</span>
                             <p class="m-0 text-secondary text-700">The ultimate set of UI Components to assist you with
                                 90+ impressive Angular Components.</p>
                         </div>
@@ -316,7 +301,7 @@
                         <div class="box p-4 w-full surface-card surface-border border-1 border-round">
                             <img src="assets/demo/images/landing/icon-support.svg" alt="components icon"
                                 class="block mb-3" />
-                            <span class="text-900 block font-semibold mb-3 text-lg">Enterprise Support</span>
+                            <span class="text-900 block font-semibold mb-3 text-lg">Agence</span>
                             <p class="m-0 text-secondary text-700">Exceptional support service featuring response within
                                 1 business day and option to request enhancements and new features for the library.</p>
                         </div>
@@ -329,25 +314,7 @@
                             <p class="m-0 text-secondary text-700">First class support for responsive design led by
                                 touch optimized elements.</p>
                         </div>
-                    </div>
-                    <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
-                        <div class="box p-4 w-full surface-card surface-border border-1 border-round">
-                            <img src="assets/demo/images/landing/icon-theme.svg" alt="components icon"
-                                class="block mb-3" />
-                            <span class="text-900 block font-semibold mb-3 text-lg">Themes</span>
-                            <p class="m-0 text-secondary text-700">Built on a design-agnostic api, choose from a vast
-                                amount of themes such as material, bootstrap, custom or develop your own.</p>
-                        </div>
-                    </div>
-                    <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
-                        <div class="box p-4 w-full surface-card surface-border border-1 border-round">
-                            <img src="assets/demo/images/landing/icon-ts.svg" alt="components icon"
-                                class="block mb-3" />
-                            <span class="text-900 block font-semibold mb-3 text-lg">Typescript</span>
-                            <p class="m-0 text-secondary text-700">Top-notch support for Typescript with types and
-                                tooling assistance.</p>
-                        </div>
-                    </div>
+                    </div> 
                 </div>
             </div>
 
