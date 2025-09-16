@@ -52,18 +52,18 @@
                     <a (click)="router.navigate(['/landing'], {fragment: 'apps'})" pRipple pStyleClass="@grandparent"
                         enterFromClass="ng-hidden" enterActiveClass="px-fadein" leaveToClass="ng-hidden"
                         class="flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3 cursor-pointer">
-                        <span>Transfert d'argent</span>
+                        <span>Retrait</span>
                     </a>
                 </li>
                 <li>
                     <a (click)="router.navigate(['/landing'], {fragment: 'pricing'})" pRipple pStyleClass="@grandparent"
                         enterFromClass="ng-hidden" enterActiveClass="px-fadein" leaveToClass="ng-hidden"
                         class="flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3 cursor-pointer">
-                        <span>Agences</span>
+                        <span>Nos agences</span>
                     </a>
                 </li>
                 <li>
-                    <a (click)="router.navigate(['/auth/register'], {fragment: 'features'})" pRipple pStyleClass="@grandparent"
+                    <a (click)="router.navigate(['/landing'], {fragment: 'features'})" pRipple pStyleClass="@grandparent"
                         enterFromClass="ng-hidden" enterActiveClass="px-fadein" leaveToClass="ng-hidden"
                         class="flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3 cursor-pointer">
                         <span>Créer un compte</span>
@@ -74,120 +74,129 @@
                 <li class="flex align-items-center">
                     <button pButton pRipple type="button" pStyleClass="@grandparent" enterFromClass="ng-hidden"
                         enterActiveClass="px-fadein" leaveToClass="ng-hidden" label="Connexion"
-                        class="m-0 mt-3 md:mt-0 md:ml-5 white-space-nowrap" [routerLink]="['/auth/login']" routerLinkActive="router-link-active" ></button>
+                        class="m-0 mt-3 md:mt-0 md:ml-5 white-space-nowrap"></button>
                 </li>
             </ul>
          
         </div>
-<!-- iba -->
- <!-- ====== DÉMARRER UN ENVOI ====== -->
-<div class="col-12 md:col-4 flex flex-column gap-4">
-  <div class="surface-card p-4 border-round shadow-2">
-    <div class="flex align-items-center justify-content-between mb-3">
-      <h3 class="m-0 text-900">Démarrer un envoi</h3>
-      <div class="flex align-items-center gap-2">
-        <p-inputSwitch [(ngModel)]="feesIncluded" (onChange)="recalc()"></p-inputSwitch>
-      </div>
-    </div>
 
-    <div class="grid formgrid">
-      
-
-      <!-- Montant saisi (comportement dépend du switch) -->
-      <div class="col-12 mb-2">
-        <label class="block text-700 mb-0">
-          {{ feesIncluded ? 'Montant à envoyer (' + from + ')' : 'Montant à envoyer (' + from + ')' }}
-        </label>
-        <p-inputNumber [(ngModel)]="amountInput" (input)="recalc()"
-                       mode="currency" [currency]="from" [locale]="'fr-FR'"
-                       [minFractionDigits]="0" [maxFractionDigits]="2" [min]="0"></p-inputNumber>
-      </div>
-
-      <!-- Taux -->
-      <div class="col-12 mb-4">
-        <label class="block text-700 mb-0">Montant reçu</label>
-        <p-inputNumber [(ngModel)]="rate" (input)="recalc()" [min]="1"
-                       [minFractionDigits]="0" [maxFractionDigits]="0"></p-inputNumber>
-      </div>
-
-      <!-- Récap calculé -->
-      <div class="col-12">
-        <div class="surface-50 p-3 border-round">
-          <div class="flex justify-content-between">
-            <span class="text-700">Frais ({{ (feePercent*100) | number:'1.0-2' }}%)</span>
-            <strong>{{ fees | number:'1.0-2' }} {{ from }}</strong>
-          </div> 
-          <div class="flex justify-content-between mt-2">
-            <span class="text-700">Total à payer</span>
-            <strong>{{ totalToPay | number:'1.0-2' }} {{ from }}</strong>
-          </div> 
-        </div>
-      </div>
-
-      <div class="col-12 mt-4">
-        <button pButton label="Envoyer maintenant" icon="pi pi-arrow-right" iconPos="right"
-                class="w-full" [disabled]="!amountInput || amountInput<=0"
-                (click)="startTransfer()"></button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
-
-        <!-- Content -->
+        
         <div class="py-4 px-4 mx-0 md:mx-6 lg:mx-8 lg:px-8 z-2">
-            <div id="home"
-                class="grid grid-nogutter justify-content-between align-items-center mb-6 py-6 md:mb-8 md:py-8">
-                <div
-                    class="col-12 md:col-4 flex flex-column gap-4 flex-order-1 md:flex-order-0 align-items-center md:align-items-start text-center md:text-left">
-                    <span class="block text-900 font-bold text-4xl">Modern, stylish and clean</span>
-                    <span class="block text-700 text-lg">The ultimate collection of design-agnostic, flexible and
-                        accessible UI Components.</span>
-                    <ul class="flex flex-wrap gap-5 list-none p-0">
-                        <li class="flex align-items-center">
-                            <div class="p-1 border-circle bg-green-400 inline-block mr-2"></div>
-                            <span class="text-900 font-semibold">Javascript</span>
-                        </li>
-                        <li class="flex align-items-center">
-                            <div class="p-1 border-circle bg-green-400 inline-block mr-2"></div>
-                            <span class="text-900 font-semibold">TypeScript</span>
-                        </li>
-                        <li class="flex align-items-center">
-                            <div class="p-1 border-circle bg-green-400 inline-block mr-2"></div>
-                            <span class="text-900 font-semibold">Angular</span>
-                        </li>
-                    </ul>
-                    <button pButton pRipple type="button" label="Live Preview" icon="pi pi-arrow-right" iconPos="right"
-                        class="w-12rem p-button-outlined"></button>
-                </div>
 
-                <div class="col-12 md:col-7 flex-order-0 md:flex-order-1 mb-6 md:mb-0 border-round">
-                    <img animateEnter="moveinright"
-                        src="assets/demo/images/landing/{{darkMode ? 'dashboard-dark' : 'dashboard-light'}}.png" alt=""
-                        class="w-full h-full border-round shadow-2 animation-duration-1000 animation-ease-out">
-                </div>
+            <!-- Hero -->
+        <div id="home" class="grid grid-nogutter align-items-center md:mb-8 md:py-4">
+        <!-- Texte gauche -->
+        <div class="col-12 md:col-6 flex flex-column gap-4 flex-order-1 md:flex-order-0
+                    align-items-center md:align-items-start text-center md:text-left pr-0 md:pr-6">
+          <span class="block text-900 font-bold text-4xl">Envoyer de l'argent vers la Guinée-Conakry</span>
+          <span class="block text-700 text-lg">
+           Transferez de l'argent vers la Guinée-Conakry comme vous le souhaitez—avec des frais réduits et un bon taux de change. 
+          </span>
+          <ul class="flex flex-wrap gap-5 list-none p-0">
+            <li class="flex align-items-center">
+              <div class="p-1 border-circle bg-green-400 inline-block mr-2"></div>
+              <span class="text-900 font-semibold">Sécurisé</span>
+            </li>
+            <li class="flex align-items-center">
+              <div class="p-1 border-circle bg-green-400 inline-block mr-2"></div>
+              <span class="text-900 font-semibold">Rapide</span>
+            </li>
+            <li class="flex align-items-center">
+              <div class="p-1 border-circle bg-green-400 inline-block mr-2"></div>
+              <span class="text-900 font-semibold">Retrait facile</span>
+            </li>
+          </ul>
+          <!-- <button pButton pRipple type="button" label="Live Preview" icon="pi pi-arrow-right" iconPos="right"
+                  class="w-12rem p-button-outlined"></button> -->
+        </div>
+
+        <!-- Formulaire droite -->
+        <div class="col-12 md:col-6 flex flex-order-0 md:flex-order-1 justify-content-center md:justify-content-end">
+          <div class="surface-card border-round shadow-2 p-4 w-full" style="max-width: 380px;">
+            <div class="flex align-items-center justify-content-between mb-3">
+              <div class="flex align-items-center gap-2">
+                <span class="inline-flex align-items-center justify-content-center w-2rem h-2rem border-circle bg-primary-100">
+                  <i class="pi pi-flag text-primary"></i>
+                </span>
+                <h3 class="m-0 text-900">Envoyer vers Guinée</h3>
+              </div>
             </div>
 
-            <div class="grid grid-nogutter surface-section text-800">
-    <div class="col-12 md:col-6 p-6 text-center md:text-left flex align-items-center ">
-        <section>
-            <span class="block text-6xl font-bold mb-1">Notre programme de fidelisation</span>
-            <div class="text-6xl text-primary font-bold mb-3">DSPAY Rewards</div>
-            <p class="mt-0 mb-4 text-700 line-height-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-            
-            <button pButton pRipple label="+ d'infos" type="button" class="mr-3 p-button-raised"></button>
-            <button pButton pRipple label="Commencer" type="button" class="p-button-outlined"></button>
-        </section>
-    </div>
-    <div class="col-12 md:col-6 overflow-hidden">
-            <img  src="assets\demo\images\blocks\hero\test.jpg" alt="Image" 
-           class="block ml-8" style="clip-path: polygon(8% 0, 100% 0%, 100% 100%, 0 100%); height: 500px;">
-    </div>
-</div>
+            <!-- Montant saisi en EUR -->
+            <label class="block text-700 mb-2">Vous envoyez</label>
+            <div class="p-inputgroup mb-3">
+              <p-inputNumber [(ngModel)]="amountInput" (input)="recalc()"
+                             mode="currency" currency="EUR" locale="fr-FR"
+                             [min]="0" [minFractionDigits]="0" [maxFractionDigits]="2"
+                             inputId="amountInput"></p-inputNumber>
+              <span class="p-inputgroup-addon text-700">EUR</span>
+            </div>
 
-          
+            <!-- Reçu -->
+             <label class="block text-700 mb-2">Le destinataire reçoit</label>
+              <div class="p-inputgroup mb-3">
+              <p-inputNumber [(ngModel)]="receiveGNF" (input)="recalc()"
+                             mode="currency" currency="EUR" locale="fr-FR"
+                             [min]="0" [minFractionDigits]="0" [maxFractionDigits]="2"
+                             inputId="receiveGNF"></p-inputNumber>
+              <span class="p-inputgroup-addon text-700">EUR</span>
+            </div>
+
+            <!-- Récap -->
+            <div class="flex justify-content-between text-700 mb-2 mt-4">
+              <span>Frais ({{ (feePercent*100) | number:'1.0-2' }}%)</span>
+              <span><strong>{{ fees | number:'1.0-2' }}</strong> EUR</span>
+            </div>
+            <div class="flex justify-content-between text-700 mb-3">
+              <span>Total à payer</span>
+              <span><strong>{{ totalToPay | number:'1.0-2' }}</strong> EUR</span>
+            </div>
+
+            <button pButton class="w-full" label="Commencer" icon="pi pi-arrow-right" iconPos="right"
+                    [disabled]="!amountInput || amountInput <= 0"
+                    (click)="startTransfer()"></button>
+
+            <!-- Taux -->
+            <div class="p-3 border-round mt-3" [ngClass]="promo ? 'bg-green-100' : 'surface-50'">
+              <div class="mt-2 text-700">
+                1 EUR = <strong>{{ rate | number:'1.0-0' }}</strong> GNF
+                <span *ngIf="promo" class="ml-2 line-through">{{ rateBase | number:'1.0-0' }}</span>
+              </div>
+              <div class="flex align-items-center gap-2">
+                <i class="pi pi-tag"></i>
+                <span class="text-900">{{ promo ? 'Taux promotionnel !' : 'Taux actuel' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+</div>
+            <div id="apps" class="my-6 md:my-8">
+                <span class="text-900 block font-bold text-5xl mb-4 text-center">Apps</span>
+                <span class="text-700 block text-xl mb-8 text-center line-height-3">Lorem ipsum dolor sit, amet
+                    consectetur adipisicing elit. Velit numquam eligendi quos.</span>
+
+                <div class="flex flex-column lg:flex-row align-items-center justify-content-between mt-8 gap-8">
+                    <div class="flex flex-column align-items-center">
+                        <img animateEnter="scalein"
+                            src="assets/demo/images/landing/{{darkMode ? 'chat-dark' : 'chat-light'}}.png" alt="chat"
+                            class="w-full h-full border-round surface-border shadow-2 animation-duration-500 origin-top">
+                        <span class="block text-900 text-lg font-semibold mt-4">Chat</span>
+                    </div>
+                    <div class="flex flex-column align-items-center">
+                        <img animateEnter="scalein"
+                            src="assets/demo/images/landing/{{darkMode ? 'mail-dark' : 'mail-light'}}.png" alt="chat"
+                            class="w-full h-full border-round surface-border shadow-2 animation-duration-500 origin-top">
+                        <span class="block text-900 text-lg font-semibold mt-4">Mail</span>
+                    </div>
+                    <div class="flex flex-column align-items-center">
+                        <img animateEnter="scalein"
+                            src="assets/demo/images/landing/{{darkMode ? 'kanban-dark' : 'kanban-light'}}.png"
+                            alt="chat"
+                            class="w-full h-full border-round surface-border shadow-2 animation-duration-500 origin-top">
+                        <span class="block text-900 text-lg font-semibold mt-4">Kanban</span>
+                    </div>
+                </div>
+            </div>
 
             <div id="pricing" class="my-6 py-6 md:my-8 md:py-8">
                 <div class="text-900 font-bold text-5xl mb-4 text-center">Pricing Plans</div>
@@ -267,12 +276,29 @@
                     PrimeNG and PrimeVue.</span>
 
                 <div class="grid mt-8">
-                   
+                    <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
+                        <div class="box p-4 w-full surface-card surface-border border-1 border-round">
+                            <img src="assets/demo/images/landing/icon-components.svg" alt="components icon"
+                                class="block mb-3" />
+                            <span class="text-900 block font-semibold mb-3 text-lg">90+ UI Components</span>
+                            <p class="m-0 text-secondary text-700">The ultimate set of UI Components to assist you with
+                                90+ impressive Angular Components.</p>
+                        </div>
+                    </div>
+                    <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
+                        <div class="box p-4 w-full surface-card surface-border border-1 border-round">
+                            <img src="assets/demo/images/landing/icon-community.svg" alt="components icon"
+                                class="block mb-3" />
+                            <span class="text-900 block font-semibold mb-3 text-lg">Community</span>
+                            <p class="m-0 text-secondary text-700">Connect with the other open source community members,
+                                collaborate and have a voice in the project roadmap.</p>
+                        </div>
+                    </div>
                     <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
                         <div class="box p-4 w-full surface-card surface-border border-1 border-round">
                             <img src="assets/demo/images/landing/icon-productivity.svg" alt="components icon"
                                 class="block mb-3" />
-                            <span class="text-900 block font-semibold mb-3 text-lg">Envoyer de l'argent en ligne</span>
+                            <span class="text-900 block font-semibold mb-3 text-lg">Productivity</span>
                             <p class="m-0 text-secondary text-700">Boost your productivity by achieving more in less
                                 time and accomplish amazing results.</p>
                         </div>
@@ -281,16 +307,16 @@
                         <div class="box p-4 w-full surface-card surface-border border-1 border-round">
                             <img src="assets/demo/images/landing/icon-accessibility.svg" alt="components icon"
                                 class="block mb-3" />
-                            <span class="text-900 block font-semibold mb-3 text-lg">Retrait d’espèces</span>
+                            <span class="text-900 block font-semibold mb-3 text-lg">Accessibility</span>
                             <p class="m-0 text-secondary text-700">The ultimate set of UI Components to assist you with
                                 90+ impressive Angular Components.</p>
                         </div>
                     </div>
                     <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
                         <div class="box p-4 w-full surface-card surface-border border-1 border-round">
-                           <img src="assets/demo/images/landing/icon-theme.svg" alt="components icon"
+                            <img src="assets/demo/images/landing/icon-support.svg" alt="components icon"
                                 class="block mb-3" />
-                            <span class="text-900 block font-semibold mb-3 text-lg">Devenir une agence</span>
+                            <span class="text-900 block font-semibold mb-3 text-lg">Enterprise Support</span>
                             <p class="m-0 text-secondary text-700">Exceptional support service featuring response within
                                 1 business day and option to request enhancements and new features for the library.</p>
                         </div>
@@ -302,6 +328,24 @@
                             <span class="text-900 block font-semibold mb-3 text-lg">Mobile</span>
                             <p class="m-0 text-secondary text-700">First class support for responsive design led by
                                 touch optimized elements.</p>
+                        </div>
+                    </div>
+                    <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
+                        <div class="box p-4 w-full surface-card surface-border border-1 border-round">
+                            <img src="assets/demo/images/landing/icon-theme.svg" alt="components icon"
+                                class="block mb-3" />
+                            <span class="text-900 block font-semibold mb-3 text-lg">Themes</span>
+                            <p class="m-0 text-secondary text-700">Built on a design-agnostic api, choose from a vast
+                                amount of themes such as material, bootstrap, custom or develop your own.</p>
+                        </div>
+                    </div>
+                    <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
+                        <div class="box p-4 w-full surface-card surface-border border-1 border-round">
+                            <img src="assets/demo/images/landing/icon-ts.svg" alt="components icon"
+                                class="block mb-3" />
+                            <span class="text-900 block font-semibold mb-3 text-lg">Typescript</span>
+                            <p class="m-0 text-secondary text-700">Top-notch support for Typescript with types and
+                                tooling assistance.</p>
                         </div>
                     </div>
                 </div>
@@ -341,31 +385,34 @@
                 <div class="col-12 md:col-10 lg:col-7">
                     <div class="grid text-center md:text-left">
                         <div class="col-12 md:col-3">
-                            <h4 class="font-medium text-xl line-height-3 mb-3 text-900">Infos</h4>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Qui somme nous?</a>
+                            <h4 class="font-medium text-xl line-height-3 mb-3 text-900">Company</h4>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">About Us</a>
                             <a class="line-height-3 block cursor-pointer mb-2 text-700">News</a>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">FAQ</a> 
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Investor Relations</a>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Careers</a>
+                            <a class="line-height-3 block cursor-pointer text-700">Media Kit</a>
                         </div>
 
                         <div class="col-12 md:col-3 mt-4 md:mt-0">
                             <h4 class="font-medium text-xl line-height-3 mb-3 text-900">Resources</h4>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Taux</a>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Frais</a>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Partenaires</a>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Get Started</a>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Learn</a>
+                            <a class="line-height-3 block cursor-pointer text-700">Case Studies</a>
                         </div>
 
                         <div class="col-12 md:col-3 mt-4 md:mt-0">
                             <h4 class="font-medium text-xl line-height-3 mb-3 text-900">Community</h4>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Facebook</a>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">TikTok</a>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Snaptchat</a>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Discord</a>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Events</a>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">FAQ</a>
+                            <a class="line-height-3 block cursor-pointer text-700">Blog</a>
                         </div>
 
                         <div class="col-12 md:col-3 mt-4 md:mt-0">
                             <h4 class="font-medium text-xl line-height-3 mb-3 text-900">Legal</h4>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Conditions générales d’utilisation (CGU)</a>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Conditions générales d’utilisation (CGV)</a>
-                            <a class="line-height-3 block cursor-pointer text-700">Conditions de service</a>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Brand Policy</a>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Privacy Policy</a>
+                            <a class="line-height-3 block cursor-pointer text-700">Terms of Service</a>
                         </div>
                     </div>
                 </div>

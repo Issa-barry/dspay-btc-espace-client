@@ -73,6 +73,7 @@ export class LandingComponent implements OnDestroy,OnInit {
 
 
     ngOnInit() {
+        this.recalc();
         this.isLoged();
         this.customerService.getCustomersLarge().then(customers => {
             this.customers1 = customers;
@@ -184,56 +185,58 @@ export class LandingComponent implements OnDestroy,OnInit {
       }
 
     //   ***********************************IBA
-    // Imports utiles déjà présents : Router, etc.
-from = 'EUR';
-to = 'GNF';
-currencies = [
-  { code: 'EUR', label: 'EUR (€)' },
-  { code: 'GNF', label: 'GNF' }
-];
-
-amountInput = 0;          // valeur saisie par l'utilisateur
+    // EUR -> GNF fixe
+amountInput = 0;          // valeur saisie
 feesIncluded = true;      // switch "Frais inclus ?"
-feePercent = 0.025;       // 2,5% (à adapter)
-rate = 9500;              // 1 EUR = 9500 GNF (à récupérer via API plus tard)
 
-fees = 0;
-sendAmount = 0;           // montant envoyé (EUR)
+feePercent = 0.025;       // 2,5% (à adapter ou charger via API)
+minFeeEUR = 0;            // optionnel: frais minimum ; laisse 0 si inutile
+
+rateBase = 9500;          // taux de base
+rate = this.rateBase;     // taux courant (peut être promo)
+promo = false;            // active un taux promo si besoin
+
+// valeurs calculées
+fees = 0;                 // en EUR
+sendAmountEUR = 0;        // montant envoyé (EUR)
 totalToPay = 0;           // total débité (EUR)
-receiveGNF = 0;           // montant reçu (GNF)
+receiveGNF = 0;           // reçu en GNF
+
+ 
 
 recalc(): void {
   const p = this.feePercent;
   const x = Number(this.amountInput) || 0;
 
   if (this.feesIncluded) {
-    // x = total à payer ; on sort le net envoyé
-    this.sendAmount = x / (1 + p);
-    this.fees = x - this.sendAmount;
+    // x = total payé ; on sort le net envoyé
+    this.sendAmountEUR = x / (1 + p);
+    this.fees = Math.max(this.minFeeEUR, x - this.sendAmountEUR);
+    // si minFee s’applique, on recalcule le net pour garder total = x
+    if (this.fees > x) this.fees = x; // garde-fou
+    this.sendAmountEUR = x - this.fees;
     this.totalToPay = x;
   } else {
     // x = montant envoyé ; total = x + frais
-    this.sendAmount = x;
-    this.fees = x * p;
-    this.totalToPay = x + this.fees;
+    this.sendAmountEUR = x;
+    this.fees = Math.max(this.minFeeEUR, x * p);
+    this.totalToPay = this.sendAmountEUR + this.fees;
   }
 
-  // Conversion simple (from EUR -> GNF). Si from != EUR, adapter la logique.
-  // Ici on suppose de -> GNF uniquement.
-  this.receiveGNF = Math.max(0, this.sendAmount) * (Number(this.rate) || 0);
+  this.receiveGNF = Math.max(0, this.sendAmountEUR) * (Number(this.rate) || 0);
 }
 
 startTransfer(): void {
-  // Passe les infos à ta page d’envoi
+  // Redirige vers la page d’envoi avec les infos préremplies
   this.router.navigate(['/dashboard/transfert/envoie'], {
     queryParams: {
-      from: this.from,
-      to: this.to,
+      from: 'EUR',
+      to: 'GNF',
       amountInput: this.amountInput,
       feesIncluded: this.feesIncluded,
       feePercent: this.feePercent,
       fees: this.fees.toFixed(2),
-      sendAmount: this.sendAmount.toFixed(2),
+      sendAmount: this.sendAmountEUR.toFixed(2),
       totalToPay: this.totalToPay.toFixed(2),
       rate: this.rate,
       receive: Math.round(this.receiveGNF)
