@@ -20,6 +20,7 @@ import { ToastModule } from 'primeng/toast';
 import { SliderModule } from 'primeng/slider';
 import { RatingModule } from 'primeng/rating';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { InputSwitchModule } from 'primeng/inputswitch';
 
 
 @NgModule({
@@ -42,7 +43,8 @@ import { InputNumberModule } from 'primeng/inputnumber';
 		DropdownModule, 
 		ProgressBarModule,
 		ToastModule,
-        InputNumberModule
+        InputNumberModule,
+        InputSwitchModule
     ],
     declarations: [LandingComponent, AnimateEnterDirective]
 })

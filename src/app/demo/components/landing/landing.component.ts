@@ -202,24 +202,31 @@ sendAmountEUR = 0;        // montant envoyé (EUR)
 totalToPay = 0;           // total débité (EUR)
 receiveGNF = 0;           // reçu en GNF
 
- 
-
+  
 recalc(): void {
   const p = Number(this.feePercent) || 0;
-  const montantEnvoye = Number(this.amountInput) || 0;
+  const montant = Number(this.amountInput) || 0;
 
-  // Montant envoyé (ce que l'utilisateur saisit)
-  this.sendAmountEUR = montantEnvoye;
+  // Frais fixes (toujours calculés pareil)
+  this.fees = Math.max(this.minFeeEUR, montant * p);
 
-  // Frais
-  this.fees = Math.max(this.minFeeEUR, montantEnvoye * p);
+  if (this.feesIncluded) {
+    //  SWITCH ON = "Frais inclus ?" désactivé (frais AJOUTÉS AU TOTAL)
+    // -> le destinataire reçoit le montant plein,
+    // -> le total payé = montant + frais
+    this.sendAmountEUR = montant;
+    this.totalToPay = montant + this.fees;
+  } else {
+    //  SWITCH OFF = "Frais inclus ?" activé (frais inclus DANS le total saisi)
+    // -> le destinataire reçoit (montant - frais),
+    // -> le total payé = montant
+    this.sendAmountEUR = Math.max(0, montant - this.fees);
+    this.totalToPay = montant;
+  }
 
-  // Total à payer = montant envoyé + frais
-  this.totalToPay = montantEnvoye + this.fees;
-
-  // Conversion EUR -> GNF
+  // Conversion EUR -> GNF (arrondi à l’unité)
   const r = Number(this.rate) || 0;
-  this.receiveGNF = Math.round(montantEnvoye * r);
+  this.receiveGNF = Math.round(this.sendAmountEUR * r);
 }
 
 
