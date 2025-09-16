@@ -40,109 +40,273 @@
                         enterFromClass="ng-hidden" enterActiveClass="px-fadein" leaveToClass="ng-hidden" leaveActiveClass="px-fadeout">
                     <i class="pi pi-times text-3xl"></i>
                 </a>
+
                 <li class=" md:mt-0">
                     <a (click)="router.navigate(['/landing'], {fragment: 'home'})" pRipple pStyleClass="@grandparent"
                         enterFromClass="ng-hidden" enterActiveClass="px-fadein" leaveToClass="ng-hidden"
                         class="flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3 cursor-pointer">
-                        <span>Agence</span>
+                        <span>Acceuil</span>
                     </a>
                 </li>
-               
-                <!-- <li class="flex align-items-center">
+                <li>
+                    <a (click)="router.navigate(['/landing'], {fragment: 'apps'})" pRipple pStyleClass="@grandparent"
+                        enterFromClass="ng-hidden" enterActiveClass="px-fadein" leaveToClass="ng-hidden"
+                        class="flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3 cursor-pointer">
+                        <span>Transfert d'argent</span>
+                    </a>
+                </li>
+                <li>
+                    <a (click)="router.navigate(['/landing'], {fragment: 'pricing'})" pRipple pStyleClass="@grandparent"
+                        enterFromClass="ng-hidden" enterActiveClass="px-fadein" leaveToClass="ng-hidden"
+                        class="flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3 cursor-pointer">
+                        <span>Agences</span>
+                    </a>
+                </li>
+                <li>
+                    <a (click)="router.navigate(['/auth/register'], {fragment: 'features'})" pRipple pStyleClass="@grandparent"
+                        enterFromClass="ng-hidden" enterActiveClass="px-fadein" leaveToClass="ng-hidden"
+                        class="flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3 cursor-pointer">
+                        <span>Créer un compte</span>
+                    </a>
+                </li>
+            
+                
+                <li class="flex align-items-center">
                     <button pButton pRipple type="button" pStyleClass="@grandparent" enterFromClass="ng-hidden"
                         enterActiveClass="px-fadein" leaveToClass="ng-hidden" label="Connexion"
-                        class="m-0 mt-3 md:mt-0 md:ml-5 white-space-nowrap"
-                        (click)="goToLogin()">
-                    </button>
-                </li> -->
-                <!-- Connexion ou Dashboard -->
-    <li class="flex align-items-center">
-        <ng-container *ngIf="!isLoggedIn; else dashboardLink">
-            <button pButton pRipple 
-                    type="button" 
-                    pStyleClass="@grandparent" 
-                    enterFromClass="ng-hidden"
-                    enterActiveClass="px-fadein" 
-                    leaveToClass="ng-hidden" 
-                    label="Connexion"
-                    class="m-0 mt-3 md:mt-0 md:ml-5 white-space-nowrap"
-                    (click)="goToLogin()">
-            </button>
-        </ng-container>
-        <ng-template #dashboardLink>
-            <button pButton pRipple 
-                    type="button" 
-                    pStyleClass="@grandparent" 
-                    enterFromClass="ng-hidden"
-                    enterActiveClass="px-fadein" 
-                    leaveToClass="ng-hidden" 
-                    label="Dashboard"
-                    class="m-0 mt-3 md:mt-0 md:ml-5 white-space-nowrap"
-                    (click)="goToDashboard()">
-            </button>
-        </ng-template>
-    </li>
+                        class="m-0 mt-3 md:mt-0 md:ml-5 white-space-nowrap" [routerLink]="['/auth/login']" routerLinkActive="router-link-active" ></button>
+                </li>
             </ul>
+         
         </div>
-       
+<!-- iba -->
+ <!-- ====== DÉMARRER UN ENVOI ====== -->
+<div class="col-12 md:col-4 flex flex-column gap-4">
+  <div class="surface-card p-4 border-round shadow-2">
+    <div class="flex align-items-center justify-content-between mb-3">
+      <h3 class="m-0 text-900">Démarrer un envoi</h3>
+      <div class="flex align-items-center gap-2">
+        <p-inputSwitch [(ngModel)]="feesIncluded" (onChange)="recalc()"></p-inputSwitch>
+      </div>
+    </div>
+
+    <div class="grid formgrid">
+      
+
+      <!-- Montant saisi (comportement dépend du switch) -->
+      <div class="col-12 mb-2">
+        <label class="block text-700 mb-0">
+          {{ feesIncluded ? 'Montant à envoyer (' + from + ')' : 'Montant à envoyer (' + from + ')' }}
+        </label>
+        <p-inputNumber [(ngModel)]="amountInput" (input)="recalc()"
+                       mode="currency" [currency]="from" [locale]="'fr-FR'"
+                       [minFractionDigits]="0" [maxFractionDigits]="2" [min]="0"></p-inputNumber>
+      </div>
+
+      <!-- Taux -->
+      <div class="col-12 mb-4">
+        <label class="block text-700 mb-0">Montant reçu</label>
+        <p-inputNumber [(ngModel)]="rate" (input)="recalc()" [min]="1"
+                       [minFractionDigits]="0" [maxFractionDigits]="0"></p-inputNumber>
+      </div>
+
+      <!-- Récap calculé -->
+      <div class="col-12">
+        <div class="surface-50 p-3 border-round">
+          <div class="flex justify-content-between">
+            <span class="text-700">Frais ({{ (feePercent*100) | number:'1.0-2' }}%)</span>
+            <strong>{{ fees | number:'1.0-2' }} {{ from }}</strong>
+          </div> 
+          <div class="flex justify-content-between mt-2">
+            <span class="text-700">Total à payer</span>
+            <strong>{{ totalToPay | number:'1.0-2' }} {{ from }}</strong>
+          </div> 
+        </div>
+      </div>
+
+      <div class="col-12 mt-4">
+        <button pButton label="Envoyer maintenant" icon="pi pi-arrow-right" iconPos="right"
+                class="w-full" [disabled]="!amountInput || amountInput<=0"
+                (click)="startTransfer()"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+        <!-- Content -->
         <div class="py-4 px-4 mx-0 md:mx-6 lg:mx-8 lg:px-8 z-2">
-                <div id="home" class="relative overflow-hidden h-20rem bg-primary flex flex-column align-items-center justify-content-center border-round mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" class="absolute w-full top-0 left-0">
-                        <path fill="var(--primary-600)" fill-opacity="1" d="M0,64L48,90.7C96,117,192,171,288,208C384,245,480,267,576,256C672,245,768,203,864,165.3C960,128,1056,96,1152,74.7C1248,53,1344,43,1392,37.3L1440,32L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"></path>
-                    </svg>
-                    <div class="font-bold mb-3 text-4xl z-1">Trouver une agence </div>
-                    <span class="mb-5 text-1xl z-1">Veuillez saisir le quartier, ville ou numéro de téléphone d'une agence</span>
-                    <span class="p-input-icon-left w-9 md:w-6">
-                        <i class="pi pi-search"></i>
-                        <input type="text" pInputText placeholder="Recherche" style="border-radius:2rem" class="w-full "/>
-                    </span>
-            </div>
- 
-             <!-- TABLE -->
-             <div class="col-12">
-                <div class="card">
-                    <h5>Nos Agence en Guinée</h5>
-                    <p-table [value]="customers3" rowGroupMode="subheader" groupRowsBy="representative.name" sortField="representative.name" sortMode="single" (onSort)="onSort()" responsiveLayout="scroll" [scrollable]="true" scrollHeight="400px">
-                        <ng-template pTemplate="header">
-                            <tr>
-                                <th>Agence</th>
-                                <th>Ville</th>
-                                <th>Adresse</th>
-                                <th>Téléphone</th>
-                                <th>Status</th>
-                               
-                            </tr>
-                        </ng-template>
-                        <ng-template pTemplate="body" let-customer let-rowIndex="rowIndex">
-                            <!-- <tr pRowGroupHeader *ngIf="rowGroupMetadata[customer.representative.name].index === rowIndex">
-                                <td colspan="5" style="min-width: 200px;">
-                                    <img [alt]="customer.representative.name" src="assets/demo/images/avatar/{{customer.representative.image}}" width="32" style="vertical-align: middle" />
-                                    <span class="font-bold ml-2">{{customer.representative.name}}</span>
-                                </td>
-                            </tr> -->
-                            <tr>
-                                <td style="min-width: 200px;">
-                                    {{customer.name}}
-                                </td>
-                                <td style="min-width: 200px;">
-                                     <span style="margin-left: .5em">Conakry</span>
-                                </td>
-                                <td style="min-width: 200px;">
-                                    {{customer.company}}
-                                </td>
-                                <td style="min-width: 200px;">
-                                    {{customer.date}}
-                                </td>
-                                <td style="min-width: 200px;">
-                                    <span [class]="'customer-badge status-' + customer.status">{{customer.status}}</span>
-                                </td>
-                            </tr>
-                        </ng-template>
-                    </p-table>
+            <div id="home"
+                class="grid grid-nogutter justify-content-between align-items-center mb-6 py-6 md:mb-8 md:py-8">
+                <div
+                    class="col-12 md:col-4 flex flex-column gap-4 flex-order-1 md:flex-order-0 align-items-center md:align-items-start text-center md:text-left">
+                    <span class="block text-900 font-bold text-4xl">Modern, stylish and clean</span>
+                    <span class="block text-700 text-lg">The ultimate collection of design-agnostic, flexible and
+                        accessible UI Components.</span>
+                    <ul class="flex flex-wrap gap-5 list-none p-0">
+                        <li class="flex align-items-center">
+                            <div class="p-1 border-circle bg-green-400 inline-block mr-2"></div>
+                            <span class="text-900 font-semibold">Javascript</span>
+                        </li>
+                        <li class="flex align-items-center">
+                            <div class="p-1 border-circle bg-green-400 inline-block mr-2"></div>
+                            <span class="text-900 font-semibold">TypeScript</span>
+                        </li>
+                        <li class="flex align-items-center">
+                            <div class="p-1 border-circle bg-green-400 inline-block mr-2"></div>
+                            <span class="text-900 font-semibold">Angular</span>
+                        </li>
+                    </ul>
+                    <button pButton pRipple type="button" label="Live Preview" icon="pi pi-arrow-right" iconPos="right"
+                        class="w-12rem p-button-outlined"></button>
+                </div>
+
+                <div class="col-12 md:col-7 flex-order-0 md:flex-order-1 mb-6 md:mb-0 border-round">
+                    <img animateEnter="moveinright"
+                        src="assets/demo/images/landing/{{darkMode ? 'dashboard-dark' : 'dashboard-light'}}.png" alt=""
+                        class="w-full h-full border-round shadow-2 animation-duration-1000 animation-ease-out">
                 </div>
             </div>
 
-            <!-- LOGO -->
+            <div class="grid grid-nogutter surface-section text-800">
+    <div class="col-12 md:col-6 p-6 text-center md:text-left flex align-items-center ">
+        <section>
+            <span class="block text-6xl font-bold mb-1">Notre programme de fidelisation</span>
+            <div class="text-6xl text-primary font-bold mb-3">DSPAY Rewards</div>
+            <p class="mt-0 mb-4 text-700 line-height-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            
+            <button pButton pRipple label="+ d'infos" type="button" class="mr-3 p-button-raised"></button>
+            <button pButton pRipple label="Commencer" type="button" class="p-button-outlined"></button>
+        </section>
+    </div>
+    <div class="col-12 md:col-6 overflow-hidden">
+            <img  src="assets\demo\images\blocks\hero\test.jpg" alt="Image" 
+           class="block ml-8" style="clip-path: polygon(8% 0, 100% 0%, 100% 100%, 0 100%); height: 500px;">
+    </div>
+</div>
+
+          
+
+            <div id="pricing" class="my-6 py-6 md:my-8 md:py-8">
+                <div class="text-900 font-bold text-5xl mb-4 text-center">Pricing Plans</div>
+                <div class="text-700 text-xl mb-8 text-center line-height-3">Choose a plan that works best for you and
+                    your team.</div>
+
+                <div class="grid grid-nogutter justify-content-center mt-8">
+                    <div class="col-12 lg:col-6 xl:col-4">
+                        <div class="p-3 h-full">
+                            <div class="shadow-2 p-6 h-full flex flex-column surface-card" style="border-radius: 6px">
+                                <span class="text-900 block font-medium text-xl mb-2 text-center">Basic Licence</span>
+                                <span class="font-bold block text-2xl text-900 text-center">$29</span>
+
+                                <ul class="list-none p-0 m-0 flex-grow-1 mt-6">
+                                    <li class="flex align-items-center mb-3">
+                                        <i class="pi pi-check text-green-500 mr-2"></i>
+                                        <span>Up to 10 Active Users</span>
+                                    </li>
+                                    <li class="flex align-items-center mb-3">
+                                        <i class="pi pi-check text-green-500 mr-2"></i>
+                                        <span>Up to 30 Project Integrations</span>
+                                    </li>
+                                    <li class="flex align-items-center mb-3">
+                                        <i class="pi pi-check text-green-500 mr-2"></i>
+                                        <span>Analytics Module</span>
+                                    </li>
+                                    <li class="flex align-items-center mb-3">
+                                        <i class="pi pi-times text-red-500 mr-2"></i>
+                                        <span>Finance Module</span>
+                                    </li>
+                                </ul>
+
+                                <button pButton pRipple label="Choose Plan" class="px-5 w-full mt-6 p-button-outlined"
+                                    icon="pi pi-arrow-right" iconPos="right"></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 lg:col-6 xl:col-4">
+                        <div class="p-3 h-full">
+                            <div class="shadow-2 p-6 h-full flex flex-column surface-card" style="border-radius: 6px">
+                                <span class="text-900 block font-medium text-xl mb-2 text-center">Extended
+                                    Licence</span>
+                                <span class="font-bold block text-2xl text-900 text-center">$49</span>
+
+                                <ul class="list-none p-0 m-0 flex-grow-1 mt-6">
+                                    <li class="flex align-items-center mb-3">
+                                        <i class="pi pi-check text-green-500 mr-2"></i>
+                                        <span>Up to 10 Active Users</span>
+                                    </li>
+                                    <li class="flex align-items-center mb-3">
+                                        <i class="pi pi-check text-green-500 mr-2"></i>
+                                        <span>Up to 30 Project Integrations</span>
+                                    </li>
+                                    <li class="flex align-items-center mb-3">
+                                        <i class="pi pi-check text-green-500 mr-2"></i>
+                                        <span>Analytics Module</span>
+                                    </li>
+                                    <li class="flex align-items-center mb-3">
+                                        <i class="pi pi-times text-red-500 mr-2"></i>
+                                        <span>Finance Module</span>
+                                    </li>
+                                </ul>
+
+                                <button pButton pRipple label="Choose Plan" class="px-5 w-full mt-6 p-button-outlined"
+                                    icon="pi pi-arrow-right" iconPos="right"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="features" class="my-6 py-6 md:my-8 md:py-8">
+                <span class="text-900 block font-bold text-5xl mb-4 text-center">Features</span>
+                <span class="text-700 block text-xl mb-8 text-center line-height-3">PrimeTek Informatics is the author
+                    of PrimeReact, a UI Component vendor with well known vastly popular projects including PrimeFaces,
+                    PrimeNG and PrimeVue.</span>
+
+                <div class="grid mt-8">
+                   
+                    <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
+                        <div class="box p-4 w-full surface-card surface-border border-1 border-round">
+                            <img src="assets/demo/images/landing/icon-productivity.svg" alt="components icon"
+                                class="block mb-3" />
+                            <span class="text-900 block font-semibold mb-3 text-lg">Envoyer de l'argent en ligne</span>
+                            <p class="m-0 text-secondary text-700">Boost your productivity by achieving more in less
+                                time and accomplish amazing results.</p>
+                        </div>
+                    </div>
+                    <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
+                        <div class="box p-4 w-full surface-card surface-border border-1 border-round">
+                            <img src="assets/demo/images/landing/icon-accessibility.svg" alt="components icon"
+                                class="block mb-3" />
+                            <span class="text-900 block font-semibold mb-3 text-lg">Retrait d’espèces</span>
+                            <p class="m-0 text-secondary text-700">The ultimate set of UI Components to assist you with
+                                90+ impressive Angular Components.</p>
+                        </div>
+                    </div>
+                    <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
+                        <div class="box p-4 w-full surface-card surface-border border-1 border-round">
+                           <img src="assets/demo/images/landing/icon-theme.svg" alt="components icon"
+                                class="block mb-3" />
+                            <span class="text-900 block font-semibold mb-3 text-lg">Devenir une agence</span>
+                            <p class="m-0 text-secondary text-700">Exceptional support service featuring response within
+                                1 business day and option to request enhancements and new features for the library.</p>
+                        </div>
+                    </div>
+                    <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
+                        <div class="box p-4 w-full surface-card surface-border border-1 border-round">
+                            <img src="assets/demo/images/landing/icon-mobile.svg" alt="components icon"
+                                class="block mb-3" />
+                            <span class="text-900 block font-semibold mb-3 text-lg">Mobile</span>
+                            <p class="m-0 text-secondary text-700">First class support for responsive design led by
+                                touch optimized elements.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="grid justify-content-between my-6 pt-4 md:my-8">
                 <div class="col-12 md:col-2 text-center md:text-left">
                     <a class="cursor-pointer" href="#">
@@ -177,31 +341,31 @@
                 <div class="col-12 md:col-10 lg:col-7">
                     <div class="grid text-center md:text-left">
                         <div class="col-12 md:col-3">
-                            <h4 class="font-medium text-xl line-height-3 mb-3 text-900">Company</h4>
+                            <h4 class="font-medium text-xl line-height-3 mb-3 text-900">Infos</h4>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Qui somme nous?</a>
                             <a class="line-height-3 block cursor-pointer mb-2 text-700">News</a>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">A propos de nous</a>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Investir chez nous</a>
-                         </div>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">FAQ</a> 
+                        </div>
 
                         <div class="col-12 md:col-3 mt-4 md:mt-0">
                             <h4 class="font-medium text-xl line-height-3 mb-3 text-900">Resources</h4>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Initiation</a>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Formation</a>
-                            <a class="line-height-3 block cursor-pointer text-700">Case Studies</a>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Taux</a>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Frais</a>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Partenaires</a>
                         </div>
 
                         <div class="col-12 md:col-3 mt-4 md:mt-0">
                             <h4 class="font-medium text-xl line-height-3 mb-3 text-900">Community</h4>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">WhatsApp</a>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Événements</a>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">FAQ</a>
-                            <a class="line-height-3 block cursor-pointer text-700">Blog</a>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Facebook</a>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">TikTok</a>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Snaptchat</a>
                         </div>
 
                         <div class="col-12 md:col-3 mt-4 md:mt-0">
                             <h4 class="font-medium text-xl line-height-3 mb-3 text-900">Legal</h4>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Condition général d'utilisation</a>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Condition de vente</a>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Conditions générales d’utilisation (CGU)</a>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Conditions générales d’utilisation (CGV)</a>
+                            <a class="line-height-3 block cursor-pointer text-700">Conditions de service</a>
                         </div>
                     </div>
                 </div>

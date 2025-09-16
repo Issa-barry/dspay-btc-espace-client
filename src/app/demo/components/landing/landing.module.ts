@@ -19,6 +19,7 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { ToastModule } from 'primeng/toast';
 import { SliderModule } from 'primeng/slider';
 import { RatingModule } from 'primeng/rating';
+import { InputNumberModule } from 'primeng/inputnumber';
 
 
 @NgModule({
@@ -40,7 +41,8 @@ import { RatingModule } from 'primeng/rating';
 		MultiSelectModule,
 		DropdownModule, 
 		ProgressBarModule,
-		ToastModule
+		ToastModule,
+        InputNumberModule
     ],
     declarations: [LandingComponent, AnimateEnterDirective]
 })
