@@ -42,11 +42,6 @@ export class EcommerceDashboardComponent implements OnInit {
         });
     }
 
-     goToEnvoie(): void {
-        this.router.navigate(['/dashboard/transfert/envoie']);
-    }
-
-
     onGlobalFilter(table: Table, event: Event) {
         table.filterGlobal(
             (event.target as HTMLInputElement).value,
