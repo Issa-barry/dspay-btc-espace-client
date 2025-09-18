@@ -14,6 +14,7 @@ export class RegisterComponent {
     contact: Contact = new Contact();
     errorMessage: string = '';
     successMessage: string = '';
+    errors: { [key: string]: string[] } = {};
 
     nom: string = '';
     prenom: string = ''; 
@@ -25,7 +26,7 @@ export class RegisterComponent {
     date_naissance:string ="2024-01-01";
     
 
-    constructor(
+     constructor(
         public router: Router,
         private authService: AuthService,
         private layoutService: LayoutService,
@@ -36,26 +37,30 @@ export class RegisterComponent {
         return this.layoutService.config().colorScheme !== 'light';
     }
 
-    onRegister(){
-        this.contact.password_confirmation = this.contact.password;
-        console.log(this.contact);
-        
-        this.authService.register(this.contact).subscribe({
-            next: (response) => {
-                this.successMessage = 'Inscription réussie ! Vous avez reçu un mail de validation.';
-                this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Inscription réussie ! Vous avez reçu un mail de validation.', life: 4000 });
-                this.router.navigate(['/auth/login']);
-            
-                setTimeout(() => {
-                    this.router.navigate(['/auth/login']);
-                }, 4000);
-            },
-            error: (err) => {
-                this.errorMessage = err.error?.message || 'Une erreur est survenue.';
-                console.error(err);
-            }
-        });
+    
+     onRegister() {
+    this.errors = {};                  // reset erreurs
+    this.errorMessage = '';
 
-    }
+    this.contact.password_confirmation = this.contact.password;
+
+    this.authService.register(this.contact).subscribe({
+      next: () => {
+        this.successMessage = 'Inscription réussie ! Vous avez reçu un mail de validation.';
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Succès',
+          detail: this.successMessage,
+          life: 4000
+        });
+        this.router.navigate(['/auth/login']);
+      },
+      error: (err) => {
+        this.errors = err.error.data || {};
+        console.log("erreur front", this.errors);
+        
+      }
+    });
+  }
 }
  

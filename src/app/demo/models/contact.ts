@@ -8,6 +8,8 @@ import { Role } from "./Role";
     reference?:string;
     civilite?:Civilite;
     nom_complet: string;
+    nom:string;
+    prenom: string;
     phone: string;
     email:string;
     date_naissance?:string;
@@ -24,6 +26,8 @@ import { Role } from "./Role";
     {
         this.role ="";
         this.nom_complet = "";
+        this.nom="";
+        this.prenom = "";
         this.civilite=Civilite.Autre;
         this.date_naissance="1999-01-01";
         this.password="";
