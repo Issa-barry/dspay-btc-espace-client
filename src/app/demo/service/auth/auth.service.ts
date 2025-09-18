@@ -9,6 +9,7 @@ import { catchError, map } from 'rxjs/operators';
 import { environment } from 'src/environements/environment.dev';
 import { Router } from '@angular/router';
 import { TokenService } from '../token/token.service';
+import { Contact } from '../../models/contact';
 
 //Hedaer Option
 const httpOption = {
@@ -19,6 +20,26 @@ const httpOption = {
         'Access-Control-Allow-Methods': 'GET,POST,OPTIONS,DELETE,PUT',
     }),
 };
+
+export interface CreateClientDto {
+  email: string;
+  phone: string;
+  password: string;
+  password_confirmation: string;
+}
+
+export interface ApiResponse<T = any> {
+  success: boolean;
+  message: string;
+  data?: T | null;
+}
+
+export interface ClientCreated {
+  id: number;
+  email: string;
+  phone: string;
+}
+
 
 @Injectable({
     providedIn: 'root',
@@ -54,7 +75,7 @@ export class AuthService {
 
         } else {
             switch (error.status) {
-                case 400:
+                case 400: 
                     errorMessage =
                         'Requête invalide. Vérifiez vos informations.';
                     break;
@@ -112,17 +133,33 @@ export class AuthService {
         );
     }
 
-    register(user: any): Observable<any> {
-        return this.http
-            .post<any>(`${this.apiUrl}/users`, user, httpOption)
-            .pipe(
-                map((response) => {
-                    console.log('Inscription réussie :', response);
-                    return response;
-                })
-                // catchError(this.handleError('register', null))
-            );
-    }
+     /** Convertit un Contact en payload attendu par l’API */
+  toCreateDto(contact: Contact): CreateClientDto {
+    return {
+      email: contact.email?.trim() ?? '',
+      phone: contact.phone?.trim() ?? '',
+      password: contact.password ?? '',
+      password_confirmation: contact.password_confirmation ?? '',
+    };
+  }
+
+  /** Création du compte client */
+  register(payload: CreateClientDto): Observable<ApiResponse<ClientCreated>> {
+    return this.http.post<ApiResponse<ClientCreated>>(`${this.apiUrl}/users/clients/create`, payload, httpOption)
+    //   .pipe(catchError(this.handleError));
+  }
+
+    // register(user: any): Observable<any> {
+    //     return this.http
+    //         .post<any>(`${this.apiUrl}/users/clients/create`, user, httpOption)
+    //         .pipe(
+    //             map((response) => {
+    //                 console.log('Inscription réussie :', response);
+    //                 return response;
+    //             })
+    //             // catchError(this.handleError('register', null))
+    //         );
+    // }
 
     isAuthenticated(): boolean {
         return this.tokenService.hasToken();
