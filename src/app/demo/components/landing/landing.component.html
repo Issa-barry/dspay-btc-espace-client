@@ -171,16 +171,59 @@
 </div>
 
 <!-- SECTION 1 -->
+
+<div id="features" class="my-6 py-6 md:my-8 md:py-8">
+                <span class="text-900 block font-bold text-5xl mb-4 text-center">Services</span>
+                <span class="text-700 block text-xl mb-8 text-center line-height-3">Découvrez l'emsemble de nos services.</span>
+
+                <div class="grid mt-8">
+                     
+                    <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
+                        <div class="box p-4 w-full surface-card surface-border border-1 border-round">
+                            <img src="assets/demo/images/landing/icon-productivity.svg" alt="components icon"
+                                class="block mb-3" />
+                            <span class="text-900 block font-semibold mb-3 text-lg">Transfert</span>
+                            <p class="m-0 text-secondary text-700">Envoyez de l’argent  vers la Guinée en minutes. Taux  compétitifs, frais transparents, paiement carte/Paypal.</p>
+                        </div>
+                    </div>
+                    <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
+                        <div class="box p-4 w-full surface-card surface-border border-1 border-round">
+                            <img src="assets/demo/images/landing/icon-accessibility.svg" alt="components icon"
+                                class="block mb-3" />
+                            <span class="text-900 block font-semibold mb-3 text-lg">Retrait</span>
+                            <p class="m-0 text-secondary text-700">Retrait rapide partout en Guinée. Dans nos points partenaires ou crédit immédiat sur Orange Money / MTN Mobile Money.</p>
+                        </div>
+                    </div>
+                    <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
+                        <div class="box p-4 w-full surface-card surface-border border-1 border-round">
+                            <img src="assets/demo/images/landing/icon-support.svg" alt="components icon"
+                                class="block mb-3" />
+                            <span class="text-900 block font-semibold mb-3 text-lg">Agence</span>
+                            <p class="m-0 text-secondary text-700">+4000 agences partenaires pour vos retraits. Service client réactif, conformité KYC/AML, 
+                                traçabilité des opérations et assistance 7j/7 pour vos transferts.</p>
+                        </div>
+                    </div>
+                    <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
+                        <div class="box p-4 w-full surface-card surface-border border-1 border-round">
+                            <img src="assets/demo/images/landing/icon-mobile.svg" alt="components icon"
+                                class="block mb-3" />
+                            <span class="text-900 block font-semibold mb-3 text-lg">Mobile</span>
+                            <p class="m-0 text-secondary text-700">Notre plateforme est responssive vous pouvez l'utiliser sur ordinateur, tablette ou smartphone.</p>
+                        </div>
+                    </div> 
+                </div>
+            </div>
  
+            <!-- promot -->
     <div class="grid grid-nogutter surface-section text-800">
         <div class="col-12 md:col-6 p-6 text-center md:text-left flex align-items-center ">
             <section>
                 <span class="block text-6xl font-bold mb-1">Profitez de la promo</span>
-                <div class="text-6xl text-primary font-bold mb-3">DSPAY rewads</div>
-                <p class="mt-0 mb-4 text-700 line-height-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                <div class="text-6xl text-primary font-bold mb-3">DSPAY rewards</div>
+                <p class="mt-0 mb-4 text-700 line-height-3">Rejoignez notre programme de récompenses et cumulez des points à chaque envoi d’argent vers la Guinée.</p>
                 
                 <button pButton pRipple label="+d'infos" type="button" class="mr-3 p-button-raised"></button>
-                <button pButton pRipple label="Commencer" type="button" class="p-button-outlined"></button>
+                <button pButton pRipple label="Commencer" type="button" class="p-button-outlined" (click)="router.navigate(['/landing'], {fragment: 'home'})"></button>
             </section>
         </div>
         <div class="col-12 md:col-6 overflow-hidden">
@@ -261,52 +304,7 @@
                 </div>
             </div> -->
 
-            <div id="features" class="my-6 py-6 md:my-8 md:py-8">
-                <span class="text-900 block font-bold text-5xl mb-4 text-center">Services</span>
-                <span class="text-700 block text-xl mb-8 text-center line-height-3">PrimeTek Informatics is the author
-                    of PrimeReact, a UI Component vendor with well known vastly popular projects including PrimeFaces,
-                    PrimeNG and PrimeVue.</span>
-
-                <div class="grid mt-8">
-                     
-                    <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
-                        <div class="box p-4 w-full surface-card surface-border border-1 border-round">
-                            <img src="assets/demo/images/landing/icon-productivity.svg" alt="components icon"
-                                class="block mb-3" />
-                            <span class="text-900 block font-semibold mb-3 text-lg">Transfert</span>
-                            <p class="m-0 text-secondary text-700">Boost your productivity by achieving more in less
-                                time and accomplish amazing results.</p>
-                        </div>
-                    </div>
-                    <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
-                        <div class="box p-4 w-full surface-card surface-border border-1 border-round">
-                            <img src="assets/demo/images/landing/icon-accessibility.svg" alt="components icon"
-                                class="block mb-3" />
-                            <span class="text-900 block font-semibold mb-3 text-lg">Retrait</span>
-                            <p class="m-0 text-secondary text-700">The ultimate set of UI Components to assist you with
-                                90+ impressive Angular Components.</p>
-                        </div>
-                    </div>
-                    <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
-                        <div class="box p-4 w-full surface-card surface-border border-1 border-round">
-                            <img src="assets/demo/images/landing/icon-support.svg" alt="components icon"
-                                class="block mb-3" />
-                            <span class="text-900 block font-semibold mb-3 text-lg">Agence</span>
-                            <p class="m-0 text-secondary text-700">Exceptional support service featuring response within
-                                1 business day and option to request enhancements and new features for the library.</p>
-                        </div>
-                    </div>
-                    <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
-                        <div class="box p-4 w-full surface-card surface-border border-1 border-round">
-                            <img src="assets/demo/images/landing/icon-mobile.svg" alt="components icon"
-                                class="block mb-3" />
-                            <span class="text-900 block font-semibold mb-3 text-lg">Mobile</span>
-                            <p class="m-0 text-secondary text-700">First class support for responsive design led by
-                                touch optimized elements.</p>
-                        </div>
-                    </div> 
-                </div>
-            </div>
+            
 
             <div class="grid justify-content-between my-6 pt-4 md:my-8">
                 <div class="col-12 md:col-2 text-center md:text-left">
@@ -343,34 +341,31 @@
                     <div class="grid text-center md:text-left">
                         <div class="col-12 md:col-3">
                             <h4 class="font-medium text-xl line-height-3 mb-3 text-900">Company</h4>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">About Us</a>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Qui somme nous?</a>
                             <a class="line-height-3 block cursor-pointer mb-2 text-700">News</a>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Investor Relations</a>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Careers</a>
-                            <a class="line-height-3 block cursor-pointer text-700">Media Kit</a>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Blog</a>
+                          </div>
+
+                        <div class="col-12 md:col-3 mt-4 md:mt-0">
+                            <h4 class="font-medium text-xl line-height-3 mb-3 text-900">Services</h4>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Transfert en ligne</a>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Retrait en agances </a>
+                            <a class="line-height-3 block cursor-pointer text-700">Contact</a>
+                            <a class="line-height-3 block cursor-pointer text-700">FAQ</a>
                         </div>
 
                         <div class="col-12 md:col-3 mt-4 md:mt-0">
-                            <h4 class="font-medium text-xl line-height-3 mb-3 text-900">Resources</h4>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Get Started</a>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Learn</a>
-                            <a class="line-height-3 block cursor-pointer text-700">Case Studies</a>
-                        </div>
-
-                        <div class="col-12 md:col-3 mt-4 md:mt-0">
-                            <h4 class="font-medium text-xl line-height-3 mb-3 text-900">Community</h4>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Discord</a>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Events</a>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">FAQ</a>
-                            <a class="line-height-3 block cursor-pointer text-700">Blog</a>
+                            <h4 class="font-medium text-xl line-height-3 mb-3 text-900">Réseaux</h4>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Facebook</a>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Tiktok</a>
+                             <a class="line-height-3 block cursor-pointer text-700">Youtube</a>
                         </div>
 
                         <div class="col-12 md:col-3 mt-4 md:mt-0">
                             <h4 class="font-medium text-xl line-height-3 mb-3 text-900">Legal</h4>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Brand Policy</a>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Privacy Policy</a>
-                            <a class="line-height-3 block cursor-pointer text-700">Terms of Service</a>
-                        </div>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Conditions d'utilisation (CGU)</a>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Conditions de vente (CGV)</a>
+                         </div>
                     </div>
                 </div>
             </div>

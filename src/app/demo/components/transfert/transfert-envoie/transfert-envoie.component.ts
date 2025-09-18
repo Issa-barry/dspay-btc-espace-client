@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { Transfert } from 'src/app/demo/models/transfert';
 import { BeneficiaireService } from 'src/app/demo/service/beneficiaire/beneficiaire.service';
@@ -46,6 +46,7 @@ export class TransfertEnvoieComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private beneficiaireService: BeneficiaireService,
     private transfertService: TransfertService,
     private messageService: MessageService,
@@ -54,8 +55,28 @@ export class TransfertEnvoieComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadBeneficiaires();
+    this.prefillFromQuery();
   }
 
+  private prefillFromQuery(): void {
+  const p = this.route.snapshot.queryParamMap;
+
+  const sendAmount = Number(p.get('sendAmount') ?? p.get('amountInput'));
+  const receive = Number(p.get('receive'));
+  const included = p.get('feesIncluded');
+
+  if (!Number.isNaN(sendAmount) && sendAmount > 0) {
+    this.montantEuro = sendAmount;
+  }
+  if (!Number.isNaN(receive) && receive > 0) {
+    this.montantGNF = receive;
+  } else {
+    this.convertirDepuisEuro();
+  }
+
+  if (included !== null) this.includeFrais = included === 'true';
+  this.majFraisTotal();
+}
   /** Charge les bénéficiaires pour le dropdown */
   private loadBeneficiaires(search = '', limit = 50): void {
     this.loading = true;
