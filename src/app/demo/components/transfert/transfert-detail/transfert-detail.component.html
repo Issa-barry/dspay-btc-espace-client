@@ -1,5 +1,6 @@
 <div class="card">
     <p-toast></p-toast> 
+            <p-confirmDialog></p-confirmDialog>
 
     <div class="text-900  text-xl my-2">Statut : <span class="font-medium text-xl text-blue-500">({{ transfert.statut }})</span></div>  
     <!-- <div class="text-900 font-bold text-4xl my-2">Transfert 🚀</div> -->
@@ -7,67 +8,46 @@
     <div style="height:3px;background:linear-gradient(90deg, var(--primary-color) 0%, rgba(33, 150, 243, 0) 50%);"></div>
 
     <div class="flex flex-column sm:flex-row sm:align-items-center sm:justify-content-between py-5">
-        <div class="mb-3 sm:mb-0">
+        <!-- <div class="mb-3 sm:mb-0">
             <span class="font-medium text-xl text-900 mr-2">Code :</span>
             <span class="font-medium text-xl text-blue-500">225</span>
-        </div>
-        <div>
-            <p-confirmDialog></p-confirmDialog>
-<button 
-  pButton 
-  pRipple 
-  label="Modifier" 
-  icon="pi pi-pencil" 
-  class="p-button-outlined p-button-primary mr-3" 
-  (click)="goToEditTransfert()"
-  [disabled]="transfert?.statut === 'retiré'">
-</button>
+        </div> -->
+        <!-- <div>
+            <button 
+            pButton 
+            pRipple 
+            label="Modifier" 
+            icon="pi pi-pencil" 
+            class="p-button-outlined p-button-primary mr-3" 
+            (click)="goToEditTransfert()"
+            [disabled]="transfert?.statut === 'retiré'">
+            </button>
             <button pButton pRipple label="Annuler le transfert" icon="pi pi-times-circle" class="p-button-outlined p-button-danger" 
-                  (click)="confirmAnnulationTransfert()"
-                  [disabled]="!transfert || transfert.statut !== 'en_cours'"
+            (click)="confirmAnnulationTransfert()"
+            [disabled]="!transfert || transfert.statut !== 'en_cours'"
             ></button>
-             
-        </div>
+        </div> -->
     </div>
     <div class="border-round surface-border border-1">
         <ul class="list-none p-0 m-0">
             <li  class="p-3 surface-border flex align-items-start sm:align-items-center"  style="border-bottom: 1px solid #e0e0e0;">
                 <div class="flex flex-column">
                    <span class="text-900 font-semibold text-xl mb-2">Bénéficiaire</span>
-                   <span class="text-800 mb-2">ddd</span>
-                   <span class="text-800">Tel : dddd</span>
+                   <span class="text-800 mb-2"> {{ transfert.beneficiaire.nom_complet }}</span>
+                   <span class="text-800"> {{ transfert.beneficiaire.phone }} </span>
                 </div>
                <span class="text-900 font-medium text-lg ml-auto">Guinée</span>
-           </li>
-           <li  class="p-3 surface-border flex align-items-start sm:align-items-center"  style="border-bottom: 1px solid #e0e0e0;">
-            <div class="flex flex-column">
-               <span class="text-900 font-semibold text-xl mb-2">Expéditeur</span>
-               <span class="text-800 mb-2">ddd</span>
-               <span class="text-800 mb-2">Tel : dddd</span>
-               <span class="text-800">Email : dddd</span>
-           </div>
-           <span class="text-900 font-medium text-lg ml-auto">France</span>
-       </li> 
-        </ul>
+           </li>  
+        </ul> 
     </div>
     <div class="flex flex-wrap mt-5 pb-3">
-        <div class="w-full lg:w-6 pl-3">
-            <!-- <span class="font-bold text-900">Agence source</span>
-            <div class="flex flex-column text-900 mt-2 mb-5">
-                <span class="mb-1">Ibrahima Ostwald</span>
-                <span class="mb-1">+33 06 85 74 96</span>
-                <span class="mb-1">ibostwald&#64;gmail.com</span> 
-                <span class="mb-1">Adresse : 55 rue d'Ostwald</span>
-                <span class="mb-1">54400, Strasbourg</span>
-            </div> -->
+        <div class="w-full lg:w-6 pl-3"> 
 
-            <span class="font-bold text-900">Agent expéditeur</span>
+            <span class="font-bold text-900">Agence de retrait</span>
             <div class="flex align-items-center mt-0">
                  <div class="flex flex-column text-900 mt-2 mb-2">
-                    <span class="text-800 mb-2">ddd</span>
-                    <span class="text-800 mb-2">ddd</span>
-                    <span class="text-800  mb-2">ddd</span>
-                    <span class="text-800  mb-2 "> Agence : <span class="text-blue-500">ddd</span></span>
+                    <span class="text-800 mb-2">Dabompa : 666 17 58 524</span>
+                    <span class="text-800 mb-2">Kankan : 666 547 585 </span> 
                 </div>
             </div>
         </div>
@@ -76,19 +56,19 @@
                 <li class="mb-3"><span class="font-medium text-900">Montant</span></li>
                 <li class="flex justify-content-between mb-3">
                     <span class="text-900">A retiré</span>
-                    <span class="text-900 font-medium text-lg">ddd</span>
+                    <span class="text-900 font-medium text-lg">{{ transfert.montant_gnf }}</span>
                 </li>
                 <li class="flex justify-content-between mb-3">
                     <span class="text-900">Envoyé</span>
-                    <span class="text-900 font-medium text-lg">ddd</span>
+                    <span class="text-900 font-medium text-lg">{{ transfert.montant_euro }}</span>
                 </li>
                 <li class="flex justify-content-between mb-3">
                     <span class="text-900">Frais</span>
-                    <span class="text-900 font-medium text-lg">ddd</span>
+                    <span class="text-900 font-medium text-lg">{{ transfert.frais }} €</span>
                 </li>
                 <li class="flex justify-content-between mb-3">
                     <span class="text-900">Taux d'échange</span>
-                    <span class="text-900 font-medium text-lg">1 ddd = 9500 ddd</span>
+                    <span class="text-900 font-medium text-lg">1 € = {{ transfert.taux_echange.taux  }} GNF</span>
                 </li>
                 <li class="flex justify-content-between border-top-1 surface-border py-3">
                     <span class="text-900 font-medium">Total payé par expéditeur : </span>
