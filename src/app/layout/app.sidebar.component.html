@@ -1,4 +1,4 @@
-<div class="layout-sidebar" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+<!-- <div class="layout-sidebar" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
     <div class="sidebar-header">
         <a [routerLink]="['/landing']" class="app-logo">
             <svg  viewBox="0 0 124 22" fill="none" xmlns="http://www.w3.org/2000/svg" class="app-logo-normal">
@@ -25,4 +25,22 @@
     <div #menuContainer class="layout-menu-container">
         <app-menu></app-menu> 
     </div>
+</div> -->
+
+<div class="layout-sidebar" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+  <div class="sidebar-header">
+    <a [routerLink]="['/landing']" class="app-logo">
+      <!-- Grand logo -->
+      <img src="assets/demo/images/blocks/logos/Logo.svg" alt="DSPAY" class="app-logo-normal" />
+
+      <!-- Petit logo (mobile / collapsed) -->
+      <img src="assets/demo/images/blocks/logos/Logo.svg" alt="DSPAY" class="app-logo-small" />
+    </a>
+
+    <button class="layout-sidebar-anchor p-link z-2 mb-2" type="button" (click)="anchor()"></button>
+  </div>
+
+  <div #menuContainer class="layout-menu-container">
+    <app-menu></app-menu>
+  </div>
 </div>

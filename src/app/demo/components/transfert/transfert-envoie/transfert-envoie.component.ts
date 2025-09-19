@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { Transfert } from 'src/app/demo/models/transfert';
 import { BeneficiaireService } from 'src/app/demo/service/beneficiaire/beneficiaire.service';
@@ -46,6 +46,7 @@ export class TransfertEnvoieComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private beneficiaireService: BeneficiaireService,
     private transfertService: TransfertService,
     private messageService: MessageService,
@@ -54,8 +55,28 @@ export class TransfertEnvoieComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadBeneficiaires();
+    this.prefillFromQuery();
   }
 
+  private prefillFromQuery(): void {
+  const p = this.route.snapshot.queryParamMap;
+
+  const sendAmount = Number(p.get('sendAmount') ?? p.get('amountInput'));
+  const receive = Number(p.get('receive'));
+  const included = p.get('feesIncluded');
+
+  if (!Number.isNaN(sendAmount) && sendAmount > 0) {
+    this.montantEuro = sendAmount;
+  }
+  if (!Number.isNaN(receive) && receive > 0) {
+    this.montantGNF = receive;
+  } else {
+    this.convertirDepuisEuro();
+  }
+
+  if (included !== null) this.includeFrais = included === 'true';
+  this.majFraisTotal();
+}
   /** Charge les bénéficiaires pour le dropdown */
   private loadBeneficiaires(search = '', limit = 50): void {
     this.loading = true;
@@ -137,47 +158,76 @@ convertirDepuisGNF() {
 
   /** Envoi du transfert (nouveau contrat API) */
   save(): void {
-    this.submitted = true;
-    this.errors = {};
+  this.submitted = true;
+  this.errors = {};
 
-    if (!this.selectedBeneficiaireId) {
-      this.messageService.add({ severity: 'warn', summary: 'Bénéficiaire', detail: 'Veuillez sélectionner un bénéficiaire.' });
-      return;
-    }
-    if (!this.montantEuro || this.montantEuro < 1) {
-      this.messageService.add({ severity: 'warn', summary: 'Montant', detail: 'Veuillez saisir un montant en EUR (min 1€).' });
-      return;
-    }
-    if (this.montantEuro > 1000) this.montantEuro = 1000;
-
-    const dto: TransfertCreateDto = {
-      beneficiaire_id: this.selectedBeneficiaireId,
-      taux_echange_id: this.selectedTauxId,
-      // toujours 2 décimales envoyées
-      montant_euro: Math.round(this.montantEuro * 100) / 100,
-    };
-
-    console.log('dto', dto);
-    
-    this.loading = true;
-    this.transfertService.createTransfert(dto).subscribe({
-      next: (t) => {
-        this.loading = false;
-        this.transfert = t;
-        // Maj du récap
-        this.frais = t.frais ?? 0;
-        this.total = Number(t.total ?? 0);
-        this.montantGNF = Number((t as any).montant_gnf ?? 0);
-        this.messageService.add({ severity: 'success', summary: 'Succès', detail: 'Transfert effectué.' });
-        this.hideDialog();
-      },
-      error: (err) => {
-        this.loading = false;
-        this.errors = err.validationErrors || {};
-        this.messageService.add({ severity: 'error', summary: 'Erreur', detail: err.message || 'Échec de l’envoi.' });
-      }
-    });
+  if (!this.selectedBeneficiaireId) {
+    this.messageService.add({ severity: 'warn', summary: 'Bénéficiaire', detail: 'Veuillez sélectionner un bénéficiaire.' });
+    return;
   }
+  if (!this.montantEuro || this.montantEuro < 1) {
+    this.messageService.add({ severity: 'warn', summary: 'Montant', detail: 'Veuillez saisir un montant en EUR (min 1€).' });
+    return;
+  }
+  if (this.montantEuro > 1000) this.montantEuro = 1000;
+
+  const dto: TransfertCreateDto = {
+    beneficiaire_id: this.selectedBeneficiaireId!,
+    taux_echange_id: this.selectedTauxId,
+    montant_euro: Math.round(this.montantEuro * 100) / 100,
+  };
+
+  this.loading = true;
+  this.transfertService.createTransfert(dto).subscribe({
+    next: (t) => {
+      this.loading = false;
+
+      // si tu veux garder l'ancien récap à l'écran
+      this.transfert = t;
+      this.frais = (t as any)?.frais ?? 0;
+      this.total = Number((t as any)?.total ?? 0);
+      this.montantGNF = Number((t as any)?.montant_gnf ?? 0);
+      this.messageService.add({ 
+  severity: 'success', 
+  summary: 'Succès', 
+  detail: 'Transfert effectué.', 
+  life: 4000   // 👉 timeout de 3 secondes
+});
+
+
+
+      // 👉 récupère l'identifiant renvoyé par l'API
+      const id =
+        (t as any)?.id ??
+        (t as any)?.data?.id ??
+        (t as any)?.transfert?.id ??
+        (t as any)?.transfert_id;
+
+      // ferme les modales si besoin
+      this.hideDialog();
+
+      // Redirige vers /dashboard/transfert/detail/:id
+      if (id) {
+      // ✅ Attendre la fin du toast avant redirection
+      setTimeout(() => {
+        this.router.navigate(['/dashboard/transfert/detail', id], {
+          replaceUrl: true
+        });
+      }, 2500); // même durée que life
+    } else {
+      setTimeout(() => {
+        this.router.navigate(['/dashboard/transfert']);
+      }, 2500);
+    }
+    },
+    error: (err) => {
+      this.loading = false;
+      this.errors = err?.validationErrors || {};
+      this.messageService.add({ severity: 'error', summary: 'Erreur', detail: err?.message || 'Échec de l’envoi.' });
+    }
+  });
+}
+
 
   /** UI helpers */
   openTicketDialog(): void { this.ticketDialog = true; }

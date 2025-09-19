@@ -1,0 +1,20 @@
+# public_html/.htaccess
+Options -MultiViews
+RewriteEngine On
+
+# Si ton app est à la racine du domaine :
+RewriteBase /
+
+# Si le fichier/dossier existe (assets, css, api, …) => on le sert tel quel
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# (optionnel) laisser passer les fichiers statiques explicites
+RewriteRule ^(.*\.(?:css|js|png|jpg|jpeg|gif|ico|svg|webp|woff2?|ttf|eot|map))$ - [L,NC]
+
+# (optionnel) ne pas réécrire l'API si elle est au même domaine (ex: /api)
+RewriteRule ^(api|storage|uploads)/ - [L,NC]
+
+# Tout le reste → index.html pour laisser Angular router gérer
+RewriteRule . /index.html [L]

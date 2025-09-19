@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
     templateUrl: './ecommerce.dashboard.component.html',
 })
 export class EcommerceDashboardComponent implements OnInit {
+    
       errors: { [key: string]: string } = {};
         contact: Contact = new Contact();
 
@@ -20,7 +21,7 @@ export class EcommerceDashboardComponent implements OnInit {
         private productService: ProductService,
         private layoutService: LayoutService,
         private contactService: ContactService,
-        private router: Router,
+        private router: Router, 
     ) {
          
     }
@@ -33,7 +34,11 @@ export class EcommerceDashboardComponent implements OnInit {
 
        getContactById(id: number): void {
         this.contactService.getContactById(id).subscribe({
-            next: (response) => (this.contact = response),
+            next: (response) => {
+                this.contact = response
+                console.log('contact', this.contact);
+                
+            },
             error: (err) =>
                 console.error(
                     'Erreur lors de la récupération du contact:',

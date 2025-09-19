@@ -1,3 +1,7 @@
+<!-- Bandeau d'avertissement (fixe) -->
+<div class=" top-0 left-0 w-full text-center bg-red-600 text-white py-2 px-4 font-semibold z-50 shadow-2">
+  ⚠️ Ce site est un test de projet personnel — ne pas utiliser pour de vraies transactions.
+</div>
 <div class="relative overflow-hidden flex flex-column justify-content-center">
     <div class="bg-circle opacity-50" style="top: -200px; left: -700px;"></div>
     <div class="bg-circle hidden lg:flex" style="top: 50px; right:-800px; transform: rotate(60deg)"></div>
@@ -5,7 +9,7 @@
         <div
             class="flex align-items-center justify-content-between relative lg:static py-6 px-4 mx-0 md:px-7 lg:px-8 lg:py-6 lg:mx-8">
             <a class="cursor-pointer" (click)="router.navigate(['/landing'])">
-                <svg width="124" height="22" viewBox="0 0 124 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- <svg width="124" height="22" viewBox="0 0 124 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M10.4851 0L0 20.9465H3.53702L10.4856 6.07843L17.2944 20.9465H20.9715L10.4851 0Z"
                         fill="var(--primary-color)" />
                     <path d="M13.84 15.7927L16.2077 21.0016H11.7682L13.84 15.7927Z" fill="var(--primary-color)" />
@@ -26,7 +30,13 @@
                     <path
                         d="M108.146 10.7737C108.146 8.75741 108.885 7.02563 110.363 5.57837C111.835 4.1311 113.604 3.40747 115.67 3.40747C117.711 3.40747 119.461 4.13729 120.921 5.59692C122.387 7.05656 123.12 8.80998 123.12 10.8572C123.12 12.9167 122.384 14.664 120.912 16.0989C119.433 17.54 117.649 18.2605 115.559 18.2605C113.709 18.2605 112.049 17.6204 110.577 16.3401C108.956 14.9237 108.146 13.0683 108.146 10.7737ZM110.326 10.8015C110.326 12.3848 110.858 13.6868 111.922 14.7073C112.98 15.7278 114.201 16.238 115.586 16.238C117.089 16.238 118.357 15.7185 119.39 14.6794C120.423 13.628 120.94 12.3477 120.94 10.8386C120.94 9.31095 120.429 8.03068 119.409 6.9978C118.394 5.95874 117.139 5.43921 115.642 5.43921C114.152 5.43921 112.893 5.95874 111.866 6.9978C110.84 8.0245 110.326 9.2924 110.326 10.8015Z"
                         fill="var(--primary-color)" />
-                </svg>
+                </svg> -->
+                
+                    <!-- Grand logo -->
+                    <img src="assets/demo/images/blocks/logos/Logo.svg" alt="DSPAY" class="app-logo-normal" />
+
+                                    <!-- Petit logo (mobile / collapsed) -->
+                    <!-- <img src="assets/demo/images/blocks/logos/Logo.svg" alt="DSPAY" class="app-logo-small" /> -->
             </a>
             <a pRipple class="cursor-pointer block md:hidden text-700 text-primary" pStyleClass="@next"
                 enterFromClass="ng-hidden" enterActiveClass="px-fadein" leaveToClass="ng-hidden"
@@ -49,33 +59,47 @@
                     </a>
                 </li>
                 <li>
-                    <a (click)="router.navigate(['/landing'], {fragment: 'apps'})" pRipple pStyleClass="@grandparent"
+                    <a (click)="router.navigate(['/landing'], {fragment: 'features'})" pRipple pStyleClass="@grandparent"
                         enterFromClass="ng-hidden" enterActiveClass="px-fadein" leaveToClass="ng-hidden"
                         class="flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3 cursor-pointer">
                         <span>Retrait</span>
                     </a>
-                </li>
-                <li>
-                    <a (click)="router.navigate(['/landing'], {fragment: 'agence'})" pRipple pStyleClass="@grandparent"
-                        enterFromClass="ng-hidden" enterActiveClass="px-fadein" leaveToClass="ng-hidden"
-                        class="flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3 cursor-pointer">
-                        <span>Nos agences</span>
-                    </a>
-                </li>
+                </li> 
                 <li>
                     <a (click)="router.navigate(['/auth/register'], {fragment: 'features'})" pRipple pStyleClass="@grandparent"
                         enterFromClass="ng-hidden" enterActiveClass="px-fadein" leaveToClass="ng-hidden"
-                        class="flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3 cursor-pointer">
+                        class="flex m-0 md:ml-4  px-2 py-3 text-900 font-medium line-height-3 cursor-pointer white-space-nowrap">
                         <span>Créer un compte</span>
                     </a>
                 </li>
             
                 
-                <li class="flex align-items-center">
-                    <button pButton pRipple type="button" pStyleClass="@grandparent" enterFromClass="ng-hidden"
-                        enterActiveClass="px-fadein" leaveToClass="ng-hidden" label="Connexion"
-                        class="m-0 mt-3 md:mt-0 md:ml-5 white-space-nowrap" (click)="goToLogin()"></button>
-                </li>
+                  <li class="flex align-items-center">
+        <ng-container *ngIf="!isLoggedIn; else dashboardLink">
+            <button pButton pRipple 
+                    type="button" 
+                    pStyleClass="@grandparent" 
+                    enterFromClass="ng-hidden"
+                    enterActiveClass="px-fadein" 
+                    leaveToClass="ng-hidden" 
+                    label="Connexion"
+                    class="m-0 mt-3 md:mt-0 md:ml-5 white-space-nowrap"
+                    (click)="goToLogin()">
+            </button>
+        </ng-container>
+        <ng-template #dashboardLink>
+            <button pButton pRipple 
+                    type="button" 
+                    pStyleClass="@grandparent" 
+                    enterFromClass="ng-hidden"
+                    enterActiveClass="px-fadein" 
+                    leaveToClass="ng-hidden" 
+                    label="Dashboard"
+                    class="m-0 mt-3 md:mt-0 md:ml- white-space-nowrap"
+                    (click)="goToDashboard()">
+            </button>
+        </ng-template>
+    </li>
             </ul>
          
         </div>
@@ -171,16 +195,59 @@
 </div>
 
 <!-- SECTION 1 -->
+
+<div id="features" class="my-6 py-6 md:my-8 md:py-8">
+                <span class="text-900 block font-bold text-5xl mb-4 text-center">Services</span>
+                <span class="text-700 block text-xl mb-8 text-center line-height-3">Découvrez l'emsemble de nos services.</span>
+
+                <div class="grid mt-8">
+                     
+                    <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
+                        <div class="box p-4 w-full surface-card surface-border border-1 border-round">
+                            <img src="assets/demo/images/landing/icon-productivity.svg" alt="components icon"
+                                class="block mb-3" />
+                            <span class="text-900 block font-semibold mb-3 text-lg">Transfert</span>
+                            <p class="m-0 text-secondary text-700">Envoyez de l’argent  vers la Guinée en minutes. Taux  compétitifs, frais transparents, paiement carte/Paypal.</p>
+                        </div>
+                    </div>
+                    <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
+                        <div class="box p-4 w-full surface-card surface-border border-1 border-round">
+                            <img src="assets/demo/images/landing/icon-accessibility.svg" alt="components icon"
+                                class="block mb-3" />
+                            <span class="text-900 block font-semibold mb-3 text-lg">Retrait</span>
+                            <p class="m-0 text-secondary text-700">Retrait rapide partout en Guinée. Dans nos points partenaires ou crédit immédiat sur Orange Money / MTN Mobile Money.</p>
+                        </div>
+                    </div>
+                    <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
+                        <div class="box p-4 w-full surface-card surface-border border-1 border-round">
+                            <img src="assets/demo/images/landing/icon-support.svg" alt="components icon"
+                                class="block mb-3" />
+                            <span class="text-900 block font-semibold mb-3 text-lg">Agence</span>
+                            <p class="m-0 text-secondary text-700">+4000 agences partenaires pour vos retraits. Service client réactif, conformité KYC/AML, 
+                                traçabilité des opérations et assistance 7j/7 pour vos transferts.</p>
+                        </div>
+                    </div>
+                    <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
+                        <div class="box p-4 w-full surface-card surface-border border-1 border-round">
+                            <img src="assets/demo/images/landing/icon-mobile.svg" alt="components icon"
+                                class="block mb-3" />
+                            <span class="text-900 block font-semibold mb-3 text-lg">Mobile</span>
+                            <p class="m-0 text-secondary text-700">Notre plateforme est responssive vous pouvez l'utiliser sur ordinateur, tablette ou smartphone.</p>
+                        </div>
+                    </div> 
+                </div>
+            </div>
  
+            <!-- promot -->
     <div class="grid grid-nogutter surface-section text-800">
         <div class="col-12 md:col-6 p-6 text-center md:text-left flex align-items-center ">
             <section>
                 <span class="block text-6xl font-bold mb-1">Profitez de la promo</span>
-                <div class="text-6xl text-primary font-bold mb-3">DSPAY rewads</div>
-                <p class="mt-0 mb-4 text-700 line-height-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                <div class="text-6xl text-primary font-bold mb-3">DSPAY rewards</div>
+                <p class="mt-0 mb-4 text-700 line-height-3">Rejoignez notre programme de récompenses et cumulez des points à chaque envoi d’argent vers la Guinée.</p>
                 
                 <button pButton pRipple label="+d'infos" type="button" class="mr-3 p-button-raised"></button>
-                <button pButton pRipple label="Commencer" type="button" class="p-button-outlined"></button>
+                <button pButton pRipple label="Commencer" type="button" class="p-button-outlined" (click)="router.navigate(['/landing'], {fragment: 'home'})"></button>
             </section>
         </div>
         <div class="col-12 md:col-6 overflow-hidden">
@@ -261,52 +328,7 @@
                 </div>
             </div> -->
 
-            <div id="features" class="my-6 py-6 md:my-8 md:py-8">
-                <span class="text-900 block font-bold text-5xl mb-4 text-center">Services</span>
-                <span class="text-700 block text-xl mb-8 text-center line-height-3">PrimeTek Informatics is the author
-                    of PrimeReact, a UI Component vendor with well known vastly popular projects including PrimeFaces,
-                    PrimeNG and PrimeVue.</span>
-
-                <div class="grid mt-8">
-                     
-                    <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
-                        <div class="box p-4 w-full surface-card surface-border border-1 border-round">
-                            <img src="assets/demo/images/landing/icon-productivity.svg" alt="components icon"
-                                class="block mb-3" />
-                            <span class="text-900 block font-semibold mb-3 text-lg">Transfert</span>
-                            <p class="m-0 text-secondary text-700">Boost your productivity by achieving more in less
-                                time and accomplish amazing results.</p>
-                        </div>
-                    </div>
-                    <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
-                        <div class="box p-4 w-full surface-card surface-border border-1 border-round">
-                            <img src="assets/demo/images/landing/icon-accessibility.svg" alt="components icon"
-                                class="block mb-3" />
-                            <span class="text-900 block font-semibold mb-3 text-lg">Retrait</span>
-                            <p class="m-0 text-secondary text-700">The ultimate set of UI Components to assist you with
-                                90+ impressive Angular Components.</p>
-                        </div>
-                    </div>
-                    <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
-                        <div class="box p-4 w-full surface-card surface-border border-1 border-round">
-                            <img src="assets/demo/images/landing/icon-support.svg" alt="components icon"
-                                class="block mb-3" />
-                            <span class="text-900 block font-semibold mb-3 text-lg">Agence</span>
-                            <p class="m-0 text-secondary text-700">Exceptional support service featuring response within
-                                1 business day and option to request enhancements and new features for the library.</p>
-                        </div>
-                    </div>
-                    <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
-                        <div class="box p-4 w-full surface-card surface-border border-1 border-round">
-                            <img src="assets/demo/images/landing/icon-mobile.svg" alt="components icon"
-                                class="block mb-3" />
-                            <span class="text-900 block font-semibold mb-3 text-lg">Mobile</span>
-                            <p class="m-0 text-secondary text-700">First class support for responsive design led by
-                                touch optimized elements.</p>
-                        </div>
-                    </div> 
-                </div>
-            </div>
+            
 
             <div class="grid justify-content-between my-6 pt-4 md:my-8">
                 <div class="col-12 md:col-2 text-center md:text-left">
@@ -343,34 +365,31 @@
                     <div class="grid text-center md:text-left">
                         <div class="col-12 md:col-3">
                             <h4 class="font-medium text-xl line-height-3 mb-3 text-900">Company</h4>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">About Us</a>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Qui somme nous?</a>
                             <a class="line-height-3 block cursor-pointer mb-2 text-700">News</a>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Investor Relations</a>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Careers</a>
-                            <a class="line-height-3 block cursor-pointer text-700">Media Kit</a>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Blog</a>
+                          </div>
+
+                        <div class="col-12 md:col-3 mt-4 md:mt-0">
+                            <h4 class="font-medium text-xl line-height-3 mb-3 text-900">Services</h4>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Transfert en ligne</a>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Retrait en agances </a>
+                            <a class="line-height-3 block cursor-pointer text-700">Contact</a>
+                            <a class="line-height-3 block cursor-pointer text-700">FAQ</a>
                         </div>
 
                         <div class="col-12 md:col-3 mt-4 md:mt-0">
-                            <h4 class="font-medium text-xl line-height-3 mb-3 text-900">Resources</h4>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Get Started</a>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Learn</a>
-                            <a class="line-height-3 block cursor-pointer text-700">Case Studies</a>
-                        </div>
-
-                        <div class="col-12 md:col-3 mt-4 md:mt-0">
-                            <h4 class="font-medium text-xl line-height-3 mb-3 text-900">Community</h4>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Discord</a>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Events</a>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">FAQ</a>
-                            <a class="line-height-3 block cursor-pointer text-700">Blog</a>
+                            <h4 class="font-medium text-xl line-height-3 mb-3 text-900">Réseaux</h4>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Facebook</a>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Tiktok</a>
+                             <a class="line-height-3 block cursor-pointer text-700">Youtube</a>
                         </div>
 
                         <div class="col-12 md:col-3 mt-4 md:mt-0">
                             <h4 class="font-medium text-xl line-height-3 mb-3 text-900">Legal</h4>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Brand Policy</a>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Privacy Policy</a>
-                            <a class="line-height-3 block cursor-pointer text-700">Terms of Service</a>
-                        </div>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Conditions d'utilisation (CGU)</a>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Conditions de vente (CGV)</a>
+                         </div>
                     </div>
                 </div>
             </div>

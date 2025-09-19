@@ -1,10 +1,14 @@
 // src/app/demo/models/transfert.ts
+import { Beneficiaire } from "./beneficiaire";
 import { Devises } from "./Devise";
+import { Taux } from "./Taux";
 
 export class Transfert {
   id?: number;
   code?: string;
   statut?: string;
+  beneficiaire:Beneficiaire=new Beneficiaire();
+  taux_echange:Taux=new Taux();
 
   // Expéditeur (backend le déduit du token) et bénéficiaire
   user_id?: number;

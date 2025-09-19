@@ -20,7 +20,7 @@ interface expandedRows {
     providers: [MessageService, ConfirmationService]
 })
 export class LandingComponent implements OnDestroy,OnInit {
-
+navOpen = false;
     subscription: Subscription;
     darkMode: boolean = false;
     isLoggedIn: boolean = false; 
@@ -273,24 +273,52 @@ recalc(): void {
 }
 
 
-
 startTransfer(): void {
-  // Redirige vers la page d’envoi avec les infos préremplies
-  this.router.navigate(['/dashboard/transfert/envoie'], {
-    queryParams: {
-      from: 'EUR',
-      to: 'GNF',
-      amountInput: this.amountInput,
-      feesIncluded: this.feesIncluded,
-      feePercent: this.feePercent,
-      fees: this.fees.toFixed(2),
-      sendAmount: this.sendAmountEUR.toFixed(2),
-      totalToPay: this.totalToPay.toFixed(2),
-      rate: this.rate,
-      receive: Math.round(this.receiveGNF)
-    }
-  });
+  const params = {
+    from: 'EUR',
+    to: 'GNF',
+    amountInput: this.amountInput,
+    feesIncluded: this.feesIncluded,
+    feePercent: this.feePercent,
+    fees: this.fees.toFixed(2),
+    sendAmount: this.sendAmountEUR.toFixed(2),
+    totalToPay: this.totalToPay.toFixed(2),
+    rate: this.rate,
+    receive: Math.round(this.receiveGNF)
+  };
+
+  const urlTree = this.router.createUrlTree(
+    ['/dashboard/transfert/envoie'],
+    { queryParams: params }
+  );
+  const redirectUrl = urlTree.toString();
+
+  if (this.authService.isAuthenticated()) {
+    this.router.navigateByUrl(redirectUrl);
+  } else {
+    sessionStorage.setItem('pendingTransferParams', JSON.stringify(params));
+    sessionStorage.setItem('redirectUrl', redirectUrl);
+    this.router.navigate(['/auth/login'], { queryParams: { redirect: redirectUrl } });
+  }
 }
+
+// startTransfer(): void {
+//   // Redirige vers la page d’envoi avec les infos préremplies
+//   this.router.navigate(['/dashboard/transfert/envoie'], {
+//     queryParams: {
+//       from: 'EUR',
+//       to: 'GNF',
+//       amountInput: this.amountInput,
+//       feesIncluded: this.feesIncluded,
+//       feePercent: this.feePercent,
+//       fees: this.fees.toFixed(2),
+//       sendAmount: this.sendAmountEUR.toFixed(2),
+//       totalToPay: this.totalToPay.toFixed(2),
+//       rate: this.rate,
+//       receive: Math.round(this.receiveGNF)
+//     }
+//   });
+// }
 
 
 }
