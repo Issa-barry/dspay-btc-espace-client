@@ -41,11 +41,11 @@
                 [rowHover]="true"
                 [globalFilterFields]="[
                     'code',
-                    'receveur_nom_complet',
-                    'receveur_phone',
-                    'expediteur_nom_complet',
-                    'expediteur_phone',
-                    'expediteur_email',
+                    'beneficiaire.nom_complet',
+                    'beneficiaire.nom',
+                    'beneficiaire.prenom',
+                    'beneficiaire.phone',
+                    'montant_gnf',
                     'montant_converti',
                     'montant',
                     'statut'
@@ -72,17 +72,18 @@
 
                 <ng-template pTemplate="header">
                     <tr>
-                        <th pSortableColumn="receveur_nom">
+                        <th pSortableColumn="beneficiaire.nom_complet">
                             Bénéficiaire
-                            <p-sortIcon field="receveur_nom"></p-sortIcon>
+                            <p-sortIcon field="beneficiaire.nom_complet"></p-sortIcon>
                         </th>
-                        <th pSortableColumn="receveur_phone">
+                        <th pSortableColumn="beneficiaire.phone">
                             Phone
-                            <p-sortIcon field="receveur_phone"></p-sortIcon>
+                            <p-sortIcon field="beneficiaire.phone"></p-sortIcon>
                         </th>
-                        <th pSortableColumn="montant">
-                            Montant <p-sortIcon field="montant"></p-sortIcon>
-                        </th>
+                        <th pSortableColumn="montant_gnf">
+                            Montant reçu
+                            <p-sortIcon field="montant_gnf"></p-sortIcon>
+                        </th> 
                         <th pSortableColumn="statut">
                             Statut <p-sortIcon field="statut"></p-sortIcon>
                         </th>

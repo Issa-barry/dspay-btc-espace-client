@@ -20,7 +20,7 @@ interface expandedRows {
     providers: [MessageService, ConfirmationService]
 })
 export class LandingComponent implements OnDestroy,OnInit {
-
+navOpen = false;
     subscription: Subscription;
     darkMode: boolean = false;
     isLoggedIn: boolean = false; 
