@@ -6,6 +6,7 @@ import {
     MenuColorScheme,
     MenuMode,
 } from '../service/app.layout.service';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-config',
@@ -20,7 +21,8 @@ export class AppConfigComponent implements OnInit {
 
     constructor(
         public layoutService: LayoutService,
-        public menuService: MenuService
+        public menuService: MenuService,
+        private router: Router
     ) {}
 
     get visible(): boolean {
@@ -106,8 +108,7 @@ export class AppConfigComponent implements OnInit {
             theme: _val,
         }));
     }
-
-    ngOnInit() {
+     ngOnInit() {
         this.componentThemes = [
             { name: 'indigo', color: '#6366F1' },
             { name: 'blue', color: '#3B82F6' },
@@ -138,5 +139,10 @@ export class AppConfigComponent implements OnInit {
 
     incrementScale() {
         this.scale++;
+    }
+
+    // iba 
+    onSendButtonClick() {
+        this.router.navigate(['/dashboard/transfert/envoie']);
     }
 }
