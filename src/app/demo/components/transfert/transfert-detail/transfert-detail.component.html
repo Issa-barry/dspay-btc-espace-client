@@ -64,7 +64,7 @@
                 </li>
                 <li class="flex justify-content-between mb-3">
                     <span class="text-900">Frais</span>
-                    <span class="text-900 font-medium text-lg">{{ transfert.frais }} €</span>
+                    <span class="text-900 font-medium text-lg">{{ transfert.frais | money:'EUR':'normal' }} </span>
                 </li>
                 <li class="flex justify-content-between mb-3">
                     <span class="text-900">Taux d'échange</span>
