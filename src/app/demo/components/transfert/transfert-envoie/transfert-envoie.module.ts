@@ -18,6 +18,7 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 import { CalendarModule } from 'primeng/calendar';
  import { ChipsModule } from 'primeng/chips';
 import { DividerModule } from 'primeng/divider';
+import { PipeModule } from 'src/app/demo/pipes/pipe.module';
 
 
 @NgModule({
@@ -39,7 +40,8 @@ import { DividerModule } from 'primeng/divider';
     InputSwitchModule,
     CalendarModule,
     ChipsModule,
-    DividerModule
+    DividerModule,
+    PipeModule
  
   ]
 })

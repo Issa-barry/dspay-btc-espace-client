@@ -51,6 +51,7 @@ export class TransfertListeComponent implements OnInit {
           summary: 'Erreur',
           detail: "Impossible de charger les transferts.",
         });
+        this.loading = false;
       }
     });
   }

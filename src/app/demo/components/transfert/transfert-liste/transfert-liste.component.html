@@ -109,10 +109,9 @@
 
                     <tr *ngIf="!loading"> 
                         <td>{{ transfert.beneficiaire.nom_complet }}</td>
-                        <td>{{ transfert.beneficiaire.phone }}</td>
+                        <td>{{ transfert.beneficiaire.phone | phoneFormat:'GN' }}</td>
                         <td>
-                            {{ transfert.montant_gnf}}
-                            {{ transfert.devise_cible?.tag }}
+                            {{ transfert.montant_gnf | money:'GNF':'normal'}}
                         </td>
                         <td>{{ transfert.statut }}</td>
                         <td>

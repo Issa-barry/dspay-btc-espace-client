@@ -14,8 +14,7 @@
       <p-table
         #dt
         [value]="loading ? skeletonRows : agences"
-        [loading]="loading"
-        responsiveLayout="scroll"
+         responsiveLayout="scroll"
         [rows]="10"
         [paginator]="true"
         [rowsPerPageOptions]="[10, 20, 30]"
@@ -93,7 +92,7 @@
             <td><p-tableCheckbox [value]="agence"></p-tableCheckbox></td>
             <td>{{ agence.reference }}</td>
             <td>{{ agence.nom_agence }}</td>
-            <td>{{ agence.phone }}</td>
+            <td>{{ agence.phone | phoneFormat:'GN'}}</td>
             <td>{{ agence.adresse?.adresse }}</td>
             <td>
               <span [ngClass]="'product-badge status-' + (agence.statut || '').toLowerCase()">

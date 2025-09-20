@@ -56,9 +56,10 @@ ng generate module demo/components/contact/contact-affecter-agence --route conta
 <!-- EUR -->
 {{ frais | money:'EUR' }}                 <!-- ex : 12,50 € -->
 {{ total_ttc | money:'EUR' }}             <!-- ex : 128,40 € -->
+{{ transfert.montant_envoie | money:'EUR' }}
 
 #### Utilisation (plus d’espace pour GNF)
 {{ transfert.montant_gnf | money:'GNF':'auto':false:'none':'fr-FR':'wide' }}
 
-→ donne 1 070 000 GNF (deux espaces insécables).
-Tu peux aussi tester gap:'narrow' si tu veux l’effet inverse.
+→ wide/normal/em/figure c'est pour espace de montant : donne 1 070 000 GNF (deux espaces insécables).
+ 

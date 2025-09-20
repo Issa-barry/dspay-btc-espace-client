@@ -46,7 +46,7 @@ export class TransfertDetailComponent implements OnInit {
         this.transfertService.getTransfertById(this.id).subscribe({
             next: (resp) => {
                 this.transfert = resp;
-                console.log('Transfert récupéré :', this.transfert);
+                // console.log('Transfert récupéré :', this.transfert);
              },
             error: (err) => {
                 console.error(
