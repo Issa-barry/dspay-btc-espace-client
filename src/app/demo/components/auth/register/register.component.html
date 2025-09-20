@@ -37,6 +37,38 @@
             <span class="text-600 font-medium">Allons-y</span>
         </div>
         <div class="flex flex-column">
+             <span class="p-input-icon-left w-full mb-2">
+                <i class="pi pi-user"></i>
+                <input
+                    [(ngModel)]="contact.nom"
+                    id="nom"
+                    type="text"
+                    pInputText
+                    class="w-full md:w-25rem"
+                    [ngClass]="{ 'ng-invalid ng-dirty': errors['nom']?.length }"
+                    placeholder="nom"
+                />
+            </span>
+            <small *ngIf="errors['nom']?.length" class="p-error block mb-3">
+                {{ errors['nom']?.[0] }}
+            </small>
+
+             <span class="p-input-icon-left w-full mb-2">
+                <i class="pi pi-user"></i>
+                <input
+                    [(ngModel)]="contact.prenom"
+                    id="prenom"
+                    type="text"
+                    pInputText
+                    class="w-full md:w-25rem"
+                    [ngClass]="{ 'ng-invalid ng-dirty': errors['prenom']?.length }"
+                    placeholder="prenom"
+                />
+            </span>
+            <small *ngIf="errors['prenom']?.length" class="p-error block mb-3">
+                {{ errors['prenom']?.[0] }}
+            </small>
+
             <span class="p-input-icon-left w-full mb-2">
                 <i class="pi pi-envelope"></i>
                 <input
@@ -54,7 +86,7 @@
             </small>
 
             <span class="p-input-icon-left w-full mb-2">
-                <i class="pi pi-user"></i>
+                <i class="pi pi-phone"></i>
                 <input
                     [(ngModel)]="contact.phone"
                     id="phone"
