@@ -81,7 +81,7 @@
             <ng-template pTemplate="item" let-opt>
               <div class="flex align-items-center justify-content-between w-full">
                 <span class="font-medium">{{ opt.label }}</span>
-                <span class="text-600 text-sm">{{ opt.phone }}</span>
+                <span class="text-600 text-sm">{{ opt.phone | phoneFormat:'GN'}}</span>
               </div>
             </ng-template>
 
@@ -89,7 +89,7 @@
             <ng-template pTemplate="selectedItem" let-opt>
               <div class="flex align-items-center justify-content-between w-full">
                 <span class="font-medium">{{ opt?.label }}</span>
-                <span class="text-600 text-sm">{{ opt?.phone }}</span>
+                <span class="text-600 text-sm">{{ opt?.phone | phoneFormat:'GN'}}</span>
               </div>
             </ng-template>
 
