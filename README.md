@@ -63,3 +63,4 @@ ng generate module demo/components/contact/contact-affecter-agence --route conta
 
 → wide/normal/em/figure c'est pour espace de montant : donne 1 070 000 GNF (deux espaces insécables).
  
+. 
