@@ -14,8 +14,7 @@
       <p-table
         #dt
         [value]="loading ? skeletonRows : agences"
-        [loading]="loading"
-        responsiveLayout="scroll"
+         responsiveLayout="scroll"
         [rows]="10"
         [paginator]="true"
         [rowsPerPageOptions]="[10, 20, 30]"
