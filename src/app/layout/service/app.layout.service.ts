@@ -37,7 +37,7 @@ interface LayoutState {
 
 @Injectable({
     providedIn: 'root',
-})
+}) 
 export class LayoutService {
     _config: AppConfig = {
         ripple: false,
@@ -45,7 +45,7 @@ export class LayoutService {
         menuMode: 'static',
         colorScheme: 'light',
         theme: 'indigo',
-        scale: 14,
+        scale: 15,
         menuTheme: 'colorScheme',
     };
 

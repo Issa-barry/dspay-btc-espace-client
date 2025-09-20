@@ -1,5 +1,5 @@
-<button class="layout-config-button p-link" type="button" (click)="onConfigButtonClick()">
-    <i class="pi pi-cog"></i>
+<button class="layout-config-button p-link" type="button" (click)="onSendButtonClick()">
+    <i class="pi pi-send"></i>
 </button>
 
 <p-sidebar [(visible)]="visible" position="right" [transitionOptions]="'.3s cubic-bezier(0, 0, 0.2, 1)'" styleClass="layout-config-sidebar w-18rem">
@@ -11,7 +11,7 @@
                 (click)="changeTheme(theme.name)" 
                 [ngStyle]="{'background-color': theme.color}"><i *ngIf="theme.name == this.layoutService.config().theme " class="pi pi-check text-white"></i></button>
         </div>
-    </div>
+    </div> 
     
     <h5>Scale</h5>
     <div class="flex align-items-center">

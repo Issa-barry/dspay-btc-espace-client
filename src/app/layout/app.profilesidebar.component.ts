@@ -5,6 +5,7 @@ import { AuthService } from '../demo/service/auth/auth.service';
 import { ContactService } from '../demo/service/contact/contact.service';
 import { Contact } from '../demo/models/contact';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { Observable } from 'rxjs';
 
 @Component({
     selector: 'app-profilemenu',
@@ -12,13 +13,13 @@ import { ConfirmationService, MessageService } from 'primeng/api';
     providers: [MessageService],
 })
 export class AppProfileSidebarComponent implements OnInit {
-
+ me$!: Observable<Contact | null>;   // profil connecté (observable)
   contacts: Contact[] = [];
   contact: Contact = new Contact();
    errorMessage: string | null = null;
 
     constructor(
-        public router: Router,
+        public router: Router, 
         private authService: AuthService,
         public layoutService: LayoutService,
         private contactService: ContactService,
@@ -59,6 +60,15 @@ export class AppProfileSidebarComponent implements OnInit {
 
 
   ngOnInit() {
-    this.getContactById()
-   }
+    this.getContactById();
+    this.lodUserAuth();
+    }
+
+   lodUserAuth() {
+    this.me$ = this.authService.currentUser$;
+    // Si pas encore chargé (page fraîche), on récupère /users/me
+    if (!this.authService.currentUserValue) {
+      this.authService.getMe().subscribe();
+    }
+  }
 }
