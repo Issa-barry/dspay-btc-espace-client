@@ -1,23 +1,35 @@
-/* Réduit la taille du switch sans déformer l’UI */
-:host ::ng-deep .switch-sm.p-inputswitch {
-  width: 40px;          /* largeur de la piste */
-  height: 18px;         /* hauteur de la piste */
+/* Centre et limite la largeur en desktop, sans gêner le mobile */
+.step-container {
+  width: 100%;
 }
 
-:host ::ng-deep .switch-sm.p-inputswitch .p-inputswitch-slider {
-  height: 20px;         /* même hauteur que le conteneur */
+.recap-card {
+  max-width: 560px;
+  margin: 0 auto;
 }
 
-:host ::ng-deep .switch-sm .p-inputswitch-slider:before {
-  width: 18px;          /* diamètre du bouton */
-  height: 18px;
-  left: 2px;            /* centrage vertical/horizontal dans la piste */
-  bottom: 6px;
+/* Switch plus compact */
+.switch-sm .p-inputswitch {
+  transform: scale(.9);
+  transform-origin: left center;
 }
 
-/* distance parcourue par le bouton quand ON:
-   translateX = largeur piste - (2*padding) - diamètre bouton
-   ici: 36 - 4 - 14 = 18px */
-:host ::ng-deep .switch-sm.p-inputswitch.p-inputswitch-checked .p-inputswitch-slider:before {
-  transform: translateX(18px);
+/* Rayon un peu plus doux sur petit écran */
+@media screen and (max-width: 575px) {
+  .recap-card { border-radius: 1rem; }
 }
+
+
+/* compacte les lignes et enlève l’effet “trop décalé” */
+.recap-card { max-width: 560px; margin: 0 auto; }
+.recap-row [class*="col-"] { padding-top: .35rem; padding-bottom: .35rem; }
+.switch-sm .p-inputswitch { transform: scale(.9); transform-origin: left center; }
+
+/* Déjà ajouté précédemment : normal en mobile, bold en ≥ md */
+.montant-recu-value { font-weight: 400; }
+@media (min-width: 768px) {
+  .montant-recu-value { font-weight: 700; }
+}
+
+/* Empêche le retour à la ligne du montant */
+// .nowrap { white-space: nowrap; }
