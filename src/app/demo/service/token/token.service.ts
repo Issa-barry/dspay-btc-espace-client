@@ -30,11 +30,11 @@ export class TokenService {
   /**
    * Remove the token from localStorage and clear the BehaviorSubject.
    */
-  clearToken(): void {
+  clearToken(): void { 
     localStorage.removeItem('access_token');
     this.tokenSubject.next(null);
   }
-
+ 
   /**
    * Get the current token value from the BehaviorSubject.
    * @returns Current token or null if not available

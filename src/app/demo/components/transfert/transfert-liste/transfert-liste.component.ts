@@ -29,15 +29,15 @@ export class TransfertListeComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.getAllTransferts();
+    this.getTransfertsByUser();
   }
 
 
   /** Récupérer la liste des transferts */
-  getAllTransferts(): void {
+  getTransfertsByUser(): void {
       this.loading = true;
 
-    this.transfertService.getTransferts().subscribe({
+    this.transfertService.getByUserAuth().subscribe({
       next: (response) => {
         this.transferts = response;
         this.loading = false;
@@ -104,7 +104,7 @@ export class TransfertListeComponent implements OnInit {
           detail: 'Transfert supprimé avec succès.',
           life: 4500,
         });
-        this.getAllTransferts();
+        this.getTransfertsByUser();
       },
       error: (err) => {
         console.error("Erreur lors de la suppression :", err);

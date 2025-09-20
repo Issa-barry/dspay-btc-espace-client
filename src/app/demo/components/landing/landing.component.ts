@@ -192,7 +192,7 @@ feesIncluded = true;      // switch "Frais inclus ?"
 feePercent = 0.05;       // 2,5% (à adapter ou charger via API)
 minFeeEUR = 0;            // optionnel: frais minimum ; laisse 0 si inutile
 
-rateBase = 9500;          // taux de base
+rateBase = 10700;          // taux de base
 rate = this.rateBase;     // taux courant (peut être promo)
 promo = false;            // active un taux promo si besoin
 

@@ -11,14 +11,13 @@ import { Contact } from '../../models/contact';
 const httpOption = {
     headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Headers': 'Content-Type',
         'Access-Control-Allow-Methods': 'GET,POST,OPTIONS,DELETE,PUT',
     }),
 };
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root', 
 })
 export class ContactService {
     private apiUrl = `${environment.apiUrl}/users`;

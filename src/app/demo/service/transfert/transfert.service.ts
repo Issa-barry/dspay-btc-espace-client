@@ -86,6 +86,21 @@ export class TransfertService {
       );
   }
 
+    getByUserAuth(): Observable<Transfert[]> {
+    return this.http
+      .get<any>(`${this.apiUrl}/by-user`)
+      .pipe(
+        map((res) => {
+          // Compat de formats possibles
+          if (res?.data?.items) return res.data.items as Transfert[];
+          if (Array.isArray(res?.data)) return res.data as Transfert[];
+          if (Array.isArray(res)) return res as Transfert[];
+          return [];
+        }),
+        catchError(this.handleError)
+      );
+  }
+
   getTransfertById(id: number): Observable<Transfert> {
     return this.http
       .get<{ success: boolean; data: Transfert }>(`${this.apiUrl}/showById/${id}`)
