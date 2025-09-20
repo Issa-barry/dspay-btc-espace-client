@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+# remplace par ton vrai domaine :
+Sitemap: https://ibarry.fr/sitemap.xml
