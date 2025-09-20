@@ -21,6 +21,7 @@ import { SliderModule } from 'primeng/slider';
 import { RatingModule } from 'primeng/rating';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { PipeModule } from '../../pipes/pipe.module';
 
 
 @NgModule({
@@ -44,7 +45,7 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 		ProgressBarModule,
 		ToastModule,
         InputNumberModule,
-        InputSwitchModule
+        InputSwitchModule,PipeModule
     ],
     declarations: [LandingComponent, AnimateEnterDirective]
 })

@@ -1,139 +1,105 @@
 import { Injectable } from '@angular/core';
-import {
-    HttpClient,
-    HttpErrorResponse,
-    HttpHeaders,
-} from '@angular/common/http';
-import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
 import { environment } from 'src/environements/environment.dev';
 import { Router } from '@angular/router';
 import { TokenService } from '../token/token.service';
 import { Contact } from '../../models/contact';
 
-//Hedaer Option
 const httpOption = {
-    headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'GET,POST,OPTIONS,DELETE,PUT',
-    }),
+  headers: new HttpHeaders({
+    'Content-Type': 'application/json',
+    // ⚠️ Ne pas mettre d’en-têtes Access-Control-* côté front
+  }),
 };
 
 export interface CreateClientDto {
-  email: string;
-  phone: string;
-  password: string;
-  password_confirmation: string;
+  email: string; phone: string; password: string; password_confirmation: string;
 }
+export interface ApiResponse<T = any> { success: boolean; message: string; data?: T | null; }
+export interface ClientCreated { id: number; email: string; phone: string; }
 
-export interface ApiResponse<T = any> {
-  success: boolean;
-  message: string;
-  data?: T | null;
-}
-
-export interface ClientCreated {
-  id: number;
-  email: string;
-  phone: string;
-}
-
-
-@Injectable({
-    providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class AuthService {
-    private apiUrl = `${environment.apiUrl}`;
-    private currentUserSubject: BehaviorSubject<any>;
-    public currentUser: Observable<any>;
-    private userId = '';
+  private apiUrl = `${environment.apiUrl}`;
 
-    constructor(
-        public router: Router,
-        private http: HttpClient,
-        private tokenService: TokenService
-    ) {
-        const storedUser = localStorage.getItem('access_token');
-        this.currentUserSubject = new BehaviorSubject<any>(
-            storedUser ? { access_token: storedUser } : null
-        );
-        this.currentUser = this.currentUserSubject.asObservable();
-    }
+  /** ✅ état typé Contact */
+  private currentUserSubject: BehaviorSubject<Contact | null>;
+  public  currentUser$: Observable<Contact | null>;
+  private userId = '';
 
-    public get currentUserValue(): any {
-        return this.currentUser;
-    }
+  constructor(
+    public router: Router,
+    private http: HttpClient,
+    private tokenService: TokenService
+  ) {
+    /** ✅ on restaure l’utilisateur si présent */
+    const saved = localStorage.getItem('current_user');
+    this.currentUserSubject = new BehaviorSubject<Contact | null>(
+      saved ? JSON.parse(saved) as Contact : null
+    );
+    this.currentUser$ = this.currentUserSubject.asObservable();
+  }
 
-    private handleError(error: HttpErrorResponse) {
-        console.error('Erreur API:', error);
-        let errorMessage = 'Une erreur inconnue est survenue';
+  /** ✅ renvoie la valeur courante (pas l’Observable) */
+  public get currentUserValue(): Contact | null {
+    return this.currentUserSubject.value;
+  }
 
-        if (error.error instanceof ErrorEvent) {
-            errorMessage = `Erreur client : ${error.error.message}`; 
+  private handleError(error: HttpErrorResponse) {
+    // … (ta gestion existante)
+    return throwError(() => new Error('Erreur réseau'));
+  }
 
-        } else {
-            switch (error.status) {
-                case 400: 
-                    errorMessage =
-                        'Requête invalide. Vérifiez vos informations.';
-                    break;
-                case 401:
-                    errorMessage =
-                        'Identifiants incorrects. Vérifiez votre email et mot de passe.';
-                    break;
-                case 403:
-                    errorMessage = 'Accès refusé. Contactez l’administrateur.';
-                    break;
-                case 500:
-                    errorMessage =
-                        'Erreur interne du serveur. Réessayez plus tard.';
-                    break;
-                case 0:
-                    errorMessage =
-                        'Impossible de se connecter au serveur. Vérifiez votre connexion internet.';
-                    break;
-                default:
-                    errorMessage = `Erreur ${error.status}: ${error.message}`;
-            }
-        }
+  /** Login: stocke token + user */
+  login(credentials: { email: string; password: string }): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/login`, credentials, httpOption).pipe(
+      tap((response) => {
+        // token
+        this.tokenService.storeToken(response.access_token);
 
-        return throwError(() => new Error(errorMessage));
-    }
+        // user (typé Contact) renvoyé par le backend
+        const user: Contact = response.user as Contact;
 
-    login(credentials: { email: string; password: string }): Observable<any> {
-        return this.http
-            .post<any>(`${this.apiUrl}/login`, credentials, httpOption)
-            .pipe(
-                map((response) => {
-                    this.tokenService.storeToken(response.access_token);
-                    this.userId = response.user.id;
-                    this.setUserId(this.userId);
-                    localStorage.setItem('user_id', this.userId);
-                    this.currentUserSubject.next({
-                        access_token: response.access_token,
-                    });
-                    return response;
-                }),
-                // catchError(this.handleError)
-            );
-    }
- 
-    logout(): Observable<any> {
-        
-        return this.http.post<any>(`${this.apiUrl}/logout`, {}).pipe(
-            map(() => {
-                this.tokenService.clearToken();
-                this.currentUserSubject.next(null);
-                localStorage.removeItem('user_id');
-                this.router.navigate(['/auth/login']);
-            }),
-            catchError(this.handleError) 
-        );
-    }
+        this.userId = String(user.id);
+        localStorage.setItem('user_id', this.userId);
 
-     /** Convertit un Contact en payload attendu par l’API */
+        // ✅ on garde l’objet utilisateur en mémoire
+        this.currentUserSubject.next(user);
+        localStorage.setItem('current_user', JSON.stringify(user));
+      })
+      // ,catchError(this.handleError)
+    );
+  }
+
+  /** Profil utilisateur connecté */
+  getMe(): Observable<Contact> {
+    return this.http
+      .get<{ success: boolean; data: Contact }>(`${this.apiUrl}/users/me`)
+      .pipe(
+        map(res => res.data),
+        tap((user: Contact) => {
+          this.currentUserSubject.next(user);
+          localStorage.setItem('current_user', JSON.stringify(user));
+          if (user?.id) localStorage.setItem('user_id', String(user.id));
+        })
+      );
+  }
+
+  logout(): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/logout`, {}).pipe(
+      tap(() => {
+        this.tokenService.clearToken();
+        this.currentUserSubject.next(null);
+        localStorage.removeItem('user_id');
+        localStorage.removeItem('current_user'); // ✅ important
+        this.router.navigate(['/auth/login']);
+      }),
+      catchError(this.handleError)
+    );
+  }
+
   toCreateDto(contact: Contact): CreateClientDto {
     return {
       email: contact.email?.trim() ?? '',
@@ -143,50 +109,27 @@ export class AuthService {
     };
   }
 
-  /** Création du compte client */
   register(payload: CreateClientDto): Observable<ApiResponse<ClientCreated>> {
-    return this.http.post<ApiResponse<ClientCreated>>(`${this.apiUrl}/users/clients/create`, payload, httpOption)
-    //   .pipe(catchError(this.handleError));
+    return this.http.post<ApiResponse<ClientCreated>>(
+      `${this.apiUrl}/users/clients/create`, payload, httpOption
+    );
   }
 
-    // register(user: any): Observable<any> {
-    //     return this.http
-    //         .post<any>(`${this.apiUrl}/users/clients/create`, user, httpOption)
-    //         .pipe(
-    //             map((response) => {
-    //                 console.log('Inscription réussie :', response);
-    //                 return response;
-    //             })
-    //             // catchError(this.handleError('register', null))
-    //         );
-    // }
+  isAuthenticated(): boolean { return this.tokenService.hasToken(); }
+  getUserInfo(): Contact | null { return this.currentUserValue; }
+  setUserId(id: string) { this.userId = id; }
+  getUserId() { return localStorage.getItem('user_id'); }
 
-    isAuthenticated(): boolean {
-        return this.tokenService.hasToken();
-    }
-
-    getUserInfo(): any {
-        return this.currentUserValue; // Retourne l'utilisateur actuellement stocké
-    }
-
-    setUserId(id: string) {
-        this.userId = id;
-    }
-
-    getUserId() {
-        return localStorage.getItem('user_id');
-    }
-
-    verifyToken(): Observable<boolean> {
-        return this.tokenService.verifyToken().pipe(
-            map((isValid) => {
-                if (!isValid) {
-                    this.currentUserSubject.next(null);
-                    this.router.navigate(['/auth/login']);
-                }
-                return isValid;
-            })
-        );
-    }
-
+  verifyToken(): Observable<boolean> {
+    return this.tokenService.verifyToken().pipe(
+      map((isValid) => {
+        if (!isValid) {
+          this.currentUserSubject.next(null);
+          localStorage.removeItem('current_user');
+          this.router.navigate(['/auth/login']);
+        }
+        return isValid;
+      })
+    );
+  }
 }
