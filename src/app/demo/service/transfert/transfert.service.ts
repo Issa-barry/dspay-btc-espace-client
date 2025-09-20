@@ -11,7 +11,7 @@ import { Transfert } from '../../models/transfert';
 export type TransfertCreateDto = {
   beneficiaire_id: number;
   taux_echange_id: number;
-  montant_euro: number;
+  montant_envoie: number;
 };
 
 const httpOption = {

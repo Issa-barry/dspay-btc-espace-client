@@ -1,242 +1,268 @@
 <div class="card">
-    <div class="grid grid-nogutter">
-        <!-- <div class="col-12 px-4 mt-4 md:mt-6 md:px-6" *ngIf="activeIndex === 0">
-            <span class="text-900 block font-bold text-xl">Envoiyer de l'argent</span>
-             <div class="flex justify-content-end gap-2 mt-4 ml-3">
-                <button pButton label="Payer" icon="pi pi-credit-card" iconPos="right"  (click)="openPayement()"></button>
-                </div>
-            <ul class="flex list-none flex-wrap p-0 mb-4">
-                <li class="flex align-items-center text-primary mr-2">Montant à envoyer <i class="pi pi-chevron-right text-500 text-xs ml-2"></i></li>
-                <li class="flex align-items-center text-primary mr-2">Bénéficiaire <i class="pi pi-chevron-right text-500 text-xs ml-2"></i></li>
-                <li class="flex align-items-center text-primary mr-2">Récapitulatif et payement<i class="pi pi-chevron-right text-500 text-xs ml-2"></i></li>
-            </ul>
-        </div> -->
-        <div class="col-12 lg:col-6 h-full px-4 py-4 md:px-6" *ngIf="activeIndex === 0">
-            <span class="text-900 block font-bold text-xl mb-5">Envoiyer de l'argent</span>
-            <div class="grid formgrid">    
-                <div class="col-12 md:col-12 mb-1">
-                    <p-inputGroup class="w-full">
-                        <p-inputGroupAddon>
-                            <i class="pi " style="line-height: 1.25; letter-spacing: 0.1rem;">Euro</i>
-                        </p-inputGroupAddon>
-                        <input type="text" pInputText placeholder="" [(ngModel)]="montantEuro" (input)="convertirDepuisEuro()"  [max]="1000"/>
-                    </p-inputGroup>
-                    <small *ngIf="errors['montantEuro']">{{ errors['montantEuro'] }}</small>
-                </div>
-                 <div class="col-12 md:col-12 mb-3">
-                    <p-inputGroup class="w-full">
-                        <p-inputGroupAddon>
-                            <i class="pi " style="line-height: 1.25; letter-spacing: 0.1rem;">GNF</i>
-                        </p-inputGroupAddon>
-                        <input type="text" pInputText placeholder="" [(ngModel)]="montantGNF" (input)="convertirDepuisGNF()"/>
-                    </p-inputGroup>
-                </div> 
-                 
-               <div class="flex justify-content-end gap-2 mt-4 ml-3">
-                <button [disabled]="!isMontantValide" pButton label="Continuer" icon="pi pi-chevron-right" iconPos="right"  (click)="next()"></button>
-                </div>
-            </div>
+  <div class="grid grid-nogutter step-container">
+
+    <!-- ÉTAPE 0 : Montant -->
+    <div class="col-12 lg:col-6 h-full px-4 py-4 md:px-6" *ngIf="activeIndex === 0">
+      <span class="text-900 block font-bold text-xl mb-5">Envoyer de l'argent</span>
+
+      <div class="grid formgrid">
+        <div class="col-12 mb-2">
+          <p-inputGroup class="w-full">
+            <p-inputGroupAddon>
+              <i class="pi" style="line-height: 1.25; letter-spacing: .1rem;">Euro</i>
+            </p-inputGroupAddon>
+            <input type="text" pInputText [(ngModel)]="montantEuro" (input)="convertirDepuisEuro()" [max]="1000" />
+          </p-inputGroup>
+          <small *ngIf="errors['montantEuro']">{{ errors['montantEuro'] }}</small>
         </div>
 
-
-        <div class="col-12 lg:col-6 h-full px-4 py-4 md:px-6"  *ngIf="activeIndex === 1"> 
-            <div class="grid formgrid"> 
-                <div class="col-12 field mb-4">
-                            <label class="font-medium text-900">Bénéficiaire</label>
-                            <p-dropdown
-                                [options]="beneficiairesOptions"
-                                optionValue="id"
-                                optionLabel="label"
-                                [(ngModel)]="selectedBeneficiaireId"
-                                [filter]="true"
-                                [showClear]="true"
-                                placeholder="Sélectionnez un bénéficiaire"
-                                styleClass="w-full"
-                                appendTo="body"
-                                [disabled]="loading"
-                                (onChange)="onBeneficiaireChange($event.value)"
-                                [ngClass]="{'ng-invalid ng-dirty': submitted && !selectedBeneficiaireId || !isBeneficiaireValide || errors['beneficiaire'] }"
-                            >
-                                <!-- item -->
-                                <ng-template pTemplate="item" let-opt>
-                                <div class="flex align-items-center justify-content-between w-full">
-                                    <span class="font-medium">{{ opt.label }}</span>
-                                    <span class="text-600 text-sm">{{ opt.phone }}</span>
-                                </div>
-                                </ng-template>
-
-                                <!-- valeur sélectionnée -->
-                                <ng-template pTemplate="selectedItem" let-opt>
-                                <div class="flex align-items-center justify-content-between w-full">
-                                    <span class="font-medium">{{ opt?.label }}</span>
-                                    <span class="text-600 text-sm">{{ opt?.phone }}</span>
-                                </div>
-                                </ng-template>
-                            </p-dropdown>
-
-                            <small *ngIf="errors['beneficiaire']">{{ errors['beneficiaire'] }}</small>
-                            <small *ngIf="submitted && !isBeneficiaireValide">Veuillez choisir un bénéficiaire.</small>
-                  </div>
-  
-            </div>
-            
-                 <div class="flex justify-content-between mt-4">
-                   <button pButton label="Retour" icon="pi pi-chevron-left" (click)="prev()" class="p-button-secondary"></button>
-                   <button [disabled]="!isBeneficiaireValide" pButton label="Continuer" icon="pi pi-chevron-right" iconPos="right"   (click)="next()"></button>
-                </div>
+        <div class="col-12">
+          <p-inputGroup class="w-full">
+            <p-inputGroupAddon>
+              <i class="pi" style="line-height: 1.25; letter-spacing: .1rem;">GNF</i>
+            </p-inputGroupAddon>
+            <input type="text" pInputText [(ngModel)]="montantGNF" (input)="convertirDepuisGNF()" />
+          </p-inputGroup>
         </div>
 
-         
-        <!-- RECAPITULATIF -->
-        <div class="col-12 lg:col-6 px-4 py-4 md:px-6"  *ngIf="activeIndex === 2">
-            <div class="pb-3 surface-border">
-                <span class="text-900 font-bold text-xl">Récapitulatif</span>
-            </div>
-            <!-- <div>
-                <div class="flex flex-column lg:flex-row flex-wrap lg:align-items-center py-2 mt-3 surface-border">
-                    <div class="flex-auto lg:ml-3">
-                        <div class="flex align-items-center justify-content-between mb-3">
-                            <span class="text-900 font-bold">Bénéficiaire</span>
-                        </div>
-                        <div class="text-600 text-sm mb-2">{{ selectedBeneficiaireLabel }}</div>
-                        <div class="text-600 text-sm mb-2">{{ selectedBeneficiairePhone }}</div>
-                    </div>
-                </div> -->
-                <div class="py-2 mt-3">
-                       <div class="flex justify-content-between align-items-center mb-3">
-                        <span class="text-900 font-medium">Bénéficiare  </span>
-                        <span class="text-900 text-sm">{{ selectedBeneficiaireLabel }}</span>
-                        <span class="text-600 text-sm">{{ selectedBeneficiairePhone }}</span>
-                </div>
-                <hr/>
-                   <div class="py-2 mt-3">
-                       <div class="flex justify-content-between align-items-center mb-3">
-                        <span class="text-900 font-medium">Montant recu</span>
-                        <span class="text-900 font-bold">{{ montantGNF | number:'1.2-2' }} GNF</span>
-                    </div> 
-                    <hr/>
-
-                    <div class="flex justify-content-between align-items-center mb-3">
-                        <span class="flex justify-content-between align-items-center text-900 font-medium">
-                            <span class="mb-0">Frais</span>  
-                            <span  class="mt-2 mx-2" >
-                                <p-inputSwitch  styleClass="switch-sm" [(ngModel)]="includeFrais" (onChange)="majFraisTotal()" [disabled]="!montantEuro"></p-inputSwitch>
-                             </span>  
-                        </span>
-                        <span class="text-900 font-bold">€ {{ frais }}</span>
-                    </div>
-                    <hr/>
-                    <div class="flex justify-content-between align-items-center mb-3">
-                        <span class="text-900 font-bold">Total à payer</span>
-                        <span class="text-900 font-bold">{{ total | number:'1.2-2' }} €</span>
-                    </div>
-                </div> 
-                <hr/>
-                <div class="flex justify-content-between my-6">
-                    <button pButton label="Retour" icon="pi pi-chevron-left" (click)="prev()" class="p-button-secondary"></button>
-                    <button pButton label="Confirmer et payer" icon="pi pi-check" (click)="openPayement()" [disabled]="!isMontantValide || !isBeneficiaireValide"></button>
-                </div>
-            </div>     
-</div> 
- 
- 
-        <p-dialog 
-         [(visible)]="payementDialog"
-         header="Carte bancaire" 
-         [modal]="true" 
-         [closable]="false" 
-         [style]="{width:'450px'}"
-         >
-                <div class="grid formgrid">    
-                <div class="col-12 md:col-12 mb-4">
-                    <p-inputGroup class="w-full">
-                        <p-inputGroupAddon>
-                            <i class="pi " style="line-height: 1.25; letter-spacing: 0.1rem;">Numéro</i>
-                        </p-inputGroupAddon>
-                        <input type="text" pInputText placeholder="Exemple : 1234 5678 9012 3456" />
-                    </p-inputGroup>
-                    <small *ngIf="errors['montantEuro']">{{ errors['montantEuro'] }}</small>
-                </div>
-                 <div class="col-12 md:col-4 mb-3">
-                    <p-inputGroup class="w-full">
-                        <p-inputGroupAddon>
-                            <i class="pi " style="line-height: 1.25; letter-spacing: 0.1rem;">mois</i>
-                        </p-inputGroupAddon>
-                        <input type="text" pInputText placeholder="10"/>
-                    </p-inputGroup>
-                </div> 
-                 <div class="col-12 md:col-4 mb-3">
-                    <p-inputGroup class="w-full">
-                        <p-inputGroupAddon>
-                            <i class="pi " style="line-height: 1.25; letter-spacing: 0.1rem;">Année</i>
-                        </p-inputGroupAddon>
-                        <input type="text" pInputText placeholder="25"/>
-                    </p-inputGroup>
-                </div> 
-                <div class="col-12 md:col-4 mb-3">
-                    <p-inputGroup class="w-full">
-                        <p-inputGroupAddon>
-                            <i class="pi " style="line-height: 1.25; letter-spacing: 0.1rem;">CVC</i>
-                        </p-inputGroupAddon>
-                        <input type="text" pInputText placeholder="" />
-                    </p-inputGroup>
-                </div> 
-            </div>
-            <ng-template pTemplate="footer">
-                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="Annuler" (click)="hideDialog()"></button>
-                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Payer" (click)="save()" [loading]="loading"></button>
-            </ng-template>
-        </p-dialog>
-
-        <!-- <p-dialog [(visible)]="ticketDialog"  [closable]="false"  header="Ticket de retrait" [modal]="true" [style]="{width:'450px'}">
-            <div class=""> 
-                <div>
-                    <div class="flex flex-column lg:flex-row flex-wrap lg:align-items-center py-0 mt-2 surface-border">
-                        <div class="flex-auto lg:ml-3">
-                            <div class="flex align-items-center justify-content-between mb-2">
-                                <span class="text-900 font-bold">CODE : <span class="text-600"> {{ transfert.code }}</span> </span>
-                             </div>
-                          </div>
-                    </div>
-                    <div class="flex flex-column lg:flex-row flex-wrap lg:align-items-center py-0 mt-2 surface-border">
-                        <div class="flex-auto lg:ml-3">
-                            <div class="flex align-items-center justify-content-between mb-2">
-                                <span class="text-900 font-bold">Montant : <span class="text-600"> {{ montantGNF }} GNF</span> </span>
-                             </div>
-                          </div>
-                    </div>
-                    <div class="flex flex-column lg:flex-row flex-wrap lg:align-items-center py-2 mt-1 surface-border">
-                        <div class="flex-auto lg:ml-3">
-                            <div class="flex align-items-center justify-content-between mb-2">
-                                <span class="text-900 font-bold">Bénéficiaire</span>
-                             </div>
-                            <div class="text-600 text-sm mb-2">{{ transfert.receveur_nom_complet }}</div>
-                            <div class="text-600 text-sm mb-2">Tel : {{ transfert.receveur_phone }}</div>
-                            <div class="text-600 text-sm mb-2">Montant : GNF {{ montantGNF }}</div>  
-                        </div>
-                    </div>
-                    <div class="flex flex-column lg:flex-row flex-wrap lg:align-items-center py-2 mt-1 surface-border">
-                        <div class="flex-auto lg:ml-3">
-                            <div class="flex align-items-center justify-content-between mb-2">
-                                <span class="text-900 font-bold">Agence</span>
-                             </div>
-                            <div class="text-600 text-sm mb-2">Tel : 666 17 70 06</div>
-                            <div class="text-600 text-sm mb-2">Adresse : Cosa pharmacie / Conakry</div>
-                        </div>
-                    </div>
-                    <div class="py-2 mt-3"> 
-                        <div class="flex justify-content-between align-items-center mb-3">
-                            <span class="text-900 font-medium">Date d'envoie</span>
-                            <span class="text-900"> 08/03/20258</span>
-                        </div> 
-                    </div> 
-                </div>
-                 
-            </div>
-            <ng-template pTemplate="footer">
-                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="Fermer" (click)="hideTicketDialog()"></button>
-            </ng-template>
-        </p-dialog> -->
-        <p-toast></p-toast>
+        <div class="col-12 mt-3">
+          <div class="flex md:justify-content-end">
+            <button
+              [disabled]="!isMontantValide"
+              pButton
+              class="w-full md:w-auto"
+              label="Continuer"
+              icon="pi pi-chevron-right"
+              iconPos="right"
+              (click)="next()">
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- ÉTAPE 1 : Bénéficiaire -->
+    <div class="col-12 lg:col-6 h-full px-4 py-4 md:px-6" *ngIf="activeIndex === 1">
+      <div class="grid formgrid">
+        <div class="col-12 field mb-4">
+          <label class="font-medium text-900">Bénéficiaire</label>
+
+          <p-dropdown
+            [options]="beneficiairesOptions"
+            optionValue="id"
+            optionLabel="label"
+            [(ngModel)]="selectedBeneficiaireId"
+            [filter]="true"
+            [showClear]="true"
+            placeholder="Sélectionnez un bénéficiaire"
+            styleClass="w-full"
+            appendTo="body"
+            [disabled]="loading"
+            [emptyMessage]="'Aucun bénéficiaire'"
+            [emptyFilterMessage]="'Aucun résultat'"
+            (onChange)="onBeneficiaireChange($event.value)"
+            [ngClass]="{'ng-invalid ng-dirty': (submitted && !selectedBeneficiaireId) || !isBeneficiaireValide || errors['beneficiaire'] }">
+
+            <!-- item -->
+            <ng-template pTemplate="item" let-opt>
+              <div class="flex align-items-center justify-content-between w-full">
+                <span class="font-medium">{{ opt.label }}</span>
+                <span class="text-600 text-sm">{{ opt.phone }}</span>
+              </div>
+            </ng-template>
+
+            <!-- valeur sélectionnée -->
+            <ng-template pTemplate="selectedItem" let-opt>
+              <div class="flex align-items-center justify-content-between w-full">
+                <span class="font-medium">{{ opt?.label }}</span>
+                <span class="text-600 text-sm">{{ opt?.phone }}</span>
+              </div>
+            </ng-template>
+
+            <!-- Footer du panneau : bouton Ajouter -->
+            <ng-template pTemplate="footer">
+              <div class="p-2 border-top-1 surface-border">
+                <button
+                  type="button"
+                  pButton
+                  class="w-full p-button-text"
+                  icon="pi pi-user-plus"
+                  label="Ajouter un bénéficiaire"
+                  (click)="onpenBeneficiaireDialog()">
+                </button>
+              </div>
+            </ng-template>
+          </p-dropdown>
+
+          <small *ngIf="errors['beneficiaire']">{{ errors['beneficiaire'] }}</small>
+          <small *ngIf="submitted && !isBeneficiaireValide">Veuillez choisir un bénéficiaire.</small>
+        </div>
+      </div>
+
+      <div class="flex flex-column md:flex-row justify-content-between gap-3 mt-4">
+        <button pButton label="Retour" icon="pi pi-chevron-left" (click)="prev()" class="p-button-secondary w-full md:w-auto"></button>
+        <button [disabled]="!isBeneficiaireValide" pButton label="Continuer" icon="pi pi-chevron-right" iconPos="right"
+                (click)="next()" class="w-full md:w-auto"></button>
+      </div>
+    </div>
+
+    <!-- ÉTAPE 2 : RÉCAPITULATIF -->
+    <div class="col-12 lg:col-6 px-4 py-4 md:px-6" *ngIf="activeIndex === 2">
+      <div class="recap-card surface-card border-round-xl p-3 md:p-4 shadow-1">
+
+        <div class="mb-3">
+          <span class="text-900 font-bold text-lg md:text-xl">Récapitulatif</span>
+        </div>
+
+        <!-- Bénéficiaire : -->
+        <div class="grid align-items-center recap-row mt-3">
+          <div class="col-12 md:col-6 text-900 font-medium">Bénéficiaire</div>
+          <div class="col-12 md:col-6 md:text-right mt-1 md:mt-0">
+            <div class="flex align-items-center justify-content-between md:justify-content-end gap-2">
+              <span class="text-900 text-sm">{{ selectedBeneficiaireLabel }}</span>
+              <span class="text-600 text-sm">{{ selectedBeneficiairePhone }}</span>
+            </div>
+          </div>
+        </div>
+        <p-divider styleClass="my-2 md:my-3"></p-divider>
+
+        <!-- Montant reçu -->
+        <div class="grid align-items-center recap-row mt-3">
+          <div class="col-8 md:col-6 text-900 font-medium">Montant reçu</div>
+          <div class="col-4 md:col-6 text-right text-sm montant-recu-value nowrap">
+            {{ montantGNF | number:'1.2-2' }} GNF
+          </div>
+        </div>
+        <p-divider styleClass="my-2 md:my-3"></p-divider>
+
+        <!-- Frais -->
+        <div class="grid align-items-center recap-row mt-3">
+          <div class="col-8 md:col-6">
+            <div class="flex align-items-center gap-2">
+              <span class="text-900 font-medium">Frais</span>
+              <p-inputSwitch
+                styleClass="switch-sm"
+                [(ngModel)]="includeFrais"
+                (onChange)="majFraisTotal_ttc()"
+                [disabled]="!montantEuro">
+              </p-inputSwitch>
+            </div>
+          </div>
+          <div class="col-4 md:col-6 text-right text-900 font-bold">
+            € {{ frais | number:'1.0-2' }}
+          </div>
+        </div>
+        <p-divider styleClass="my-2 md:my-3"></p-divider>
+
+        <!-- Total_ttc -->
+        <div class="grid align-items-center recap-row mt-3">
+          <div class="col-8 md:col-6 text-900 font-bold">Total  à payer</div>
+          <div class="col-4 md:col-6 text-right text-900 font-bold">
+            {{ total_ttc | number:'1.2-2' }} €
+          </div>
+        </div>
+
+        <p-divider styleClass="my-3"></p-divider>
+
+        <div class="flex flex-column md:flex-row justify-content-between gap-3 my-3">
+          <button pButton label="Retour" icon="pi pi-chevron-left"
+                  (click)="prev()" class="p-button-secondary w-full md:w-auto"></button>
+          <button pButton label="Confirmer et payer" icon="pi pi-check"
+                  (click)="openPayement()"
+                  [disabled]="!isMontantValide || !isBeneficiaireValide"
+                  class="w-full md:w-auto"></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIALOG PAIEMENT -->
+    <p-dialog [(visible)]="payementDialog"
+              header="Carte bancaire"
+              [modal]="true"
+              [closable]="false"
+              [style]="{width:'450px'}">
+      <div class="grid formgrid">
+        <div class="col-12 mb-4">
+          <p-inputGroup class="w-full">
+            <p-inputGroupAddon>
+              <i class="pi" style="line-height: 1.25; letter-spacing: .1rem;">Numéro</i>
+            </p-inputGroupAddon>
+            <input type="text" pInputText placeholder="Exemple : 1234 5678 9012 3456" />
+          </p-inputGroup>
+          <small *ngIf="errors['montantEuro']">{{ errors['montantEuro'] }}</small>
+        </div>
+
+        <div class="col-12 md:col-4 mb-3">
+          <p-inputGroup class="w-full">
+            <p-inputGroupAddon><i class="pi" style="line-height: 1.25; letter-spacing: .1rem;">Mois</i></p-inputGroupAddon>
+            <input type="text" pInputText placeholder="10" />
+          </p-inputGroup>
+        </div>
+
+        <div class="col-12 md:col-4 mb-3">
+          <p-inputGroup class="w-full">
+            <p-inputGroupAddon><i class="pi" style="line-height: 1.25; letter-spacing: .1rem;">Année</i></p-inputGroupAddon>
+            <input type="text" pInputText placeholder="25" />
+          </p-inputGroup>
+        </div>
+
+       <div class="col-12 md:col-4 mb-3">
+  <p-inputGroup class="w-full">
+    <p-inputGroupAddon>
+      <i class="pi" style="line-height: 1.25; letter-spacing: .1rem;">CVC</i>
+    </p-inputGroupAddon>
+    <input type="text" pInputText />
+  </p-inputGroup>
+</div>
+
+      </div>
+
+      <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="Annuler" (click)="hideDialog()"></button>
+        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Payer" (click)="save()" [loading]="loading"></button>
+      </ng-template>
+    </p-dialog>
+
+    <p-toast></p-toast>
+
+    <!-- DIALOG BÉNÉFICIAIRE -->
+    <p-dialog
+      [(visible)]="beneficiaireDialog"
+      [style]="{ width: '450px' }"
+      header="Détails du Bénéficiaire"
+      [modal]="true"
+      class="p-fluid">
+
+      <ng-template pTemplate="content">
+        <div class="field">
+          <label for="b_nom">Nom</label>
+          <input type="text" pInputText id="b_nom"
+                 [(ngModel)]="beneficiaire.nom" required
+                 [ngClass]="{'ng-invalid ng-dirty': submitted && !beneficiaire.nom}" />
+          <small class="ng-dirty ng-invalid" *ngIf="submitted && !beneficiaire.nom">Nom is required.</small>
+        </div>
+
+        <div class="field">
+          <label for="b_prenom">Prénom</label>
+          <input type="text" pInputText id="b_prenom"
+                 [(ngModel)]="beneficiaire.prenom" required
+                 [ngClass]="{'ng-invalid ng-dirty': submitted && !beneficiaire.prenom}" />
+          <small class="ng-dirty ng-invalid" *ngIf="submitted && !beneficiaire.prenom">Prenom is required.</small>
+        </div>
+
+        <div class="field">
+          <label for="b_phone">Téléphone</label>
+          <input type="text" pInputText id="b_phone"
+                 [(ngModel)]="beneficiaire.phone" required
+                 [ngClass]="{'ng-invalid ng-dirty': submitted && !beneficiaire.phone}" />
+          <small class="ng-dirty ng-invalid" *ngIf="submitted && !beneficiaire.phone">Téléphone is required.</small>
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="footer">
+        <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="Enregistrer" icon="pi pi-check" class="p-button-text" (click)="saveBeneficiaire()"></button>
+      </ng-template>
+    </p-dialog>
+  </div>
 </div>

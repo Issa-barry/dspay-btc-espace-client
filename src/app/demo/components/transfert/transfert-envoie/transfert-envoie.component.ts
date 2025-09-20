@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
+import { Beneficiaire } from 'src/app/demo/models/beneficiaire';
 import { Transfert } from 'src/app/demo/models/transfert';
 import { BeneficiaireService } from 'src/app/demo/service/beneficiaire/beneficiaire.service';
 import { TransfertService, TransfertCreateDto } from 'src/app/demo/service/transfert/transfert.service';
@@ -12,19 +13,19 @@ import { TransfertService, TransfertCreateDto } from 'src/app/demo/service/trans
   providers: [MessageService, ConfirmationService],
 })
 export class TransfertEnvoieComponent implements OnInit {
-
   // Montants & taux (affichage)
   montantEuro = 0;
   montantGNF  = 0;
-  tauxConversion = 9500; // juste pour l’aperçu côté front
+  tauxConversion = 9500;
 
   // Bénéficiaire + taux
   beneficiairesOptions: Array<{ id: number; label: string; phone: string }> = [];
   selectedBeneficiaireId: number | null = null;
-  selectedTauxId = 1; // fixe (ou bind sur un dropdown de taux)
+  selectedTauxId = 1;
 
-  //  frais 
+  // Frais
   readonly tauxDeFrais = 0.05;
+
   // UI
   payementDialog = false;
   envoieDialog = false;
@@ -34,9 +35,9 @@ export class TransfertEnvoieComponent implements OnInit {
   errors: Record<string, string> = {};
 
   // Récap
-  total = 0;
+  total_ttc = 0;
   frais  = 0;
- includeFrais: boolean = true; 
+  includeFrais: boolean = true;
 
   transfert: Transfert = new Transfert();
 
@@ -59,30 +60,47 @@ export class TransfertEnvoieComponent implements OnInit {
   }
 
   private prefillFromQuery(): void {
-  const p = this.route.snapshot.queryParamMap;
+    const p = this.route.snapshot.queryParamMap;
 
-  const sendAmount = Number(p.get('sendAmount') ?? p.get('amountInput'));
-  const receive = Number(p.get('receive'));
-  const included = p.get('feesIncluded');
+    const sendAmount = Number(p.get('sendAmount') ?? p.get('amountInput'));
+    const receive = Number(p.get('receive'));
+    const included = p.get('feesIncluded');
 
-  if (!Number.isNaN(sendAmount) && sendAmount > 0) {
-    this.montantEuro = sendAmount;
+    if (!Number.isNaN(sendAmount) && sendAmount > 0) {
+      this.montantEuro = sendAmount;
+    }
+    if (!Number.isNaN(receive) && receive > 0) {
+      this.montantGNF = receive;
+    } else {
+      this.convertirDepuisEuro();
+    }
+
+    if (included !== null) this.includeFrais = included === 'true';
+    this.majFraisTotal_ttc();
   }
-  if (!Number.isNaN(receive) && receive > 0) {
-    this.montantGNF = receive;
-  } else {
-    this.convertirDepuisEuro();
+
+  /** Construit l'option dropdown depuis un objet bénéficiaire */
+  private toOption(b: any) {
+    const label =
+      (b.nom_complet?.trim()) ||
+      [b.prenom, b.nom].filter(Boolean).join(' ').trim() ||
+      b.phone;
+    return {
+      id: Number(b.id),
+      label,
+      phone: b.phone ?? ''
+    };
   }
 
-  if (included !== null) this.includeFrais = included === 'true';
-  this.majFraisTotal();
-}
-  /** Charge les bénéficiaires pour le dropdown */
-  private loadBeneficiaires(search = '', limit = 50): void {
+  /** Charge les bénéficiaires pour le dropdown (avec pré-sélection possible) */
+  private loadBeneficiaires(search = '', limit = 50, preselectId?: number): void {
     this.loading = true;
     this.beneficiaireService.listForSelect(search, limit).subscribe({
       next: (options) => {
         this.beneficiairesOptions = options; // {id,label,phone}[]
+        if (preselectId && options.some(o => o.id === preselectId)) {
+          this.selectedBeneficiaireId = preselectId;
+        }
         this.loading = false;
       },
       error: (err) => {
@@ -97,137 +115,120 @@ export class TransfertEnvoieComponent implements OnInit {
   }
 
   get selectedBeneficiaireLabel(): string {
-  const b = this.beneficiairesOptions.find(o => o.id === this.selectedBeneficiaireId);
-  return b?.label ?? '—';
-}
-get selectedBeneficiairePhone(): string {
-  const b = this.beneficiairesOptions.find(o => o.id === this.selectedBeneficiaireId);
-  return b?.phone ?? '—';
-}
+    const b = this.beneficiairesOptions.find(o => o.id === this.selectedBeneficiaireId);
+    return b?.label ?? '—';
+  }
+  get selectedBeneficiairePhone(): string {
+    const b = this.beneficiairesOptions.find(o => o.id === this.selectedBeneficiaireId);
+    return b?.phone ?? '—';
+  }
 
-//formulaire envoie : 
-get isMontantValide(): boolean {
-  const eur = Number(this.montantEuro);
-  return !Number.isNaN(eur) && eur > 0 && eur <= 1000;
-}
+  // formulaire envoie :
+  get isMontantValide(): boolean {
+    const eur = Number(this.montantEuro);
+    return !Number.isNaN(eur) && eur > 0 && eur <= 1000;
+  }
 
-get isBeneficiaireValide(): boolean {
-  // vérifie qu’un id est sélectionné et existe dans la liste
-  const id = this.selectedBeneficiaireId;
-  return id != null && this.beneficiairesOptions.some(o => o.id === id);
-}
+  get isBeneficiaireValide(): boolean {
+    const id = this.selectedBeneficiaireId;
+    return id != null && this.beneficiairesOptions.some(o => o.id === id);
+  }
 
-// (optionnel) un seul getter pour le bouton principal si tu veux centraliser
-get canContinue(): boolean {
-  if (this.activeIndex === 0) return this.isMontantValide;
-  if (this.activeIndex === 1) return this.isBeneficiaireValide;
-  return true;
-}
+  get canContinue(): boolean {
+    if (this.activeIndex === 0) return this.isMontantValide;
+    if (this.activeIndex === 1) return this.isBeneficiaireValide;
+    return true;
+  }
 
   /** Sélection d’un bénéficiaire */
   onBeneficiaireChange(id: number | null) {
     this.selectedBeneficiaireId = id;
   }
- 
- // ---- calcule/maj frais & total
-  majFraisTotal(): void {
-  const eur = +(this.montantEuro || 0);
-  // frais estimés (arrondi 2 décimales)
-  this.frais = Math.round(eur * this.tauxDeFrais * 100) / 100;
 
-  // total -> selon le switch
-  const totalEur = this.includeFrais ? (eur + this.frais) : eur;
-  this.total = Math.round(totalEur * 100) / 100;
-}
+  // ---- calcule/maj frais & total_ttc
+  majFraisTotal_ttc(): void {
+    const eur = +(this.montantEuro || 0);
+    this.frais = Math.round(eur * this.tauxDeFrais * 100) / 100;
+    const total_ttcEur = this.includeFrais ? (eur + this.frais) : eur;
+    this.total_ttc = Math.round(total_ttcEur * 100) / 100;
+  }
 
-// appelle déjà majFraisTotal() à la fin de ces 2 méthodes
-convertirDepuisEuro() {
-  if (this.montantEuro == null) { this.montantGNF = 0; this.majFraisTotal(); return; }
-  if (this.montantEuro > 1000) this.montantEuro = 1000;
-  this.montantGNF = Math.floor(this.montantEuro * this.tauxConversion);
-  this.majFraisTotal();
-}
+  convertirDepuisEuro() {
+    if (this.montantEuro == null) { this.montantGNF = 0; this.majFraisTotal_ttc(); return; }
+    if (this.montantEuro > 1000) this.montantEuro = 1000;
+    this.montantGNF = Math.floor(this.montantEuro * this.tauxConversion);
+    this.majFraisTotal_ttc();
+  }
 
-convertirDepuisGNF() {
-  if (this.montantGNF == null) { this.montantEuro = 0; this.majFraisTotal(); return; }
-  const euro = this.montantGNF / this.tauxConversion;
-  if (euro > 1000) { this.montantEuro = 1000; this.montantGNF = 1000 * this.tauxConversion; }
-  else { this.montantEuro = euro; }
-  this.majFraisTotal();
-}
+  convertirDepuisGNF() {
+    if (this.montantGNF == null) { this.montantEuro = 0; this.majFraisTotal_ttc(); return; }
+    const euro = this.montantGNF / this.tauxConversion;
+    if (euro > 1000) { this.montantEuro = 1000; this.montantGNF = 1000 * this.tauxConversion; }
+    else { this.montantEuro = euro; }
+    this.majFraisTotal_ttc();
+  }
 
-  /** Envoi du transfert (nouveau contrat API) */
+  /** Envoi du transfert */
   save(): void {
-  this.submitted = true;
-  this.errors = {};
+    this.submitted = true;
+    this.errors = {};
 
-  if (!this.selectedBeneficiaireId) {
-    this.messageService.add({ severity: 'warn', summary: 'Bénéficiaire', detail: 'Veuillez sélectionner un bénéficiaire.' });
-    return;
-  }
-  if (!this.montantEuro || this.montantEuro < 1) {
-    this.messageService.add({ severity: 'warn', summary: 'Montant', detail: 'Veuillez saisir un montant en EUR (min 1€).' });
-    return;
-  }
-  if (this.montantEuro > 1000) this.montantEuro = 1000;
+    if (!this.selectedBeneficiaireId) {
+      this.messageService.add({ severity: 'warn', summary: 'Bénéficiaire', detail: 'Veuillez sélectionner un bénéficiaire.' });
+      return;
+    }
+    if (!this.montantEuro || this.montantEuro < 1) {
+      this.messageService.add({ severity: 'warn', summary: 'Montant', detail: 'Veuillez saisir un montant en EUR (min 1€).' });
+      return;
+    }
+    if (this.montantEuro > 1000) this.montantEuro = 1000;
 
-  const dto: TransfertCreateDto = {
-    beneficiaire_id: this.selectedBeneficiaireId!,
-    taux_echange_id: this.selectedTauxId,
-    montant_euro: Math.round(this.montantEuro * 100) / 100,
-  };
+    const dto: TransfertCreateDto = {
+      beneficiaire_id: this.selectedBeneficiaireId!,
+      taux_echange_id: this.selectedTauxId,
+      montant_envoie: Math.round(this.montantEuro * 100) / 100,
+    };
 
-  this.loading = true;
-  this.transfertService.createTransfert(dto).subscribe({
-    next: (t) => {
-      this.loading = false;
+    this.loading = true;
+    this.transfertService.createTransfert(dto).subscribe({
+      next: (t) => {
+        this.loading = false;
 
-      // si tu veux garder l'ancien récap à l'écran
-      this.transfert = t;
-      this.frais = (t as any)?.frais ?? 0;
-      this.total = Number((t as any)?.total ?? 0);
-      this.montantGNF = Number((t as any)?.montant_gnf ?? 0);
-      this.messageService.add({ 
-  severity: 'success', 
-  summary: 'Succès', 
-  detail: 'Transfert effectué.', 
-  life: 4000   // 👉 timeout de 3 secondes
-});
+        this.transfert = t;
+        this.frais = (t as any)?.frais ?? 0;
+        this.total_ttc = Number((t as any)?.total_ttc ?? 0);
+        this.montantGNF = Number((t as any)?.montant_gnf ?? 0);
 
-
-
-      // 👉 récupère l'identifiant renvoyé par l'API
-      const id =
-        (t as any)?.id ??
-        (t as any)?.data?.id ??
-        (t as any)?.transfert?.id ??
-        (t as any)?.transfert_id;
-
-      // ferme les modales si besoin
-      this.hideDialog();
-
-      // Redirige vers /dashboard/transfert/detail/:id
-      if (id) {
-      // ✅ Attendre la fin du toast avant redirection
-      setTimeout(() => {
-        this.router.navigate(['/dashboard/transfert/detail', id], {
-          replaceUrl: true
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Succès',
+          detail: 'Transfert effectué.',
+          life: 4000
         });
-      }, 2500); // même durée que life
-    } else {
-      setTimeout(() => {
-        this.router.navigate(['/dashboard/transfert']);
-      }, 2500);
-    }
-    },
-    error: (err) => {
-      this.loading = false;
-      this.errors = err?.validationErrors || {};
-      this.messageService.add({ severity: 'error', summary: 'Erreur', detail: err?.message || 'Échec de l’envoi.' });
-    }
-  });
-}
 
+        const id =
+          (t as any)?.id ??
+          (t as any)?.data?.id ??
+          (t as any)?.transfert?.id ??
+          (t as any)?.transfert_id;
+
+        this.hideDialog();
+
+        if (id) {
+          setTimeout(() => {
+            this.router.navigate(['/dashboard/transfert/detail', id], { replaceUrl: true });
+          }, 2500);
+        } else {
+          setTimeout(() => this.router.navigate(['/dashboard/transfert']), 2500);
+        }
+      },
+      error: (err) => {
+        this.loading = false;
+        this.errors = err?.validationErrors || {};
+        this.messageService.add({ severity: 'error', summary: 'Erreur', detail: err?.message || 'Échec de l’envoi.' });
+      }
+    });
+  }
 
   /** UI helpers */
   openTicketDialog(): void { this.ticketDialog = true; }
@@ -240,13 +241,83 @@ convertirDepuisGNF() {
   }
   hideTicketDialog(): void {}
 
-  // si tu recalcules en arrivant au récap
-next() {
-  const nextIndex = Math.min(this.activeIndex + 1, 2);
-  if (nextIndex === 2) this.majFraisTotal();
-  this.activeIndex = nextIndex;
-}
+  next() {
+    const nextIndex = Math.min(this.activeIndex + 1, 2);
+    if (nextIndex === 2) this.majFraisTotal_ttc();
+    this.activeIndex = nextIndex;
+  }
   prev() { this.activeIndex = Math.max(this.activeIndex - 1, 0); }
   prevBeneficiaire() { this.router.navigate(['steps/payment']); }
   canNext(): boolean { return this.activeIndex >= 0 && this.activeIndex <= 2 ? true : false; }
+
+  // **************************** bénéficiaire (dialog)
+  beneficiaires: Beneficiaire[] = [];
+  beneficiaire: Beneficiaire = new Beneficiaire();
+  beneficiaireDialog = false;
+
+  onpenBeneficiaireDialog(): void { this.beneficiaireDialog = true; }
+  hideBeneficiaireDialog(): void {
+    this.beneficiaireDialog = false;
+    this.submitted = false;
+  }
+
+  /** Crée / met à jour puis auto-sélectionne le bénéficiaire dans le dropdown */
+  saveBeneficiaire(): void {
+    this.submitted = true;
+
+    if (!this.beneficiaire?.phone || (!this.beneficiaire.nom && !this.beneficiaire.nom_complet)) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Champs requis',
+        detail: 'Veuillez saisir au moins le Nom (ou Nom complet) et le Téléphone.',
+        life: 3000
+      });
+      return;
+    }
+
+    const payload = {
+      nom: this.beneficiaire.nom ?? '',
+      prenom: this.beneficiaire.prenom ?? '',
+      phone: this.beneficiaire.phone ?? ''
+    };
+
+    const isUpdate = typeof this.beneficiaire.id === 'number' && this.beneficiaire.id > 0;
+
+    const serviceCall = isUpdate
+      ? this.beneficiaireService.update(this.beneficiaire.id!, payload)
+      : this.beneficiaireService.create(payload);
+
+    serviceCall.subscribe({
+      next: (res: any) => {
+        // Récupère l'objet + id
+        const b = res?.data ?? res?.beneficiaire ?? res;
+        const id = Number(b?.id);
+
+        // Ferme le dialog + toast
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Succès',
+          detail: isUpdate ? 'Bénéficiaire mis à jour avec succès' : 'Bénéficiaire créé avec succès'
+        });
+        this.hideBeneficiaireDialog();
+
+        // Met à jour la liste locale (sans requête) puis sélectionne
+        const opt = this.toOption(b);
+        const exists = this.beneficiairesOptions.some(o => o.id === id);
+        this.beneficiairesOptions = exists
+          ? this.beneficiairesOptions.map(o => (o.id === id ? opt : o))
+          : [opt, ...this.beneficiairesOptions];
+
+        this.selectedBeneficiaireId = id; // ✅ auto-sélection
+      },
+      error: (err: any) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erreur',
+          detail: err?.message || "L'opération a échoué",
+          life: 3000
+        });
+      }
+    });
+  }
 }

@@ -17,6 +17,7 @@ import { TransfertEnvoieComponent } from './transfert-envoie.component';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { CalendarModule } from 'primeng/calendar';
  import { ChipsModule } from 'primeng/chips';
+import { DividerModule } from 'primeng/divider';
 
 
 @NgModule({
@@ -38,6 +39,7 @@ import { CalendarModule } from 'primeng/calendar';
     InputSwitchModule,
     CalendarModule,
     ChipsModule,
+    DividerModule
  
   ]
 })

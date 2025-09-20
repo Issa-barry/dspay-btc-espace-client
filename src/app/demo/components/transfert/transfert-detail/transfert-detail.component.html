@@ -60,7 +60,7 @@
                 </li>
                 <li class="flex justify-content-between mb-3">
                     <span class="text-900">Envoyé</span>
-                    <span class="text-900 font-medium text-lg">{{ transfert.montant_euro }}</span>
+                    <span class="text-900 font-medium text-lg">{{ transfert.montant_envoie }}</span>
                 </li>
                 <li class="flex justify-content-between mb-3">
                     <span class="text-900">Frais</span>
@@ -71,8 +71,8 @@
                     <span class="text-900 font-medium text-lg">1 € = {{ transfert.taux_echange.taux  }} GNF</span>
                 </li>
                 <li class="flex justify-content-between border-top-1 surface-border py-3">
-                    <span class="text-900 font-medium">Total payé par expéditeur : </span>
-                    <span class="text-900 font-bold text-lg">{{ transfert.total }} €</span>
+                    <span class="text-900 font-medium">Total payé : </span>
+                    <span class="text-900 font-bold text-lg">{{ transfert.total_ttc }} €</span>
                 </li>
                    <li class="flex justify-content-between mb-3">
                     <span class="text-900">Date : </span>

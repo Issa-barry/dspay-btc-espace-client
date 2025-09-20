@@ -23,10 +23,10 @@ export class Transfert {
   taux_applique?: number;
 
   // Montants
-  montant_euro: number = 0;        // (ex montant_expediteur)
+  montant_envoie: number = 0;        // (ex montant_expediteur)
   montant_gnf?: number;            // (ex montant_receveur) calculé côté API
   frais: number = 0;
-  total: number = 0;
+  total_ttc: number = 0;
 
   // Relations optionnelles (affichage)
   devise_cible?: Devises;
@@ -41,4 +41,4 @@ export class Transfert {
 }
 
 // (optionnel) DTO minimal pour l’envoi
-export type TransfertCreateDto = Pick<Transfert, 'beneficiaire_id' | 'taux_echange_id' | 'montant_euro'>;
+export type TransfertCreateDto = Pick<Transfert, 'beneficiaire_id' | 'taux_echange_id' | 'montant_envoie'>;
