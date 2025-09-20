@@ -259,12 +259,13 @@ export class TransfertEnvoieComponent implements OnInit {
   hideBeneficiaireDialog(): void {
     this.beneficiaireDialog = false;
     this.submitted = false;
+    this.loading = false;
   }
 
   /** Crée / met à jour puis auto-sélectionne le bénéficiaire dans le dropdown */
   saveBeneficiaire(): void {
     this.submitted = true;
-
+   
     if (!this.beneficiaire?.phone || (!this.beneficiaire.nom && !this.beneficiaire.nom_complet)) {
       this.messageService.add({
         severity: 'warn',
@@ -287,6 +288,7 @@ export class TransfertEnvoieComponent implements OnInit {
       ? this.beneficiaireService.update(this.beneficiaire.id!, payload)
       : this.beneficiaireService.create(payload);
 
+      this.loading = true;
     serviceCall.subscribe({
       next: (res: any) => {
         // Récupère l'objet + id

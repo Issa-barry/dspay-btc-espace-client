@@ -261,7 +261,7 @@
 
       <ng-template pTemplate="footer">
         <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
-        <button pButton pRipple label="Enregistrer" icon="pi pi-check" class="p-button-text" (click)="saveBeneficiaire()"></button>
+        <button pButton pRipple label="Enregistrer" icon="pi pi-check" class="p-button-text" (click)="saveBeneficiaire()" [loading]="loading"></button>
       </ng-template>
     </p-dialog>
   </div>
