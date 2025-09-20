@@ -88,7 +88,7 @@ export class TransfertService {
 
     getByUserAuth(): Observable<Transfert[]> {
     return this.http
-      .get<any>(`${this.apiUrl}/by-user-auth`)
+      .get<any>(`${this.apiUrl}/by-user`)
       .pipe(
         map((res) => {
           // Compat de formats possibles
