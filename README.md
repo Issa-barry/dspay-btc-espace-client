@@ -40,3 +40,25 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 ## Component
 ng generate module demo/components/contact/contact-affecter-agence --route contact-new --module contact# dspay-btc-espace-client
+
+## PIPES 
+#### DATE 
+`<span class="text-900 font-medium text-sm">Transfert du {{ transfert.updated_at | dateFr:'moisEnLettre'  }}</span>`
+
+### PHONE 
+`<span>{{ facture.commande?.contact?.phone | phoneFormat:'GN' }}</span>`
+
+### Money 
+<!-- GNF -->
+{{ montantGNF | money:'GNF' }}            <!-- ex : 1 070 000 GNF -->
+{{ montantGNF | money:'GNF':'auto':true }}<!-- ex : 1,1 M GNF (compact) -->
+
+<!-- EUR -->
+{{ frais | money:'EUR' }}                 <!-- ex : 12,50 € -->
+{{ total_ttc | money:'EUR' }}             <!-- ex : 128,40 € -->
+
+#### Utilisation (plus d’espace pour GNF)
+{{ transfert.montant_gnf | money:'GNF':'auto':false:'none':'fr-FR':'wide' }}
+
+→ donne 1 070 000 GNF (deux espaces insécables).
+Tu peux aussi tester gap:'narrow' si tu veux l’effet inverse.
