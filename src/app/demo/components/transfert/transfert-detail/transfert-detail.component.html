@@ -34,7 +34,7 @@
                 <div class="flex flex-column">
                    <span class="text-900 font-semibold text-xl mb-2">Bénéficiaire</span>
                    <span class="text-800 mb-2"> {{ transfert.beneficiaire.nom_complet }}</span>
-                   <span class="text-800"> {{ transfert.beneficiaire.phone }} </span>
+                   <span class="text-800"> {{ transfert.beneficiaire.phone | phoneFormat:'GN'}} </span>
                 </div>
                <span class="text-900 font-medium text-lg ml-auto">Guinée</span>
            </li>  
@@ -56,11 +56,11 @@
                 <li class="mb-3"><span class="font-medium text-900">Montant</span></li>
                 <li class="flex justify-content-between mb-3">
                     <span class="text-900">A retiré</span>
-                    <span class="text-900 font-medium text-lg">{{ transfert.montant_gnf }}</span>
+                    <span class="text-900 font-medium text-lg"> {{ transfert.montant_gnf | money:'GNF':'normal' }}     </span>
                 </li>
                 <li class="flex justify-content-between mb-3">
                     <span class="text-900">Envoyé</span>
-                    <span class="text-900 font-medium text-lg">{{ transfert.montant_envoie }}</span>
+                    <span class="text-900 font-medium text-lg">{{ transfert.montant_envoie | money:'EUR' }}</span>
                 </li>
                 <li class="flex justify-content-between mb-3">
                     <span class="text-900">Frais</span>
@@ -68,19 +68,20 @@
                 </li>
                 <li class="flex justify-content-between mb-3">
                     <span class="text-900">Taux d'échange</span>
-                    <span class="text-900 font-medium text-lg">1 € = {{ transfert.taux_echange.taux  }} GNF</span>
+                    <span class="text-900 font-medium text-lg">1 € = {{ transfert.taux_echange.taux | money:'GNF':'normal' }} </span>
                 </li>
                 <li class="flex justify-content-between border-top-1 surface-border py-3">
                     <span class="text-900 font-medium">Total payé : </span>
-                    <span class="text-900 font-bold text-lg">{{ transfert.total_ttc }} €</span>
+                    <span class="text-900 font-bold text-lg">{{ transfert.total_ttc | money:'EUR':'normal' }} </span>
                 </li>
                    <li class="flex justify-content-between mb-3">
                     <span class="text-900">Date : </span>
-                    <span class="text-900 font-medium text-sm">Transfert du 08/03/2025 à 18:30</span>
+                    <span class="text-900 font-medium text-sm">Transfert du {{ transfert.updated_at | dateFr:'moisEnLettre'  }}</span>
+                    <!-- <span class="text-900 font-medium text-sm">Transfert du {{ transfert.updated_at | date [ : format [ : timezone [ : locale ] ] ]  }}</span> -->
                 </li>  
             </ul>
         </div>
     </div>
 </div>
  
- 
+   
