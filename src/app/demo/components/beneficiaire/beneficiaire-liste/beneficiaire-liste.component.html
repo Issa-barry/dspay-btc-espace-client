@@ -95,7 +95,7 @@
                             ></p-tableCheckbox>
                         </td> -->
                          <td>{{ beneficiaire.nom_complet }}</td>
-                        <td>{{ beneficiaire.phone }}</td>
+                        <td>{{ beneficiaire.phone | phoneFormat:'GN'}}</td>
                          <td>
                             <div class="flex gap-2">
                                 <button

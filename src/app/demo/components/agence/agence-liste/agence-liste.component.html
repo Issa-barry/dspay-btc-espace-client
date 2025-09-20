@@ -93,7 +93,7 @@
             <td><p-tableCheckbox [value]="agence"></p-tableCheckbox></td>
             <td>{{ agence.reference }}</td>
             <td>{{ agence.nom_agence }}</td>
-            <td>{{ agence.phone }}</td>
+            <td>{{ agence.phone | phoneFormat:'GN'}}</td>
             <td>{{ agence.adresse?.adresse }}</td>
             <td>
               <span [ngClass]="'product-badge status-' + (agence.statut || '').toLowerCase()">

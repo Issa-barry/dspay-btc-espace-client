@@ -21,6 +21,7 @@ import { ToastModule } from 'primeng/toast';
 
 import { BeneficiaireListeRoutingModule } from './beneficiaire-liste-routing.module';
 import { BeneficiaireListeComponent } from './beneficiaire-liste.component';
+import { PipeModule } from 'src/app/demo/pipes/pipe.module';
 
 @NgModule({
     declarations: [BeneficiaireListeComponent],
@@ -48,6 +49,7 @@ import { BeneficiaireListeComponent } from './beneficiaire-liste.component';
         PasswordModule,
         ProgressSpinnerModule,
         SkeletonModule,
+        PipeModule
     ],
 })
 export class BeneficiaireListeModule {}
