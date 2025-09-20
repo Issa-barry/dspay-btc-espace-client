@@ -134,7 +134,7 @@
           <div class="col-12 md:col-6 md:text-right mt-1 md:mt-0">
             <div class="flex align-items-center justify-content-between md:justify-content-end gap-2">
               <span class="text-900 text-sm">{{ selectedBeneficiaireLabel }}</span>
-              <span class="text-600 text-sm">{{ selectedBeneficiairePhone }}</span>
+              <span class="text-600 text-sm">{{ selectedBeneficiairePhone | phoneFormat:'GN' }}</span>
             </div>
           </div>
         </div>
@@ -144,7 +144,7 @@
         <div class="grid align-items-center recap-row mt-3">
           <div class="col-8 md:col-6 text-900 font-medium">Montant reçu</div>
           <div class="col-4 md:col-6 text-right text-sm montant-recu-value nowrap">
-            {{ montantGNF | number:'1.2-2' }} GNF
+            {{ montantGNF | money:'GNF':'normal' }} 
           </div>
         </div>
         <p-divider styleClass="my-2 md:my-3"></p-divider>
@@ -163,7 +163,7 @@
             </div>
           </div>
           <div class="col-4 md:col-6 text-right text-900 font-bold">
-            € {{ frais | number:'1.0-2' }}
+             {{ frais | money:'EUR':'normal' }}
           </div>
         </div>
         <p-divider styleClass="my-2 md:my-3"></p-divider>
@@ -172,7 +172,7 @@
         <div class="grid align-items-center recap-row mt-3">
           <div class="col-8 md:col-6 text-900 font-bold">Total  à payer</div>
           <div class="col-4 md:col-6 text-right text-900 font-bold">
-            {{ total_ttc | number:'1.2-2' }} €
+            {{ total_ttc | money:'EUR':'normal' }} 
           </div>
         </div>
 
@@ -203,7 +203,7 @@
             </p-inputGroupAddon>
             <input type="text" pInputText placeholder="Exemple : 1234 5678 9012 3456" />
           </p-inputGroup>
-          <small *ngIf="errors['montantEuro']">{{ errors['montantEuro'] }}</small>
+          <small *ngIf="errors['montantEuro']">{{ errors['montantEuro'] | money:'EUR':'normal' }}</small>
         </div>
 
         <div class="col-12 md:col-4 mb-3">
