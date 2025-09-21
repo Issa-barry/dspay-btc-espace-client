@@ -6,7 +6,7 @@ import { ButtonModule } from 'primeng/button';
 import { RouterModule } from '@angular/router';
 import { StyleClassModule } from 'primeng/styleclass';
 import { AppConfigModule } from 'src/app/layout/config/app.config.module';
-import { AnimateEnterDirective } from './animateenter.directive'; 
+import { AnimateEnterDirective } from './animateenter.directive';
 import { InputTextModule } from 'primeng/inputtext';
 
 import { FormsModule } from '@angular/forms';
@@ -22,7 +22,8 @@ import { RatingModule } from 'primeng/rating';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { PipeModule } from '../../pipes/pipe.module';
-
+import { TopbarComponent } from './ui/topbar/topbar.component';
+import { LandingSendFormComponent } from './ui/landing-send-form/landing-send-form.component';
 
 @NgModule({
     imports: [
@@ -32,21 +33,27 @@ import { PipeModule } from '../../pipes/pipe.module';
         RouterModule,
         StyleClassModule,
         AppConfigModule,
-		InputTextModule, 
+        InputTextModule,
 
         FormsModule,
-		TableModule,
-		RatingModule,
-		SliderModule,
-		ToggleButtonModule,
-		RippleModule,
-		MultiSelectModule,
-		DropdownModule, 
-		ProgressBarModule,
-		ToastModule,
+        TableModule,
+        RatingModule,
+        SliderModule,
+        ToggleButtonModule,
+        RippleModule,
+        MultiSelectModule,
+        DropdownModule,
+        ProgressBarModule,
+        ToastModule,
         InputNumberModule,
-        InputSwitchModule,PipeModule
+        InputSwitchModule,
+        PipeModule,
     ],
-    declarations: [LandingComponent, AnimateEnterDirective]
+    declarations: [
+        LandingComponent, 
+        AnimateEnterDirective,
+        TopbarComponent,
+        LandingSendFormComponent
+    ],
 })
-export class LandingModule { }
+export class LandingModule {}

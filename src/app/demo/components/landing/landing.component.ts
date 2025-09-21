@@ -20,11 +20,9 @@ interface expandedRows {
     providers: [MessageService, ConfirmationService]
 }) 
 export class LandingComponent implements OnDestroy,OnInit {
-navOpen = false;
     subscription: Subscription;
     darkMode: boolean = false;
-    isLoggedIn: boolean = false; 
-   
+    
 
     constructor(
         private authService:AuthService,
@@ -74,8 +72,7 @@ navOpen = false;
 
     ngOnInit() {
         this.recalc();
-        this.isLoged();
-        this.customerService.getCustomersLarge().then(customers => {
+         this.customerService.getCustomersLarge().then(customers => {
             this.customers1 = customers;
             this.loading = false;
             // @ts-ignore
@@ -159,31 +156,8 @@ navOpen = false;
         table.clear();
         this.filter.nativeElement.value = '';
     }
-    
-    isLoged(){
-        if (this.authService.isAuthenticated()) {
-            this.isLoggedIn = true;
-        } else {
-            this.isLoggedIn = false;
-        }
-    }
-    
-    goToLogin() {
-        if (this.authService.isAuthenticated()) {
-            this.router.navigate(['/dashboard']);
-        } else {
-            this.router.navigate(['/auth/login']); 
-        }
-    }
-
-    goToDashboard() {
-        if (this.authService.isAuthenticated()) {
-            this.router.navigate(['/dashboard']);
-        } else {
-            this.router.navigate(['/auth/login']); 
-        }
-      }
-
+     
+   
     //   ***********************************IBA
     // EUR -> GNF fixe
 amountInput = 0;          // valeur saisie
