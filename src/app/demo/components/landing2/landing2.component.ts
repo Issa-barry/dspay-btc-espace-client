@@ -15,11 +15,13 @@ interface expandedRows {
 }
 
 @Component({
-    templateUrl: './landing.component.html',
-    styleUrls: ['./landing.component.scss'],
-    providers: [MessageService, ConfirmationService]
-}) 
-export class LandingComponent implements OnDestroy,OnInit {
+  selector: 'app-landing2',
+  standalone: false,
+  templateUrl: './landing2.component.html',
+  styleUrl: './landing2.component.scss',
+  providers: [MessageService, ConfirmationService]
+})
+export class Landing2Component implements OnDestroy,OnInit {
 navOpen = false;
     subscription: Subscription;
     darkMode: boolean = false;
