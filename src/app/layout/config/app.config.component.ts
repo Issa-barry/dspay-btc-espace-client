@@ -118,7 +118,7 @@ export class AppConfigComponent implements OnInit {
             { name: 'green', color: '#10b981' },
             { name: 'orange', color: '#f59e0b' },
             { name: 'pink', color: '#d946ef' },
-            { name: 'starbuck', color: '#036240' },
+            { name: 'starbucks', color: '#036240'},
             { name: 'blackwhite', color: '#414141ff' },
         ];
     } 
