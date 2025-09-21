@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Sitemap: https://ibarry.fr/sitemap.xml
+Sitemap: https://ibarry.fr/sitemap_index.xml
