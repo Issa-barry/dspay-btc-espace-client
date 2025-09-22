@@ -17,3 +17,22 @@ $gutter: 1rem; //for primeflex grid system
 @import "assets/demo/styles/flags/flags.css";
 @import "assets/demo/styles/badges.scss";
 @import "assets/demo/styles/code.scss";
+
+
+/*******************************************
+ * IBA
+ *******************************************/
+ /* Petit switch */
+.inputswitch-sm {
+  transform: scale(0.7);
+}
+
+/* Normal (défaut) */
+.inputswitch-md {
+  transform: scale(1);
+}
+
+/* Grand */
+.inputswitch-lg {
+  transform: scale(1.2);
+}
