@@ -28,7 +28,7 @@ import { AnimateEnterDirective } from '../landing/animateenter.directive';
 @NgModule({
   declarations: [
     Landing2Component,
-    AnimateEnterDirective
+    // AnimateEnterDirective
   ],
   imports: [
     CommonModule,

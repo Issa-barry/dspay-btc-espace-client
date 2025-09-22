@@ -24,6 +24,9 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 import { PipeModule } from '../../pipes/pipe.module';
 import { TopbarComponent } from './ui/topbar/topbar.component';
 import { LandingSendFormComponent } from './ui/landing-send-form/landing-send-form.component';
+import { LandingServiceComponent } from './ui/landing-service/landing-service.component';
+import { LandingPromoComponent } from './ui/landing-promo/landing-promo.component';
+import { LandingFooterComponent } from './ui/landing-footer/landing-footer.component';
 
 @NgModule({
     imports: [
@@ -50,10 +53,13 @@ import { LandingSendFormComponent } from './ui/landing-send-form/landing-send-fo
         PipeModule,
     ],
     declarations: [
-        LandingComponent, 
-        AnimateEnterDirective,
+        LandingComponent,
+        // AnimateEnterDirective,
         TopbarComponent,
-        LandingSendFormComponent
+        LandingSendFormComponent,
+        LandingServiceComponent,
+        LandingPromoComponent,
+        LandingFooterComponent
     ],
 })
 export class LandingModule {}
