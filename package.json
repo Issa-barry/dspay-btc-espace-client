@@ -4,7 +4,7 @@
    "scripts": {
   "ng": "ng",
   "start": "ng serve",
-  "build": "ng build",
+  "build": "ng build && npm run postbuild",
   "watch": "ng build --watch --configuration development",
   "test": "ng test",
   "postbuild": "node scripts/generate-sitemap.mjs https://ibarry.fr && node scripts/generate-sitemap-index.mjs https://ibarry.fr",
