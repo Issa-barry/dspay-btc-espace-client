@@ -153,12 +153,13 @@
         <div class="grid align-items-center recap-row mt-3">
           <div class="col-8 md:col-6">
             <div class="flex align-items-center gap-2">
-              <span class="text-900 font-medium">Frais</span>
+              <span class="text-900 font-medium mb-2">Frais</span>
               <p-inputSwitch
                 styleClass="switch-sm"
                 [(ngModel)]="includeFrais"
                 (onChange)="majFraisTotal_ttc()"
-                [disabled]="!montantEuro">
+                [disabled]="!montantEuro"
+                styleClass="inputswitch-sm">
               </p-inputSwitch>
             </div>
           </div>
