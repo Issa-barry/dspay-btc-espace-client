@@ -22,6 +22,8 @@ $gutter: 1rem; //for primeflex grid system
 /*******************************************
  * IBA
  *******************************************/
+ //Bouton swithc
+
  /* Petit switch */
 .inputswitch-sm {
   transform: scale(0.7);
@@ -36,3 +38,12 @@ $gutter: 1rem; //for primeflex grid system
 .inputswitch-lg {
   transform: scale(1.2);
 }
+
+/* Sur mobile : on agrandit */
+@media (max-width: 767px) {
+  .inputswitch-sm {
+    transform: scale(0.9); /* revient à taille normale ou plus grand */
+  }
+}
+
+ 

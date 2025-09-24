@@ -1,0 +1,110 @@
+/* ========= PROMO CARD (DSPAY) ========= */
+
+/* Carte globale */
+.promo-card {
+  background: var(--surface-card, #ffffff);
+  overflow: hidden;                /* coupe tout débordement (coins arrondis) */
+  border-radius: inherit;          /* si tu utilises border-round-2xl */
+}
+
+/* Panneau vert gauche (texte + bouton) */
+.promo-left {
+  background: var(--primary-color, #036141);
+  color: #ffffff;
+  min-height: 25rem;               /* belle hauteur en mobile */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Titre */
+.promo-title {
+  margin: 0 0 2rem;
+  line-height: 1.1;
+  font-weight: 800;
+  font-size: clamp(2rem, 2.5vw + 1rem, 3rem); /* taille fluide */
+}
+
+/* Pastille GNF dans le titre */
+.promo-badge {
+  background: #ffffff;
+  color: #024b33;
+  padding: .15rem .5rem;
+  border-radius: 9999px;
+  font-size: .35em;
+  font-weight: 700;
+  margin-left: .35rem;
+}
+
+/* Bouton blanc arrondi */
+.promo-btn.p-button {
+  background: #ffffff;
+  color: var(--primary-700, #024b33);
+  border: 0;
+  padding: 0.9rem 1.4rem;
+  font-weight: 700;
+  border-radius: 9999px;
+}
+
+/* ====== Colonne image ====== */
+/* IMPORTANT : garde `class="relative"` sur la colonne HTML
+   <div class="col-12 md:col-7 p-0 relative"> ... */
+.promo-img {
+  position: relative;
+  width: 100%;
+  aspect-ratio: auto;            /* garantit une hauteur en mobile */
+  min-height: 25rem;               /* fallback si aspect-ratio non supporté */
+  line-height: 0;                  /* supprime l’espace baseline sous l’image */
+}
+
+.promo-img img {
+  position: absolute;
+  inset: 0;                        /* top/right/bottom/left: 0 */
+  width: 100%;
+  height: 100%;
+  object-fit: cover;               /* couvre toute la zone */
+  display: block;
+  z-index: 0;                      /* l’image reste sous l’overlay */
+}
+
+/* Overlay (badges/texte sur l’image) */
+.promo-overlay {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 2;
+  text-align: right;
+}
+
+/* Légendes overlay */
+.promo-caption {
+  color: #ffffff;
+  font-weight: 700;
+  line-height: 1.2;
+  text-shadow: 0 2px 8px rgba(0,0,0,.35);
+}
+
+/* ====== Tag (p-tag) taille + padding ====== */
+.promo-tag,
+.promo-tag .p-tag-value {          /* selon versions PrimeNG */
+  font-size: 1.1rem;               /* ajuste: 1.2rem si tu veux plus grand */
+  font-weight: 700;
+}
+
+.promo-tag.p-tag {
+  padding: .45rem .7rem;
+  border-radius: .75rem;
+}
+
+/* ====== Desktop tweaks ====== */
+@media (min-width: 768px) {
+  .promo-left { min-height: 22rem; }
+  .promo-img  { aspect-ratio: 21 / 9; min-height: 22rem; }
+  .promo-tag,
+  .promo-tag .p-tag-value { font-size: 1rem; } /* un poil plus discret que mobile */
+}
+
+@media (min-width: 992px) {
+  .promo-left { min-height: 24rem; }
+  .promo-img  { aspect-ratio: 21 / 9; min-height: 24rem; }
+}

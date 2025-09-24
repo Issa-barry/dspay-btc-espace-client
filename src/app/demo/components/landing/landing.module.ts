@@ -27,6 +27,8 @@ import { LandingSendFormComponent } from './ui/landing-send-form/landing-send-fo
 import { LandingServiceComponent } from './ui/landing-service/landing-service.component';
 import { LandingPromoComponent } from './ui/landing-promo/landing-promo.component';
 import { LandingFooterComponent } from './ui/landing-footer/landing-footer.component';
+import { TagModule } from 'primeng/tag';
+import { Card1Component } from './ui/card-1/card-1.component';
 
 @NgModule({
     imports: [
@@ -51,6 +53,7 @@ import { LandingFooterComponent } from './ui/landing-footer/landing-footer.compo
         InputNumberModule,
         InputSwitchModule,
         PipeModule,
+        TagModule
     ],
     declarations: [
         LandingComponent,
@@ -59,7 +62,8 @@ import { LandingFooterComponent } from './ui/landing-footer/landing-footer.compo
         LandingSendFormComponent,
         LandingServiceComponent,
         LandingPromoComponent,
-        LandingFooterComponent
+        LandingFooterComponent,
+        Card1Component
     ],
 })
 export class LandingModule {}
