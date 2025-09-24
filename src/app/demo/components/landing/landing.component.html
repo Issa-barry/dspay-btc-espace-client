@@ -13,27 +13,29 @@
             <!-- Hero -->
    <div id="home" class="grid grid-nogutter md:mb-8 md:py-0 align-items-center md:align-items-start">
                 <!-- Texte gauche -->
-                <div class="col-12 md:col-6 flex flex-column gap-3 flex-order-1 md:flex-order-0 align-items-center md:align-items-start text-center md:text-left pr-0 md:pr-6">
-                    <span class="block text-900 font-bold text-6xl">Envoyer de l'argent vers</span>
-                    <span class="block text-900 font-bold text-6xl">la Guinée-Conakry</span>
-                    <span class="block text-700 text-lg">comme vous le souhaitez avec des frais réduits et un bon taux de change. </span>
-                    <ul class="flex flex-wrap gap-5 list-none p-0">
-                        <li class="flex align-items-center">
-                        <div class="p-1 border-circle bg-green-400 inline-block mr-2"></div>
-                        <span class="text-900 font-semibold">Sécurisé</span>
-                        </li>
-                        <li class="flex align-items-center">
-                        <div class="p-1 border-circle bg-green-400 inline-block mr-2"></div>
-                        <span class="text-900 font-semibold">Rapide</span>
-                        </li>
-                        <li class="flex align-items-center">
-                        <div class="p-1 border-circle bg-green-400 inline-block mr-2"></div>
-                        <span class="text-900 font-semibold">Retrait facile</span>
-                        </li>
-                    </ul>
-                    <!-- <button pButton pRipple type="button" label="Live Preview" icon="pi pi-arrow-right" iconPos="right"
-                            class="w-12rem p-button-outlined"></button> -->
-                </div>
+                <div class="col-12 md:col-6 flex flex-column gap-4 md:gap-5
+            flex-order-1 md:flex-order-0
+            align-items-center md:align-items-start
+            text-center md:text-left pr-0 md:pr-6">
+
+  <h1 class="hero-title">
+    <span class="mr-2">Envoyez</span> <span >  de l'argent</span> 
+    <div class="mt-4 md:mt-4">vers La <span class="accent mt-4">Guinée</span></div>
+     
+  </h1>
+
+  <p class="hero-subtitle">
+    Transferts Europe → Guinée rapides et sécurisés, au taux du jour.
+    Retrait cash ou e-wallet partout en Guinée.
+  </p>
+
+  <ul class="hero-features mb-6">
+    <li><i class="pi pi-check"></i> Sécurisé</li>
+    <li><i class="pi pi-bolt"></i> Rapide</li>
+    <li><i class="pi pi-wallet"></i> Retrait facile</li>
+  </ul>
+</div>
+
 
           <!-- Formulaire droite -->
         <div class="col-12 md:col-6 flex flex-order-0 md:flex-order-1 justify-content-center md:justify-content-end mb-6 md:mb-0">
@@ -41,13 +43,15 @@
             <app-landing-send-form></app-landing-send-form>
         </div>
         </div>
-        </div>
+    </div>
 
 <!-- SECTION 1 -->
 
+<app-card-1></app-card-1>
+
     <landing-service></landing-service>
 
-    <landing-promo></landing-promo>
+   <!--  <landing-promo></landing-promo> -->
  
 
             <!-- <div id="agence" class="my-6 py-6 md:my-8 md:py-8">
