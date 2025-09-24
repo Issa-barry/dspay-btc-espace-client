@@ -5,6 +5,7 @@ import { finalize } from 'rxjs';
 import { Contact } from 'src/app/demo/models/contact';
 import { AuthService } from 'src/app/demo/service/auth/auth.service';
 import { LayoutService } from 'src/app/layout/service/app.layout.service';
+import { formatPhoneOnType, toE164 } from 'src/app/shared/utils/phone.util';
 
 type CountryOption = { name: string; code: string };
 
@@ -49,7 +50,7 @@ selectedCountry!: CountryOption;              // <-- modèle du dropdown
   }
 
   ngOnInit() {
-    this.countries = [
+    const EU_AF_COUNTRIES: CountryOption[]  = [
       { name: 'France', code: 'FR' },
       { name: 'Allemagne', code: 'DE' },
       { name: 'Autriche', code: 'AT' },
@@ -90,16 +91,24 @@ selectedCountry!: CountryOption;              // <-- modèle du dropdown
       { name: 'Nouvelle-Calédonie', code: 'NC' },
       { name: 'Polynésie française', code: 'PF' }
     ].sort((a, b) => a.name.localeCompare(b.name, 'fr'));
-
+  
+    this.countries = EU_AF_COUNTRIES.sort((a, b) => a.name.localeCompare(b.name, 'fr'));
     // France par défaut
     this.selectedCountry = this.countries.find(c => c.code === 'FR')!;
     this.syncAddressFromCountry(this.selectedCountry);
   }
 
-   onCountryChange(c: CountryOption) {
-    this.syncAddressFromCountry(c);
+  onPhoneInput(event: any) {
+  const raw = event?.target?.value ?? '';
+  this.contact.phone = formatPhoneOnType(raw, this.selectedCountry?.code);
+}
+  onCountryChange(c: CountryOption) {
+  this.selectedCountry = c;
+  this.syncAddressFromCountry(c);
+  if (this.contact.phone) {
+    this.contact.phone = formatPhoneOnType(this.contact.phone, c.code);
   }
-
+}
   private syncAddressFromCountry(c?: CountryOption) {
     if (!c) return;
     this.contact.adresse.pays = c.name;   // <-- nom du pays
@@ -117,8 +126,23 @@ selectedCountry!: CountryOption;              // <-- modèle du dropdown
     if (this.isSubmitting) return;
     this.isSubmitting = true;
 
+    
+  const e164 = toE164(this.contact.phone || '', this.selectedCountry?.code);
+  if (!e164) {
+    this.isSubmitting = false;
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Téléphone invalide',
+      detail: `Le numéro n'est pas valide pour ${this.selectedCountry?.name}`,
+      life: 5000
+    });
+    return;
+  }
+  this.contact.phone = e164;
+
     console.log(this.contact);
     
+
     this.authService
       .register(this.contact)
       .pipe(finalize(() => (this.isSubmitting = false)))
