@@ -157,6 +157,7 @@ selectedCountry!: CountryOption;              // <-- modèle du dropdown
             life: 4000
           });
           this.showSuccess = true; // affiche la modale
+          this.router.navigate(['/auth/registersuccess']);
         },
         error: (err) => {
           // mapping des erreurs de validation Laravel: { data: { field: [...] }, message: "" }
