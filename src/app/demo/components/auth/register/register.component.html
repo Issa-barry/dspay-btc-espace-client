@@ -30,8 +30,7 @@
     <p-toast></p-toast>
 
     <div
-        class="border-1 surface-border surface-card border-round py-7 px-4 md:px-7 z-1"
-    >
+        class="border-1 surface-border surface-card border-round py-7 px-4 md:px-7 z-1">
         <div class="mb-4">
             <div class="text-900 text-xl font-bold mb-2">Créer un compte</div>
             <span class="text-600 font-medium">Allons-y</span>
@@ -85,6 +84,46 @@
                 {{ errors['email']?.[0] }}
             </small>
 
+        <div class="p-input-icon-left w-full mb-2">
+                    <!-- <label for="country" class="font-medium text-900">Country</label> -->
+                    <p-dropdown
+                        inputId="country"
+                        [options]="countries"
+                        optionLabel="name"
+                        [filter]="true"
+                        filterBy="name,code"
+                        [showClear]="false"
+                        placeholder="Pays de résidence ?"
+                        styleClass="w-full md:w-25rem"
+                        [(ngModel)]="selectedCountry"
+                        (onChange)="onCountryChange($event.value)"
+                        >
+            <!-- Sélection affichée dans le champ -->
+               <ng-template pTemplate="selectedItem" let-country>
+                    <ng-container *ngIf="country">
+                    <div class="flex align-items-center">
+                        <img
+                        src="assets/demo/images/flag/flag_placeholder.png"
+                        [class]="'mr-2 flag flag-' + country.code.toLowerCase()"
+                        style="width:18px"
+                        />
+                        <div>{{ country.name }}</div>
+                    </div>
+                    </ng-container>
+               </ng-template> 
+                    <ng-template pTemplate="item" let-country>
+                        <div class="flex align-items-center">
+                        <img
+                            src="assets/demo/images/flag/flag_placeholder.png"
+                            [class]="'mr-2 flag flag-' + country.code.toLowerCase()"
+                            style="width:18px"
+                        />
+                        <div>{{ country.name }}</div>
+                        </div>
+                    </ng-template>
+                    </p-dropdown>
+        </div>
+
             <span class="p-input-icon-left w-full mb-2">
                 <i class="pi pi-phone"></i>
                 <input
@@ -123,6 +162,7 @@
                 label="Créer le compte"
                 class="w-full mb-4"
                 (click)="onRegister()"
+                [loading]="isSubmitting"
             ></button>
             <span class="font-medium text-600"
                 >Vous avez déjà un compte?

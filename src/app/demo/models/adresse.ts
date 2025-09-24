@@ -7,6 +7,7 @@ export class Adresse {
     code_postal:string;
     quartier:string;    
     region:string; 
+    code:string; 
     constructor()
     {
         this.pays = "";
@@ -16,6 +17,7 @@ export class Adresse {
         this.code_postal = "";
         this.quartier = "";
         this.region = "";
+        this.code = "";
     }
 
    
