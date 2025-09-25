@@ -34,18 +34,16 @@
                 <div class="col-12 md:col-10 lg:col-7">
                     <div class="grid text-center md:text-left">
                         <div class="col-12 md:col-3">
-                            <h4 class="font-medium text-xl line-height-3 mb-3 text-900">Company</h4>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Qui somme nous?</a>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">News</a>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Blog</a>
+                            <h4 class="font-medium text-xl line-height-3 mb-3 text-900">Contact</h4>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700" [routerLink]="['/about']" routerLinkActive="router-link-active" >Qui somme nous?</a>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700" [routerLink]="['/dashboard']" routerLinkActive="router-link-active" >Contact</a>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700" [routerLink]="['/dashboard']" routerLinkActive="router-link-active" >FAQ</a>
                           </div>
 
                         <div class="col-12 md:col-3 mt-4 md:mt-0">
                             <h4 class="font-medium text-xl line-height-3 mb-3 text-900">Services</h4>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Transfert en ligne</a>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Retrait en agances </a>
-                            <a class="line-height-3 block cursor-pointer text-700">Contact</a>
-                            <a class="line-height-3 block cursor-pointer text-700">FAQ</a>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700" [routerLink]="['/etape-transfert']" routerLinkActive="router-link-active" >Transfert en ligne</a>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Retrait en agances </a> 
                         </div>
 
                         <div class="col-12 md:col-3 mt-4 md:mt-0">
@@ -57,8 +55,8 @@
 
                         <div class="col-12 md:col-3 mt-4 md:mt-0">
                             <h4 class="font-medium text-xl line-height-3 mb-3 text-900">Legal</h4>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Conditions d'utilisation (CGU)</a>
-                            <a class="line-height-3 block cursor-pointer mb-2 text-700">Conditions de vente (CGV)</a>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700" [routerLink]="['/cgu']" routerLinkActive="router-link-active" >Conditions d'utilisation (CGU)</a>
+                            <a class="line-height-3 block cursor-pointer mb-2 text-700" [routerLink]="['/cgv']" routerLinkActive="router-link-active" >Conditions de vente (CGV)</a>
                          </div>
                     </div>
                 </div>
