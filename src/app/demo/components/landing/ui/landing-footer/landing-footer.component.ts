@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'landing-footer',
@@ -6,5 +7,9 @@ import { Component } from '@angular/core';
   styleUrl: './landing-footer.component.scss'
 })
 export class LandingFooterComponent {
+
+  constructor(
+    public router: Router
+  ) { }
 
 }
