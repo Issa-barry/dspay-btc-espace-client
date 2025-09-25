@@ -20,6 +20,7 @@ import { PipeModule } from 'src/app/demo/pipes/pipe.module';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { SharedUiModule } from 'src/app/shared/ui/shared-ui.module';
 
 
 @NgModule({
@@ -45,6 +46,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
      ProgressSpinnerModule,
      InputSwitchModule,
      InputNumberModule,
+     SharedUiModule
   ]
 })
 export class SendModule { }

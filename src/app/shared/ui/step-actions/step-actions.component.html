@@ -1,0 +1,29 @@
+<div class="flex flex-column md:flex-row justify-content-between gap-3 mt-2">
+  <!-- Précédent -->
+  <button *ngIf="showPrev"
+          type="button"
+          pButton pRipple
+          class="w-full md:w-auto p-button-secondary"
+          [label]="prevLabel"
+          [icon]="prevIcon"
+          [iconPos]="prevIconPos"
+          [disabled]="prevDisabled"
+          (click)="prev.emit()">
+  </button>
+
+  <!-- ICI on projette un bouton custom (sélecteur d’attribut [right]) -->
+  <ng-content select="[right]"></ng-content>
+
+  <!-- Suivant par défaut -->
+  <button *ngIf="showNext"
+          type="button"
+          pButton pRipple
+          class="w-full md:w-auto"
+          [label]="nextLabel"
+          [icon]="nextIcon"
+          [iconPos]="nextIconPos"
+          [disabled]="nextDisabled"
+          [loading]="nextLoading"
+          (click)="next.emit()">
+  </button>
+</div>

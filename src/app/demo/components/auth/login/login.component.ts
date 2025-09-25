@@ -13,8 +13,9 @@ export class LoginComponent implements OnInit {
   rememberMe = false;
   errorMessage = '';
   loading = false;
+  submited: boolean = false;
 
-  constructor(
+  constructor( 
     private router: Router,
     private route: ActivatedRoute,
     private authService: AuthService,
@@ -36,16 +37,18 @@ export class LoginComponent implements OnInit {
 
   login(): void {
     this.errorMessage = '';
+    this.submited = true;
     this.loading = true;
 
     const credentials = { email: this.email, password: this.password };
 
     this.authService.login(credentials).subscribe({
       next: (res) => {
-        this.loading = false;
         // Si ton AuthService ne stocke pas la session ici, fais-le :
         // this.authService.setSession(res);
         this.handlePostLoginRedirect();
+        this.loading = false;
+        this.submited = false;
       },
       error: (err) => {
         this.loading = false;
@@ -55,7 +58,9 @@ export class LoginComponent implements OnInit {
           err?.error?.error?.email ||
           err?.error?.errors?.email?.[0] ||
           err?.error?.errors?.password?.[0];
-        this.errorMessage = apiMsg || 'Identifiants incorrects ou service indisponible.';
+        this.errorMessage = apiMsg || 'Identifiants incorrects';
+          this.loading = false;
+        this.submited = false;
       },
     });
   }
