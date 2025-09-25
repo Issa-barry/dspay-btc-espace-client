@@ -37,8 +37,14 @@
           </p-inputNumber>
         </div>
 
-        <div class="col-12">
-          <button pButton pRipple label="Suivant" class="w-full md:w-auto mt-3" (click)="next()"></button>
+        <div class="col-8">
+          <ui-step-actions
+            [showPrev]="false"
+            [showNext]="true"
+            [nextDisabled]="!isMontantValide"
+            (next)="next()"
+            (prev)="prev()">
+          </ui-step-actions>
         </div>
 
       </div>
@@ -178,6 +184,7 @@
       <div class="grid formgrid p-fluid">
 
         <div class="field mb-4 col-12 md:col-8 align-items-center recap-row">
+          <label class="font-semibold text-900">Récapitulatif</label>
 
           <p-divider styleClass="my-2 md:my-3"></p-divider>
 
