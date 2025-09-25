@@ -46,12 +46,35 @@ export class AuthService {
   public get currentUserValue(): Contact | null {
     return this.currentUserSubject.value;
   }
-
   private handleError(error: HttpErrorResponse) {
-    // … (ta gestion existante)
-    return throwError(() => new Error('Erreur réseau'));
-  }
+    console.error('Erreur API:', error);
+    let errorMessage = 'Une erreur inconnue est survenue';
 
+    if (error.error instanceof ErrorEvent) {
+      errorMessage = `Erreur client : ${error.error.message}`;
+    } else {
+      if (error.status === 422) {
+        if (error.error?.data && typeof error.error.data === 'object') {
+          errorMessage = Object.keys(error.error.data)
+            .map((k) => (Array.isArray(error.error.data[k]) ? error.error.data[k].join(' ') : String(error.error.data[k])))
+            .join(' ');
+        } else if (error.error?.errors) {
+          // compat autre format
+          const errs = error.error.errors;
+          errorMessage = Object.keys(errs).map((k) => errs[k].join(' ')).join(' ');
+        } else if (error.error?.message) {
+          errorMessage = error.error.message;
+        }
+      } else if (error.status === 401) {
+        errorMessage = 'Non authentifié. Veuillez vous reconnecter.';
+      } else if (error.status === 0) {
+        errorMessage = 'Impossible de se connecter au serveur';
+      } else {
+        errorMessage = `Erreur serveur ${error.status}: ${error.message}`;
+      }
+    }
+    return throwError(() => new Error(errorMessage));
+  }
   /** Login: stocke token + user */
   login(credentials: { email: string; password: string }): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/login`, credentials, httpOption).pipe(
@@ -108,13 +131,20 @@ export class AuthService {
       password: contact.password ?? '',
       password_confirmation: contact.password_confirmation ?? '',
     };
-  }
+  } 
 
-  register(payload: CreateClientDto): Observable<ApiResponse<ClientCreated>> {
-    return this.http.post<ApiResponse<ClientCreated>>(
-      `${this.apiUrl}/users/clients/create`, payload, httpOption
-    );
-  }
+  // register(payload: CreateClientDto): Observable<Contact> {
+  //   return this.http.post<ApiResponse<ClientCreated>>(
+  //     `${this.apiUrl}/users/clients/create`, payload, httpOption)
+  //     .pipe(map((res) => res.data), catchError(this.handleError));
+  // }
+
+    register(payload: Contact): Observable<Contact> {
+      return this.http
+        .post<{ success: boolean; data: Contact }>(`${this.apiUrl}/users/clients/create`, payload, httpOption)
+        .pipe(map(res => res.data));;
+    }
+  
 
   isAuthenticated(): boolean { return this.tokenService.hasToken(); }
   getUserInfo(): Contact | null { return this.currentUserValue; }

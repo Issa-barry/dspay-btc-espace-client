@@ -14,43 +14,43 @@ type CountryOption = { name: string; code: string };
   providers: [MessageService, ConfirmationService]
 })
 export class RegisterComponent implements OnInit {
-  confirmed: boolean = false;
+  confirmed = false;
   contact: Contact = new Contact();
-  errorMessage: string = '';
-  successMessage: string = '';
+  errorMessage = '';
+  successMessage = '';
   errors: { [key: string]: string[] } = {};
 
-  nom: string = '';
-  prenom: string = '';
-  email: string = '';
-  phone: string = '';
-  password: string = '';
-  password_confirmation: string = '';
-  role: string = "client";
-  date_naissance: string = "9999-01-01";
+  nom = '';
+  prenom = '';
+  email = '';
+  phone = '';
+  password = '';
+  password_confirmation = '';
+  role = 'client';
+  date_naissance = '9999-01-01';
 
-   // États UI
+  // États UI
   isSubmitting = false;
-   showSuccess = false;
+  showSuccess = false;
   createdEmail = '';
 
-countries: CountryOption[] = [];
-selectedCountry!: CountryOption;              // <-- modèle du dropdown
-
+  countries: CountryOption[] = [];
+  selectedCountry!: CountryOption;
 
   constructor(
     public router: Router,
     private authService: AuthService,
     private layoutService: LayoutService,
     private messageService: MessageService,
-    private confirmationService: ConfirmationService) { }
+    private confirmationService: ConfirmationService
+  ) {}
 
   get dark(): boolean {
     return this.layoutService.config().colorScheme !== 'light';
   }
 
   ngOnInit() {
-    const EU_AF_COUNTRIES: CountryOption[]  = [
+    const EU_AF_COUNTRIES: CountryOption[] = [
       { name: 'France', code: 'FR' },
       { name: 'Allemagne', code: 'DE' },
       { name: 'Autriche', code: 'AT' },
@@ -63,10 +63,10 @@ selectedCountry!: CountryOption;              // <-- modèle du dropdown
       { name: 'Estonie', code: 'EE' },
       { name: 'Finlande', code: 'FI' },
       { name: 'Grèce', code: 'GR' },
-       { name: 'Hongrie', code: 'HU' },
+      { name: 'Hongrie', code: 'HU' },
       { name: 'Irlande', code: 'IE' },
       { name: 'Italie', code: 'IT' },
-       { name: 'Lettonie', code: 'LV' },
+      { name: 'Lettonie', code: 'LV' },
       { name: 'Lituanie', code: 'LT' },
       { name: 'Luxembourg', code: 'LU' },
       { name: 'Malte', code: 'MT' },
@@ -82,7 +82,7 @@ selectedCountry!: CountryOption;              // <-- modèle du dropdown
       { name: 'Guinée-Conakry', code: 'GN' },
 
       // DROM-COM & collectivités
-       { name: 'La Réunion', code: 'RE' },
+      { name: 'La Réunion', code: 'RE' },
       { name: 'Guadeloupe', code: 'GP' },
       { name: 'Martinique', code: 'MQ' },
       { name: 'Guyane française', code: 'GF' },
@@ -91,33 +91,50 @@ selectedCountry!: CountryOption;              // <-- modèle du dropdown
       { name: 'Nouvelle-Calédonie', code: 'NC' },
       { name: 'Polynésie française', code: 'PF' }
     ].sort((a, b) => a.name.localeCompare(b.name, 'fr'));
-  
-    this.countries = EU_AF_COUNTRIES.sort((a, b) => a.name.localeCompare(b.name, 'fr'));
-    // France par défaut
+
+    this.countries = EU_AF_COUNTRIES;
     this.selectedCountry = this.countries.find(c => c.code === 'FR')!;
     this.syncAddressFromCountry(this.selectedCountry);
   }
 
-  onPhoneInput(event: any) {
-  const raw = event?.target?.value ?? '';
-  this.contact.phone = formatPhoneOnType(raw, this.selectedCountry?.code);
-}
-  onCountryChange(c: CountryOption) {
-  this.selectedCountry = c;
-  this.syncAddressFromCountry(c);
-  if (this.contact.phone) {
-    this.contact.phone = formatPhoneOnType(this.contact.phone, c.code);
-  }
-}
-  private syncAddressFromCountry(c?: CountryOption) {
-    if (!c) return;
-    this.contact.adresse.pays = c.name;   // <-- nom du pays
-    this.contact.adresse.code = c.code;   // <-- code ISO
+  // --- Helpers erreurs champ ---
+  private setFieldError(field: string, message: string) {
+    this.errors = { ...this.errors, [field]: [message] };
   }
 
+  private clearFieldError(field: string) {
+    if (!this.errors[field]) return;
+    const { [field]: _, ...rest } = this.errors;
+    this.errors = rest;
+  }
+
+  // --- UI / formatage ---
+  onPhoneInput(event: Event) {
+    const target = event?.target as HTMLInputElement | null;
+    const raw = target?.value ?? '';
+    this.contact.phone = formatPhoneOnType(raw, this.selectedCountry?.code);
+    this.clearFieldError('phone');
+  }
+
+  onCountryChange(c: CountryOption) {
+    this.selectedCountry = c;
+    this.syncAddressFromCountry(c);
+    if (this.contact.phone) {
+      this.contact.phone = formatPhoneOnType(this.contact.phone, c.code);
+    }
+    this.clearFieldError('phone');
+  }
+
+  private syncAddressFromCountry(c?: CountryOption) {
+    if (!c) return;
+    this.contact.adresse.pays = c.name;
+    this.contact.adresse.code = c.code;
+  }
+
+  // --- Submit ---
   onRegister() {
-    this.errors = {};
     this.errorMessage = '';
+    // this.errors = {}; // décommente si tu veux repartir à zéro à chaque submit
 
     // conf auto du password_confirmation
     this.contact.password_confirmation = this.contact.password;
@@ -126,22 +143,18 @@ selectedCountry!: CountryOption;              // <-- modèle du dropdown
     if (this.isSubmitting) return;
     this.isSubmitting = true;
 
-    
-  const e164 = toE164(this.contact.phone || '', this.selectedCountry?.code);
-  if (!e164) {
-    this.isSubmitting = false;
-    this.messageService.add({
-      severity: 'error',
-      summary: 'Téléphone invalide',
-      detail: `Le numéro n'est pas valide pour ${this.selectedCountry?.name}`,
-      life: 5000
-    });
-    return;
-  }
-  this.contact.phone = e164;
-
-    console.log(this.contact);
-    
+    // normalisation téléphone
+    const e164 = toE164(this.contact.phone || '', this.selectedCountry?.code);
+    if (!e164) {
+      this.isSubmitting = false;
+      this.setFieldError(
+        'phone',
+        `Le numéro n'est pas valide pour ${this.selectedCountry?.name || 'ce pays'}.`
+      );
+      return;
+    }
+    this.clearFieldError('phone');
+    this.contact.phone = e164;
 
     this.authService
       .register(this.contact)
@@ -149,31 +162,25 @@ selectedCountry!: CountryOption;              // <-- modèle du dropdown
       .subscribe({
         next: () => {
           this.createdEmail = this.contact.email || '';
-          this.successMessage = 'Compte créé avec succès. Un email de vérification vous a été envoyé.';
+          this.successMessage =
+            'Compte créé avec succès. Un email de vérification vous a été envoyé.';
+          // On garde le toast de succès si tu veux un feedback global
           this.messageService.add({
             severity: 'success',
             summary: 'Succès',
             detail: this.successMessage,
             life: 4000
           });
-          this.showSuccess = true; // affiche la modale
+          this.showSuccess = true;
           this.router.navigate(['/auth/registersuccess']);
         },
         error: (err) => {
-          // mapping des erreurs de validation Laravel: { data: { field: [...] }, message: "" }
-          this.errors = err?.error?.data || {};
-          const msg =
-            err?.error?.message ||
-            'Échec de l’inscription. Merci de vérifier les champs puis réessayer.';
-          this.errorMessage = msg;
-
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Erreur',
-            detail: msg,
-            life: 5000
-          });
-          console.error('register error', err);
+          // On fusionne les erreurs API dans ton modèle d’erreurs
+           this.errors = err?.error?.data ?? {};
+          // Si l’API renvoie un message global, tu peux l’exposer ici :
+          // this.errorMessage = err?.error?.message ?? '';
+          // (évite le toast ici si tu veux rester 100% inline)
+          console.log('ERROR', this.errors);
         }
       });
   }
