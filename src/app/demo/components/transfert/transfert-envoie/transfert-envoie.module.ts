@@ -19,6 +19,7 @@ import { CalendarModule } from 'primeng/calendar';
  import { ChipsModule } from 'primeng/chips';
 import { DividerModule } from 'primeng/divider';
 import { PipeModule } from 'src/app/demo/pipes/pipe.module';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 
 @NgModule({
@@ -41,7 +42,8 @@ import { PipeModule } from 'src/app/demo/pipes/pipe.module';
     CalendarModule,
     ChipsModule,
     DividerModule,
-    PipeModule
+    PipeModule,
+    ProgressSpinnerModule
  
   ]
 })

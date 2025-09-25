@@ -1,0 +1,87 @@
+.bg-circle {
+    width: 1000px;
+    height: 1000px;
+    border-radius: 50%;
+    background-image: linear-gradient(140deg,var(--primary-color),var(--surface-ground) 80%);
+    position: absolute;
+    opacity: 0.25;
+    z-index: -1;
+}
+
+.visibility-hidden {
+    visibility: hidden;
+}
+
+.moveinright {
+    animation: moveinright .15s linear;
+}
+
+@keyframes moveinright {
+    0% {
+      opacity: 0;
+      transform: translateX(50px);
+      transition: transform .12s cubic-bezier(0, 0, 0.2, 1), opacity .12s cubic-bezier(0, 0, 0.2, 1);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0%);
+    }
+  }
+
+ /* Titre héro */
+.hero-title {
+  margin: 0;
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: #0b1220; /* proche text-900, plus profond */
+  font-size: clamp(2rem, 2.2rem + 1.6vw, 4.25rem); /* mobile → desktop */
+}
+
+/* Accent façon YMO : surlignage doux qui suit le mot */
+.accent {
+  position: relative;
+  color: inherit;
+  /* underline “marqueur” derrière le texte */
+  background: linear-gradient(0deg, rgba(3,97,65,.18) 0 45%, transparent 45% 100%);
+  border-radius: .25rem;
+  padding: 0 .15rem;
+}
+
+/* Sous-titre */
+.hero-subtitle {
+  margin: 0;
+  color: #445066;            /* plus doux que text-700 */
+  font-size: clamp(1rem, .95rem + .5vw, 1.25rem);
+  line-height: 1.5;
+  max-width: 46rem;
+}
+
+/* Chips de bénéfices */
+.hero-features {
+  display: flex; flex-wrap: wrap; gap: .8rem 1.25rem;
+  list-style: none; padding: 0; margin: .25rem 0 0;
+  font-weight: 700; color: #0b1220;
+}
+.hero-features li {
+  display: inline-flex; align-items: center; gap: .5rem;
+  background: #f1f5f9;           /* light chip */
+  border-radius: 9999px;
+  padding: .45rem .9rem;
+  font-size: .95rem;
+}
+.hero-features i {
+  color: var(--primary-500, #036141);
+  font-size: 1rem;
+}
+
+/* Option : variante soulignement fin (au lieu du surlignage) */
+/*
+.accent {
+  background: none;
+  text-decoration: underline;
+  text-decoration-thickness: .18em;
+  text-underline-offset: .18em;
+  text-decoration-color: rgba(3,97,65,.35);
+}
+*/

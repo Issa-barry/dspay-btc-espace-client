@@ -1,0 +1,292 @@
+<div class="card"> 
+    <p-toast></p-toast>
+    <div class="grid" *ngIf="activeIndex === 0">
+        <div class="col-12 lg:col-10">
+            <div class="grid formgrid p-fluid"> 
+                <div class="field mb-4 col-12 md:col-4">
+                    <label for="city" class="font-medium text-900">vous Envoyer</label>
+                    <p-inputNumber
+                    [(ngModel)]="montantEuro"
+                    mode="currency"
+                    currency="EUR"
+                    locale="fr-FR"
+                    [minFractionDigits]="0"
+                    [maxFractionDigits]="2"
+                    [max]="1000"
+                    (onInput)="convertirDepuisEuro()">
+                    </p-inputNumber>
+                    <small *ngIf="errors['montantEuro']">{{ errors['montantEuro'] }}</small>
+                </div>
+
+                <div class="field mb-4 col-12 md:col-4">
+                    <label for="state" class="font-medium text-900">Montant reçu</label>
+                     <p-inputNumber
+                        [(ngModel)]="montantGNF"
+                        mode="currency"
+                        currency="GNF"
+                        locale="fr-FR"
+                        [useGrouping]="true"
+                        [minFractionDigits]="0"
+                        [maxFractionDigits]="0"
+                        (onInput)="convertirDepuisGNF()">
+                        </p-inputNumber>
+                </div>
+ 
+                <div class="col-12">
+                    <button (click)="next()" pButton pRipple label="Suivant" class="w-auto mt-3"></button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-12 lg:col-2"> 
+        </div>
+    </div>
+
+      <!-- Mode de réception -->
+    <div class="grid" *ngIf="activeIndex === 1">
+              <div class="field mb-2 col-12 md:col-8">
+                <label for="modeReception" class="font-medium text-900 mb-4">Mode réception</label>
+                <p-dropdown
+                  inputId="modeReception"
+                  [options]="modesReception"
+                  optionLabel="label"
+                  optionValue="value"
+                  [(ngModel)]="selectedModeReception"
+                  [showClear]="false"
+                  placeholder="Choisir un mode"
+                  appendTo="body"
+                  [autoZIndex]="true"
+                  [baseZIndex]="11000"
+                  styleClass="w-full"
+                >
+                  <!-- item mode reception -->
+                  <ng-template pTemplate="item" let-opt>
+                    <div class="flex align-items-center gap-2">
+                      <i class="pi" [ngClass]="{
+                          'pi-wallet': opt.value === 'ewallet',
+                          'pi-mobile': opt.value === 'orange_money',
+                          'pi-money-bill': opt.value === 'retrait_cash'
+                        }"></i>
+                      <span>{{ opt.label }}</span>
+                    </div>
+                  </ng-template>
+
+                  <!-- valeur sélectionnée -->
+                  <ng-template pTemplate="selectedItem" let-opt>
+                    <div class="flex align-items-center gap-2">
+                      <i class="pi" [ngClass]="{
+                          'pi-wallet': opt?.value === 'ewallet',
+                          'pi-mobile': opt?.value === 'orange_money',
+                          'pi-money-bill': opt?.value === 'retrait_cash'
+                        }"></i>
+                      <span>{{ opt?.label || 'Choisir un mode' }}</span>
+                    </div>
+                  </ng-template>
+                </p-dropdown>
+                <small *ngIf="errors['mode_reception']">{{ errors['mode_reception'] }}</small>
+              </div>
+
+                <div class="col-8">
+                   <div class="flex flex-column md:flex-row justify-content-between gap-3 mt-2">
+                     <button (click)="prev()" pButton pRipple label="Precedent" class="w-auto  p-button-secondary"></button>
+                    <button  (click)="next()" pButton pRipple label="Suivant" class="w-auto "></button>
+                   </div>
+                </div>
+        </div>
+
+    <!-- Bénéficiaire -->
+    <div class="grid" *ngIf="activeIndex === 2">
+        <div class="col-12 lg:col-2"> 
+        </div>
+        <div class="col-12 lg:col-12">
+            <div class="grid formgrid p-fluid"> 
+                <div class="field mb-6 col-12 md:col-8"><label class="font-medium text-900">Bénéficiaire</label>
+
+          <!-- Spinner pendant le chargement -->
+          <div *ngIf="loading; else dropdownTpl" class="flex justify-content-center py-3">
+            <p-progressSpinner styleClass="w-2rem h-2rem"></p-progressSpinner>
+          </div>
+
+          <!-- Dropdown une fois chargé -->
+          <ng-template #dropdownTpl>
+            <p-dropdown
+              [options]="beneficiairesOptions"
+              optionValue="id"
+              optionLabel="label"
+              [(ngModel)]="selectedBeneficiaireId"
+              [filter]="false"
+              [showClear]="false"
+              placeholder="Sélectionnez un bénéficiaire"
+              styleClass="w-full"
+              appendTo="body"
+              [autoZIndex]="true"
+              [baseZIndex]="11000"
+              [emptyMessage]="'Aucun bénéficiaire'"
+              [emptyFilterMessage]="'Aucun résultat'"
+              (onChange)="onBeneficiaireChange($event.value)"
+              [ngClass]="{'ng-invalid ng-dirty': (submitted && !selectedBeneficiaireId) || !isBeneficiaireValide || errors['beneficiaire'] }">
+
+              <!-- item -->
+              <ng-template pTemplate="item" let-opt>
+                <div class="flex align-items-center justify-content-between w-full">
+                  <span class="font-medium">{{ opt.label }}</span>
+                  <span class="text-600 text-sm">{{ opt.phone | phoneFormat:'GN' }}</span>
+                </div>
+              </ng-template>
+
+              <!-- valeur sélectionnée -->
+              <ng-template pTemplate="selectedItem" let-opt>
+                <div class="flex align-items-center justify-content-between w-full">
+                  <span class="font-medium">{{ opt?.label }}</span>
+                  <span class="text-600 text-sm">{{ opt?.phone | phoneFormat:'GN' }}</span>
+                </div>
+              </ng-template>
+
+              <!-- Footer du panneau : bouton Ajouter -->
+              <ng-template pTemplate="footer">
+                <div class="p-2 border-top-1 surface-border">
+                  <button
+                    type="button"
+                    pButton
+                    class="w-full p-button-text"
+                    icon="pi pi-user-plus"
+                    label="Ajouter un bénéficiaire"
+                    (click)="onpenBeneficiaireDialog()">
+                  </button>
+                </div>
+              </ng-template>
+            </p-dropdown>
+          </ng-template>
+
+          <small *ngIf="errors['beneficiaire']">{{ errors['beneficiaire'] }}</small>
+          <small *ngIf="submitted && !isBeneficiaireValide">Veuillez choisir un bénéficiaire.</small>
+                </div>
+                <div class="col-8">
+                   <div class="flex flex-column md:flex-row justify-content-between gap-3 mt-2">
+                     <button  pButton pRipple label="Precedent" class="w-auto p-button-secondary" (click)="prev()"></button>
+                    <button   pButton pRipple label="Suivant" class="w-auto "  [disabled]="!isBeneficiaireValide" (click)="next()"></button>
+                   </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recapitulatif -->
+     
+    <div class="grid" *ngIf="activeIndex === 3">
+        <div class="col-12 lg:col-2">
+                      <span class="text-900 font-bold text-lg md:text-xl">Récapitulatif</span> 
+        </div>
+        <div class="col-12 lg:col-12">
+            <div class="grid formgrid p-fluid"> 
+                <div class="field mb-4 col-12 md:col-8 align-items-center recap-row">  
+
+                        <p-divider styleClass="my-2 md:my-3"></p-divider>
+                    <!-- Montant recue -->
+                    <div class="grid align-items-center recap-row mt-3">
+                        <div class="col-8 md:col-6 text-900 font-medium mb-2">Bénéficiaire</div>
+                        <div class="col-4 md:col-6 text-right text-sm montant-recu-value nowrap">
+                                <div class="text-900 text-sm mb-2">{{ selectedBeneficiaireLabel }}</div>
+                                <span class="text-600 text-sm mt-2">{{ selectedBeneficiairePhone | phoneFormat:'GN' }}</span>
+                        </div>
+                    </div>
+
+                       <p-divider styleClass="my-2 md:my-3"></p-divider>
+                    <!-- Montant recue -->
+                    <div class="grid align-items-center recap-row mt-3">
+                        <div class="col-8 md:col-6 text-900 font-medium">Montant reçu</div>
+                        <div class="col-4 md:col-6 text-right text-sm montant-recu-value nowrap">
+                            1 700 000 GNF
+                        </div>
+                    </div>
+                    
+                       <p-divider styleClass="my-2 md:my-3"></p-divider>
+                      <!-- Frais -->
+                       <div class="grid align-items-center recap-row mt-3">
+                            <div class="col-8 md:col-6">
+                                <div class="flex align-items-center gap-2">
+                                <span class="text-900 font-medium mb-2">Frais</span>
+                                <p-inputSwitch
+                                    [(ngModel)]="includeFrais"
+                                    (onChange)="majFraisTotal_ttc()"
+                                    [disabled]="!montantEuro"
+                                    styleClass="inputswitch-sm">
+                                </p-inputSwitch>
+                                </div>
+                            </div>
+                            <div class="col-4 md:col-6 text-right text-900 font-bold">
+                                {{ frais | money:'EUR':'normal' }}
+                             </div>
+                        </div>
+
+                         <p-divider styleClass="my-2 md:my-3"></p-divider>
+
+                    <!-- Total_ttc -->
+                    <div class="grid align-items-center recap-row mt-3">
+                    <div class="col-8 md:col-6 text-900 font-bold">Total  à payer</div>
+                    <div class="col-4 md:col-6 text-right text-900 font-bold">
+                        {{ total_ttc | money:'EUR':'normal' }} 
+                     </div>
+                    </div>
+                </div> 
+                
+           
+                <!-- btn recap -->
+                <div class="col-8">
+                   <div class="flex flex-column md:flex-row justify-content-between gap-3 mt-4">
+                     <button (click)="prev()"          pButton pRipple label="Precedent" class="w-auto mt-3 p-button-secondary"></button>
+                    <button  (click)="openPayement()" pButton pRipple label="Confirmer et payer" class="w-auto mt-3"></button>
+                   </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- *****************************DIALOG****************************** -->
+ <p-dialog [(visible)]="payementDialog"
+              header="Carte bancaire"
+              [modal]="true"
+              [closable]="false"
+              [style]="{width:'450px'}">
+      <div class="grid formgrid">
+        <div class="col-12 mb-4">
+          <p-inputGroup class="w-full">
+            <p-inputGroupAddon>
+              <i class="pi" style="line-height: 1.25; letter-spacing: .1rem;">Numéro</i>
+            </p-inputGroupAddon>
+            <input type="text" pInputText placeholder="Exemple : 1234 5678 9012 3456" />
+          </p-inputGroup>
+         </div>
+
+        <div class="col-12 md:col-4 mb-3">
+          <p-inputGroup class="w-full">
+            <p-inputGroupAddon><i class="pi" style="line-height: 1.25; letter-spacing: .1rem;">Mois</i></p-inputGroupAddon>
+            <input type="text" pInputText placeholder="10" />
+          </p-inputGroup>
+        </div>
+
+        <div class="col-12 md:col-4 mb-3">
+          <p-inputGroup class="w-full">
+            <p-inputGroupAddon><i class="pi" style="line-height: 1.25; letter-spacing: .1rem;">Année</i></p-inputGroupAddon>
+            <input type="text" pInputText placeholder="25" />
+          </p-inputGroup>
+        </div>
+
+        <div class="col-12 md:col-4 mb-3">
+          <p-inputGroup class="w-full">
+            <p-inputGroupAddon>
+              <i class="pi" style="line-height: 1.25; letter-spacing: .1rem;">CVC</i>
+            </p-inputGroupAddon>
+            <input type="text" pInputText />
+          </p-inputGroup>
+        </div>
+      </div>
+
+      <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="Annuler" (click)="hideDialog()"></button>
+        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Payer" (click)="save()" [loading]="loading"></button>
+      </ng-template>
+    </p-dialog>
