@@ -1,5 +1,5 @@
 <div class="card"> 
-    
+    <p-toast></p-toast>
     <div class="grid" *ngIf="activeIndex === 0">
         <div class="col-12 lg:col-10">
             <div class="grid formgrid p-fluid"> 
@@ -162,9 +162,9 @@
           <small *ngIf="submitted && !isBeneficiaireValide">Veuillez choisir un bénéficiaire.</small>
                 </div>
                 <div class="col-8">
-                   <div class="flex flex-column md:flex-row justify-content-between gap-3 mt-4">
-                     <button (click)="prev()" pButton pRipple label="Precedent" class="w-auto mt-3 p-button-secondary"></button>
-                    <button  (click)="next()" pButton pRipple label="Suivant" class="w-auto mt-3"></button>
+                   <div class="flex flex-column md:flex-row justify-content-between gap-3 mt-2">
+                     <button  pButton pRipple label="Precedent" class="w-auto p-button-secondary" (click)="prev()"></button>
+                    <button   pButton pRipple label="Suivant" class="w-auto "  [disabled]="!isBeneficiaireValide" (click)="next()"></button>
                    </div>
                 </div>
             </div>
