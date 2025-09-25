@@ -8,124 +8,12 @@
     <div class="landing-wrapper">
         <landing-topbar></landing-topbar>
         
- 
-<div class="py-2 px-3 mx-0 md:mx-6 lg:mx-8 lg:px-8 z-2">
-            <!-- Hero -->
-   <div id="home" class="grid grid-nogutter md:mb-8 md:py-0 align-items-center md:align-items-start">
-                <!-- Texte gauche -->
-                <div class="col-12 md:col-6 flex flex-column gap-4 md:gap-5
-            flex-order-1 md:flex-order-0
-            align-items-center md:align-items-start
-            text-center md:text-left pr-0 md:pr-6">
-
-  <h1 class="hero-title">
-    <span class="mr-2">Envoyez</span> <span >  de l'argent</span> 
-    <div class="mt-4 md:mt-4">vers La <span class="accent mt-4">Guinée</span></div>
-     
-  </h1>
-
-  <p class="hero-subtitle">
-    Transferts Europe → Guinée rapides et sécurisés, au taux du jour.
-    Retrait cash ou e-wallet partout en Guinée.
-  </p>
-
-  <ul class="hero-features mb-6">
-    <li><i class="pi pi-check"></i> Sécurisé</li>
-    <li><i class="pi pi-bolt"></i> Rapide</li>
-    <li><i class="pi pi-wallet"></i> Retrait facile</li>
-  </ul>
-</div>
-
-
-          <!-- Formulaire droite -->
-        <div class="col-12 md:col-6 flex flex-order-0 md:flex-order-1 justify-content-center md:justify-content-end mb-6 md:mb-0">
-        <div class="surface-card border-round shadow-2 p-4 w-full" style="max-width: 380px;">
-            <app-landing-send-form></app-landing-send-form>
-        </div>
-        </div>
+    <div class="py-2 px-3 mx-0 md:mx-6 lg:mx-8 lg:px-8 z-2">
+      <router-outlet></router-outlet>
     </div>
 
-<!-- SECTION 1 -->
-
-<app-card-1></app-card-1>
-
-    <landing-service></landing-service>
-
-   <!--  <landing-promo></landing-promo> -->
- 
-
-            <!-- <div id="agence" class="my-6 py-6 md:my-8 md:py-8">
-                <div class="text-900 font-bold text-5xl mb-4 text-center">Agences</div>
-                <div class="text-700 text-xl mb-8 text-center line-height-3">Choose a plan that works best for you and
-                    your team.</div>
-
-                <div class="grid grid-nogutter justify-content-center mt-8">
-                    <div class="col-12 lg:col-6 xl:col-4">
-                        <div class="p-3 h-full">
-                            <div class="shadow-2 p-6 h-full flex flex-column surface-card" style="border-radius: 6px">
-                                <span class="text-900 block font-medium text-xl mb-2 text-center">Envoie hors ligne</span>
-                                <span class="font-bold block text-2xl text-900 text-center">test</span>
-
-                                <ul class="list-none p-0 m-0 flex-grow-1 mt-6">
-                                    <li class="flex align-items-center mb-3">
-                                        <i class="pi pi-check text-green-500 mr-2"></i>
-                                        <span>Rdv en Agence</span>
-                                    </li>
-                                    <li class="flex align-items-center mb-3">
-                                        <i class="pi pi-check text-green-500 mr-2"></i>
-                                        <span>Payer en cash</span>
-                                    </li>
-                                    <li class="flex align-items-center mb-3">
-                                        <i class="pi pi-check text-green-500 mr-2"></i>
-                                        <span>Analytics Module</span>
-                                    </li>
-                                    <li class="flex align-items-center mb-3">
-                                        <i class="pi pi-times text-red-500 mr-2"></i>
-                                        <span>Finance Module</span>
-                                    </li>
-                                </ul>
-
-                                <button pButton pRipple label="Choose Plan" class="px-5 w-full mt-6 p-button-outlined"
-                                    icon="pi pi-arrow-right" iconPos="right"></button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 lg:col-6 xl:col-4">
-                        <div class="p-3 h-full">
-                            <div class="shadow-2 p-6 h-full flex flex-column surface-card" style="border-radius: 6px">
-                                <span class="text-900 block font-medium text-xl mb-2 text-center">Retrait</span>
-                                <span class="font-bold block text-2xl text-900 text-center">$49</span>
-
-                                <ul class="list-none p-0 m-0 flex-grow-1 mt-6">
-                                    <li class="flex align-items-center mb-3">
-                                        <i class="pi pi-check text-green-500 mr-2"></i>
-                                        <span>Up to 10 Active Users</span>
-                                    </li>
-                                    <li class="flex align-items-center mb-3">
-                                        <i class="pi pi-check text-green-500 mr-2"></i>
-                                        <span>Up to 30 Project Integrations</span>
-                                    </li>
-                                    <li class="flex align-items-center mb-3">
-                                        <i class="pi pi-check text-green-500 mr-2"></i>
-                                        <span>Analytics Module</span>
-                                    </li>
-                                    <li class="flex align-items-center mb-3">
-                                        <i class="pi pi-times text-red-500 mr-2"></i>
-                                        <span>Finance Module</span>
-                                    </li>
-                                </ul>
-
-                                <button pButton pRipple label="Choose Plan" class="px-5 w-full mt-6 p-button-outlined"
-                                    icon="pi pi-arrow-right" iconPos="right" (click)="goToLogin()"></button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div> -->
-
+         <div class="py-2 px-3 mx-0 md:mx-6 lg:mx-8 lg:px-8 z-2">
             <landing-footer></landing-footer>
-            
         </div>
     </div>
 </div>
