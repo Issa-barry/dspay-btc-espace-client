@@ -97,10 +97,7 @@ export class RegisterComponent implements OnInit {
     this.syncAddressFromCountry(this.selectedCountry);
   }
 
-  // --- Helpers erreurs champ ---
-  private setFieldError(field: string, message: string) {
-    this.errors = { ...this.errors, [field]: [message] };
-  }
+ 
 
   private clearFieldError(field: string) {
     if (!this.errors[field]) return;
@@ -108,6 +105,86 @@ export class RegisterComponent implements OnInit {
     this.errors = rest;
   }
 
+   // ----------------- Helpers erreurs champ -----------------
+  private setFieldError(field: string, message: string) {
+    this.errors = { ...this.errors, [field]: [message] };
+  }
+
+  private clearAllErrors() {
+    this.errors = {};
+  }
+
+  // ----------------- Helpers validation -----------------
+  private isValidEmail(email: string): boolean {
+    // simple mais robuste
+    return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+  }
+
+  private passwordIssues(pwd: string): string | null {
+    if (!pwd || pwd.length < 8) return 'Le mot de passe doit contenir au moins 8 caractères.';
+    if (!/[A-Za-z]/.test(pwd) || !/\d/.test(pwd)) {
+      return 'Le mot de passe doit contenir au moins 1 lettre et 1 chiffre.';
+    }
+    return null;
+  }
+
+  private isValidISODate(d: string): boolean {
+    if (!d) return false;
+    // YYYY-MM-DD
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) return false;
+    const dt = new Date(d);
+    return !isNaN(dt.getTime()) && d === dt.toISOString().slice(0, 10);
+  }
+
+  /** Valide tous les champs côté front, alimente this.errors, retourne true si OK */
+  private validateFront(): boolean {
+    this.clearAllErrors();
+
+    // nom / prenom
+    if (!this.contact.nom || this.contact.nom.trim().length < 2) {
+      this.setFieldError('nom', 'Le nom est requis (min. 2 caractères).');
+    }
+    if (!this.contact.prenom || this.contact.prenom.trim().length < 2) {
+      this.setFieldError('prenom', 'Le prénom est requis (min. 2 caractères).');
+    }
+
+    // email
+    if (!this.contact.email) {
+      this.setFieldError('email', 'L’email est requis.');
+    } else if (!this.isValidEmail(this.contact.email)) {
+      this.setFieldError('email', 'Format d’email invalide.');
+    }
+
+    // pays
+    if (!this.selectedCountry) {
+      this.setFieldError('adresse.pays', 'Le pays est requis.');
+    }
+
+    // mot de passe
+    const pwdIssue = this.passwordIssues(this.contact.password || '');
+    if (pwdIssue) {
+      this.setFieldError('password', pwdIssue);
+    }
+
+    // confirmation
+    if ((this.contact.password || '') !== (this.contact.password_confirmation || '')) {
+      this.setFieldError('password_confirmation', 'La confirmation ne correspond pas au mot de passe.');
+    }
+
+    // date de naissance (optionnelle, mais si renseignée on vérifie la forme)
+    if (this.contact.date_naissance && this.contact.date_naissance !== '9999-01-01') {
+      if (!this.isValidISODate(this.contact.date_naissance)) {
+        this.setFieldError('date_naissance', 'La date doit être au format YYYY-MM-DD.');
+      }
+    }
+
+    // téléphone : on fait une 1ère vérif simple (présence)
+    if (!this.contact.phone || !this.contact.phone.toString().trim()) {
+      this.setFieldError('phone', 'Le téléphone est requis.');
+    }
+
+    return Object.keys(this.errors).length === 0;
+  }
   // --- UI / formatage ---
   onPhoneInput(event: Event) {
     const target = event?.target as HTMLInputElement | null;
@@ -138,6 +215,12 @@ export class RegisterComponent implements OnInit {
 
     // conf auto du password_confirmation
     this.contact.password_confirmation = this.contact.password;
+
+       // 1) validation front
+    const frontOk = this.validateFront();
+    if (!frontOk) {
+      return; // on laisse l’utilisateur corriger les erreurs inline
+    }
 
     // anti-double-clic
     if (this.isSubmitting) return;
