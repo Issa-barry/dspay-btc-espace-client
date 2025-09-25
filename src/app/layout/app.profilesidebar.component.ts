@@ -5,7 +5,7 @@ import { AuthService } from '../demo/service/auth/auth.service';
 import { ContactService } from '../demo/service/contact/contact.service';
 import { Contact } from '../demo/models/contact';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { Observable } from 'rxjs';
+import { finalize, Observable } from 'rxjs';
 
 @Component({
     selector: 'app-profilemenu',
@@ -16,8 +16,9 @@ export class AppProfileSidebarComponent implements OnInit {
  me$!: Observable<Contact | null>;   // profil connecté (observable)
   contacts: Contact[] = [];
   contact: Contact = new Contact();
-   errorMessage: string | null = null;
-
+  errorMessage: string | null = null;
+  loggingOut = false; 
+ 
     constructor(
         public router: Router, 
         private authService: AuthService,
@@ -36,19 +37,24 @@ export class AppProfileSidebarComponent implements OnInit {
 
 
         // Méthode de déconnexion
-  logout() {
-    this.authService.logout().subscribe({
-      next: () => {
-        this.router.navigate(['/auth/login']); 
-      },
-      error: (err) => {
-        console.error('Erreur de déconnexion', err);
-      }
-    });
+ logout(): void {
+    if (this.loggingOut) return;       // évite les doubles clics
+    this.errorMessage = null;
+    this.loggingOut = true;
 
-    this.visible = false
+    this.authService.logout()
+      .pipe(finalize(() => this.loggingOut = false))   // stoppe le spinner
+      .subscribe({
+        next: () => {
+          this.visible = false;                         // ferme le sidebar
+          this.router.navigate(['/auth/login']);
+        },
+        error: (err) => {
+          console.error('Erreur de déconnexion', err);
+          this.errorMessage = 'Une erreur est survenue lors de la déconnexion.';
+        }
+      });
   }
-
   getContactById(){
     this.contactService.getContactById(1).subscribe({
       next:(res) => {
