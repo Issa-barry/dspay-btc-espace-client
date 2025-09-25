@@ -70,6 +70,7 @@ export class AuthService {
         localStorage.setItem('current_user', JSON.stringify(user));
       })
       // ,catchError(this.handleError)
+       ,catchError(this.handleError)
     );
   }
 

@@ -58,7 +58,9 @@ export class LoginComponent implements OnInit {
           err?.error?.error?.email ||
           err?.error?.errors?.email?.[0] ||
           err?.error?.errors?.password?.[0];
-        this.errorMessage = apiMsg || 'Identifiants incorrects ou service indisponible.';
+        this.errorMessage = apiMsg || 'Identifiants incorrects';
+          this.loading = false;
+        this.submited = false;
       },
     });
   }
