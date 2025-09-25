@@ -30,7 +30,7 @@
             </div> -->
              
             
-            <button pButton pRipple label="Me connecter" class="w-full" (click)="login()"></button>
+            <button pButton pRipple label="Me connecter" class="w-full" (click)="login()" [loading]="submited" [disabled]="!email || !password"></button>
             <div *ngIf="errorMessage" class="text-red-500 mt-3">{{ errorMessage }}</div>
             
             <div class="mb-4 flex flex-wrap gap-3 mt-4">
