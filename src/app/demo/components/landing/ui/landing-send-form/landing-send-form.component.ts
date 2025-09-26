@@ -124,7 +124,7 @@ startTransfer(): void {
   };
 
   const urlTree = this.router.createUrlTree(
-    ['/dashboard/transfert/envoie'],
+    ['/dashboard'],
     { queryParams: params }
   );
   const redirectUrl = urlTree.toString();

@@ -21,6 +21,7 @@ import { TransfertListeComponent } from './transfert-liste.component';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { SkeletonModule } from 'primeng/skeleton';
 import { PipeModule } from 'src/app/demo/pipes/pipe.module';
+import { ChipModule } from 'primeng/chip';
 
 @NgModule({
   declarations: [TransfertListeComponent],
@@ -42,7 +43,8 @@ import { PipeModule } from 'src/app/demo/pipes/pipe.module';
 		InputNumberModule,
 		DialogModule,ConfirmDialogModule,
 		SkeletonModule,
-		PipeModule
+		PipeModule,
+		ChipModule
   ]
 })
 export class TransfertListeModule { }
