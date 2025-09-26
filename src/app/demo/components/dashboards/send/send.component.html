@@ -308,3 +308,44 @@
     <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Payer" (click)="save()" [loading]="loading"></button>
   </ng-template>
 </p-dialog> -->
+
+<!-- DIALOG BÉNÉFICIAIRE -->
+    <p-dialog
+      [(visible)]="beneficiaireDialog"
+      [style]="{ width: '450px' }"
+      header="Détails du Bénéficiaire"
+      [modal]="true"
+      class="p-fluid">
+
+      <ng-template pTemplate="content">
+        <div class="field">
+          <label for="b_nom">Nom</label>
+          <input type="text" pInputText id="b_nom"
+                 [(ngModel)]="beneficiaire.nom" required
+                 [ngClass]="{'ng-invalid ng-dirty': submitted && !beneficiaire.nom}" />
+          <small class="ng-dirty ng-invalid" *ngIf="submitted && !beneficiaire.nom">Nom is required.</small>
+        </div>
+
+        <div class="field">
+          <label for="b_prenom">Prénom</label>
+          <input type="text" pInputText id="b_prenom"
+                 [(ngModel)]="beneficiaire.prenom" required
+                 [ngClass]="{'ng-invalid ng-dirty': submitted && !beneficiaire.prenom}" />
+          <small class="ng-dirty ng-invalid" *ngIf="submitted && !beneficiaire.prenom">Prenom is required.</small>
+        </div>
+
+        <div class="field">
+          <label for="b_phone">Téléphone</label>
+          <input type="text" pInputText id="b_phone"
+                 [(ngModel)]="beneficiaire.phone" required
+                 [ngClass]="{'ng-invalid ng-dirty': submitted && !beneficiaire.phone}" />
+          <small class="ng-dirty ng-invalid" *ngIf="submitted && !beneficiaire.phone">Téléphone is required.</small>
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="footer">
+        <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="Enregistrer" icon="pi pi-check" class="p-button-text" (click)="saveBeneficiaire()" [loading]="loading"></button>
+      </ng-template>
+    </p-dialog>
+  
