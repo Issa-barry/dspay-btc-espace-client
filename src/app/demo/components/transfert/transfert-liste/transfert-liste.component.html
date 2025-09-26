@@ -1,34 +1,9 @@
-<div class="grid">
+
+<div class="grid"> 
     <div class="col-12">
         <div class="card px-6 py-6">
             <p-toast></p-toast>
             <p-confirmDialog></p-confirmDialog>
-
-            <!-- <p-toolbar styleClass="mb-4">
-                <ng-template pTemplate="left">
-                    <div class="my-2"> 
-                        <button
-                            pButton
-                            pRipple
-                            label="Filtre"
-                            icon="pi pi-arrow-down-left"
-                            class="p-button-primary mr-2"
-                         ></button>
-                     </div>
-                </ng-template>
-
-                <ng-template pTemplate="right">
-                    <button
-                        pButton
-                        pRipple
-                        label="Filtre"
-                        icon="pi pi-upload"
-                        class="p-button-help"
-                        (click)="dt.exportCSV()"
-                    ></button>
-                </ng-template>
-            </p-toolbar> -->
-
             <p-table
                 #dt
                 [value]="loading ? skeletonRows : transferts"

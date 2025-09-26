@@ -1,50 +1,26 @@
-<!-- SECTION 1 -->
-<div
-  id="home"
-  class="grid grid-nogutter md:mb-8 md:py-0 align-items-center md:align-items-start"
->
-  <!-- Texte gauche -->
-  <div
-    class="col-12 md:col-6 flex flex-column gap-4 md:gap-5
-           flex-order-1 md:flex-order-0
-           align-items-center md:align-items-start
-           text-center md:text-left pr-0 md:pr-6"
-  >
-    <h1 class="hero-title">
-      <span class="mr-0">Envoyez de </span>
-      <div class="mt-3">l'argent vers</div>
-      <div class="mt-3 md:mt-3">
-         La <span class="accent mt-4">Guinée</span>
-      </div>
+<!-- SECTION 1 / Hero -->
+<section id="home" class="grid grid-nogutter align-items-center md:align-items-start md:mb-8 p-2" aria-labelledby="home-title">
+  <!-- Colonne gauche : texte -->
+  <div class="col-12 md:col-5 flex flex-column justify-content-center">
+    <h1 class="text-5xl font-bold mb-3 hidden md:block">
+     Le moyen <span class="text-primary">rapide</span><br />
+      et <span class="text-primary">fiable</span> d'envoyer de l’argent
     </h1>
+    <p class="text-lg text-700 mb-4 line-height-3 hidden md:block">
+      Avec DSPAY, envoyez de l’argent à vos proches en Guinée en toute simplicité et sécurité.<br/>
+      Des transferts rapides, fiables et adaptés à vos besoins.
+    </p>
+   </div>
 
-    <!-- <p class="hero-subtitle">
-      Transferts Europe → Guinée rapides et sécurisés, au taux du jour.
-      Retrait cash ou e-wallet partout en Guinée.
-    </p> -->
-
-    <ul class="hero-features mb-6">
-      <li><i class="pi pi-check"></i> Sécurisé</li>
-      <li><i class="pi pi-bolt"></i> Rapide</li>
-      <li><i class="pi pi-wallet"></i> Retrait facile</li>
-    </ul>
-  </div>
-
-  <!-- Formulaire droite -->
-  <div
-    class="col-12 md:col-6 flex flex-order-0 md:flex-order-1 
-           justify-content-center md:justify-content-end 
-           mb-6 md:mb-0"
-  >
-    <div
-      class="surface-card border-round shadow-2 p-4 w-full"
-      style="max-width: 380px;"
-    >
+  <!-- Colonne droite : formulaire -->
+  <div class="md:ml-8 col-12 md:col-6 flex flex-order-0 md:flex-order-1 justify-content-center md:justify-content-end  mb-6 md:mb-0">
+    <div class="surface-card border-round shadow-2 p-4 w-full hero-form-card">
       <app-landing-send-form></app-landing-send-form>
     </div>
-  </div>
-</div>
+  </div> 
+</section>
 
 <!-- Autres sections -->
-<app-card-1></app-card-1>
 <landing-service></landing-service>
+<app-card-1></app-card-1>
+

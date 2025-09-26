@@ -257,8 +257,7 @@
 
 <!-- Dialog paiement -->
 <!-- EN PROD -->
- 
-<!-- <app-payment-card
+ <app-payment-card
   [(visible)]="payementDialog"
   [loading]="payLoading"
   [amount]="total_ttc"
@@ -267,9 +266,7 @@
   (cancel)="onPaymentCancel()"
 ></app-payment-card>
 
- -->
-
-
+<!-- 
 <p-dialog [(visible)]="payementDialog"
           header="Carte bancaire"
           [modal]="true"
@@ -310,4 +307,4 @@
     <button pButton pRipple icon="pi pi-times" class="p-button-text" label="Annuler" (click)="hideDialog()"></button>
     <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Payer" (click)="save()" [loading]="loading"></button>
   </ng-template>
-</p-dialog>
+</p-dialog> -->
