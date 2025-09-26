@@ -55,3 +55,33 @@
     padding-right: .5rem;
   }
 }
+
+
+/* déjà présent… */
+:host ::ng-deep .pay-compact > [class*="col-"] {
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+}
+
+/* encore plus serré sur mobile */
+@media (max-width: 640px) {
+  :host ::ng-deep .tighter-mobile {
+    gap: .15rem 0; /* réduit l'écart entre les blocs (si supporté) */
+  }
+
+  :host ::ng-deep .tighter-mobile > [class*="col-"] {
+    padding-top: .10rem !important;   /* ↓ encore */
+    padding-bottom: .10rem !important;
+  }
+
+  :host ::ng-deep .tighter-mobile label {
+    margin-bottom: .15rem !important; /* label + proche du champ */
+  }
+
+  /* compacter légèrement la hauteur des champs */
+  :host ::ng-deep .tighter-mobile .p-inputtext,
+  :host ::ng-deep .tighter-mobile .p-inputmask {
+    padding-top: .55rem !important;
+    padding-bottom: .55rem !important;
+  }
+}
