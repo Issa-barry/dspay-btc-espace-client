@@ -10,7 +10,7 @@
                [min]="0" [minFractionDigits]="0" 
                [maxFractionDigits]="2"
                inputId="amountInput"
-               [inputStyleClass]="'text-xl font-semibold'">
+               [inputStyleClass]="'text-xl font-semibold focus:outline-none focus:ring-0 focus:border-green-500'">
               </p-inputNumber>
               <span class="p-inputgroup-addon text-700">EUR</span>
             </div>
@@ -18,14 +18,17 @@
             <!-- Reçu -->  
             <label class="block text-600 mb-2">Le destinataire reçoit</label>
             <div class="p-inputgroup mb-3">
-            <p-inputNumber 
-                       [(ngModel)]="receiveGNF"
-                        (onInput)="onReceiveInput()"
-                        [readonly]="false" 
-                        [min]="0" [minFractionDigits]="0" [maxFractionDigits]="0"
-                        inputId="receiveGNF"
-                        [inputStyleClass]="'text-xl font-semibold'">
-              </p-inputNumber>
+            <p-inputNumber
+  [(ngModel)]="receiveGNF"
+  (onInput)="onReceiveInput()"
+  [readonly]="false"
+  [min]="0"
+  [minFractionDigits]="0"
+  [maxFractionDigits]="0"
+  inputId="receiveGNF"
+  [inputStyleClass]="'text-xl font-semibold focus:outline-none focus:ring-0 focus:border-green-500'">
+</p-inputNumber>
+
             <span class="p-inputgroup-addon text-700">GNF</span>
             </div>
 
