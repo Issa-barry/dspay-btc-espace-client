@@ -10,7 +10,7 @@
   [contentStyle]="{padding:'0'}"
   [dismissableMask]="true"
 >
-  <form [formGroup]="payForm" (ngSubmit)="onSubmit()" class="p-4">
+  <form [formGroup]="payForm" (ngSubmit)="onSubmit()" class="p-6">
     <!-- Header -->
     <div class="flex align-items-center justify-content-between mb-3">
       <h3 class="m-0 text-xl font-bold">Pay amount</h3>
@@ -19,20 +19,23 @@
 
     <!-- CARD NUMBER -->
     <label class="block text-600 text-xs font-semibold mb-2">CARD NUMBER</label>
-    <p-inputGroup class="mb-2">
-      <p-inputGroupAddon>
-        <i class="pi pi-credit-card"></i>
-      </p-inputGroupAddon>
-      <p-inputMask
-        formControlName="number"
-        [mask]="numberMask"
-        placeholder="8881 2545 2545 2245"
-        styleClass="w-full"
-      ></p-inputMask>
-      <p-inputGroupAddon *ngIf="brand">
-        <i class="pi pi-verified mr-1"></i><span class="text-sm">{{ brand }}</span>
-      </p-inputGroupAddon>
-    </p-inputGroup>
+   <p-inputGroup class="cc-row mb-2">
+  <p-inputGroupAddon class="icon-addon">
+    <i class="pi pi-credit-card"></i>
+  </p-inputGroupAddon>
+
+  <p-inputMask
+    formControlName="number"
+    [mask]="numberMask"
+    placeholder="8881 2545 2545 2245"
+    styleClass="w-full"
+  ></p-inputMask>
+
+  <p-inputGroupAddon class="brand-addon" *ngIf="brand">
+    <i class="pi pi-verified mr-1"></i><span class="brand-text">{{ brand }}</span>
+  </p-inputGroupAddon>
+</p-inputGroup>
+
     <small class="p-error block mb-2" *ngIf="numberInvalid">Numéro invalide.</small>
 
     <!-- EXP / CVC -->

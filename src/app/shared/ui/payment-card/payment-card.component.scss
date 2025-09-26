@@ -4,3 +4,44 @@
 :host ::ng-deep .p-badge.p-badge-lg {
   border-radius: 999px;
 }
+/* Empêche le retour à la ligne et force l'input à prendre la place restante */
+:host ::ng-deep .cc-row.p-inputgroup {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+:host ::ng-deep .cc-row .p-inputtext,
+:host ::ng-deep .cc-row .p-inputmask {
+  flex: 1 1 auto;
+  min-width: 0; /* indispensable pour éviter la casse */
+}
+
+/* Addons ne rétrécissent pas, pas de wrap interne */
+:host ::ng-deep .cc-row .p-inputgroup-addon {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+/* Marque compacte (tronquée si trop longue) */
+:host ::ng-deep .brand-addon {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+:host ::ng-deep .brand-text {
+  display: inline-block;
+  vertical-align: middle;
+  max-width: 90px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Sur petits écrans: masquer le texte, garder l'icône */
+@media (max-width: 420px) {
+  :host ::ng-deep .brand-text { display: none; }
+  :host ::ng-deep .brand-addon { max-width: 36px; padding-right: .5rem; }
+}
+
+/* Optionnel: réduire l’addon gauche */
+:host ::ng-deep .icon-addon { padding-left: .6rem; padding-right: .6rem; }
