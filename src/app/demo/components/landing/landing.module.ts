@@ -2,68 +2,31 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LandingRoutingModule } from './landing-routing.module';
 import { LandingComponent } from './landing.component';
-import { ButtonModule } from 'primeng/button';
-import { RouterModule } from '@angular/router';
-import { StyleClassModule } from 'primeng/styleclass';
+ import { RouterModule } from '@angular/router';
+ 
+  
+ import { LandingUiModule } from './ui/landing-ui.module';
+import { HomeComponent } from './home/home.component';
 import { AppConfigModule } from 'src/app/layout/config/app.config.module';
-import { AnimateEnterDirective } from './animateenter.directive';
-import { InputTextModule } from 'primeng/inputtext';
-
-import { FormsModule } from '@angular/forms';
-import { TableModule } from 'primeng/table';
-import { ToggleButtonModule } from 'primeng/togglebutton';
-import { RippleModule } from 'primeng/ripple';
-import { MultiSelectModule } from 'primeng/multiselect';
-import { DropdownModule } from 'primeng/dropdown';
-import { ProgressBarModule } from 'primeng/progressbar';
-import { ToastModule } from 'primeng/toast';
-import { SliderModule } from 'primeng/slider';
-import { RatingModule } from 'primeng/rating';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { InputSwitchModule } from 'primeng/inputswitch';
-import { PipeModule } from '../../pipes/pipe.module';
-import { TopbarComponent } from './ui/topbar/topbar.component';
-import { LandingSendFormComponent } from './ui/landing-send-form/landing-send-form.component';
-import { LandingServiceComponent } from './ui/landing-service/landing-service.component';
-import { LandingPromoComponent } from './ui/landing-promo/landing-promo.component';
-import { LandingFooterComponent } from './ui/landing-footer/landing-footer.component';
-import { TagModule } from 'primeng/tag';
-import { Card1Component } from './ui/card-1/card-1.component';
 
 @NgModule({
     imports: [
         CommonModule,
         LandingRoutingModule,
-        ButtonModule,
-        RouterModule,
-        StyleClassModule,
-        AppConfigModule,
-        InputTextModule,
-
-        FormsModule,
-        TableModule,
-        RatingModule,
-        SliderModule,
-        ToggleButtonModule,
-        RippleModule,
-        MultiSelectModule,
-        DropdownModule,
-        ProgressBarModule,
-        ToastModule,
-        InputNumberModule,
-        InputSwitchModule,
-        PipeModule,
-        TagModule
+         RouterModule,
+         LandingUiModule,
+         AppConfigModule
     ],
     declarations: [
         LandingComponent,
+        HomeComponent
         // AnimateEnterDirective,
-        TopbarComponent,
-        LandingSendFormComponent,
-        LandingServiceComponent,
-        LandingPromoComponent,
-        LandingFooterComponent,
-        Card1Component
+        // TopbarComponent,
+        // LandingSendFormComponent,
+        // LandingServiceComponent,
+        // LandingPromoComponent,
+        // LandingFooterComponent,
+        // Card1Component
     ],
 })
 export class LandingModule {}

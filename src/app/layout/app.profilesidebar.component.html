@@ -31,18 +31,30 @@
                     </div>
                 </a>
             </li>
-            <li>
-                <a class="cursor-pointer flex surface-border mb-3 p-3 align-items-center border-1 surface-border border-round hover:surface-hover transition-colors transition-duration-150">
-                    <span>
-                        <i class="pi pi-power-off text-xl text-primary"></i>
-                    </span>
-                    <div class="ml-3" (click)="logout()">
-                        <span class="mb-2 font-semibold">Déconnexion</span>
-                        <p class="text-color-secondary m-0">vous aller être deconnecter</p>
-                        <small *ngIf="errorMessage" class="alert alert-danger p-3 mt-3"> {{ errorMessage }}</small>
-                    </div>
-                </a> 
-            </li>
+           <li>
+  <button type="button"
+          class="w-full cursor-pointer flex surface-border mb-3 p-3 align-items-center border-1 surface-border border-round hover:surface-hover transition-colors transition-duration-150"
+          (click)="logout()"
+          [disabled]="loggingOut"
+          [class.opacity-60]="loggingOut"
+          [class.pointer-events-none]="loggingOut">
+
+    <span class="relative">
+      <!-- icône normal -> spinner pendant le logout -->
+      <i class="pi text-xl text-primary"
+         [ngClass]="loggingOut ? 'pi-spinner pi-spin' : 'pi-power-off'"></i>
+    </span>
+
+    <div class="ml-3 text-left">
+      <span class="mb-2 font-semibold">Déconnexion</span>
+      <p class="text-color-secondary m-0">
+        {{ loggingOut ? 'Déconnexion en cours…' : 'Vous allez être déconnecté' }}
+      </p>
+      <small *ngIf="errorMessage" class="p-error block mt-2">{{ errorMessage }}</small>
+    </div>
+  </button>
+</li>
+
         </ul>
     </div>
 
