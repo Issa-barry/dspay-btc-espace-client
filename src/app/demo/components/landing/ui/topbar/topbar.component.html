@@ -24,7 +24,7 @@
                             </svg> -->
                             
                                 <!-- Grand logo -->
-                                <img src="assets/demo/images/blocks/logos/Logo_vert2.svg" alt="DSPAY" class="app-logo-normal" />
+                                <img src="assets/demo/images/blocks/logos/Logo_bolt_normal.svg" alt="DSPAY" class="app-logo-normal" />
 
                                                 <!-- Petit logo (mobile / collapsed) -->
                                 <!-- <img src="assets/demo/images/blocks/logos/Logo.svg" alt="DSPAY" class="app-logo-small" /> -->
@@ -55,42 +55,41 @@
                                     class="flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3 cursor-pointer">
                                     <span>Services</span>
                                 </a>
-                            </li> 
-                            <li>
-                                <a (click)="router.navigate(['/auth/register'], {fragment: 'features'})" pRipple pStyleClass="@grandparent"
-                                    enterFromClass="ng-hidden" enterActiveClass="px-fadein" leaveToClass="ng-hidden"
-                                    class="flex m-0 md:ml-4  px-2 py-3 text-900 font-medium line-height-3 cursor-pointer white-space-nowrap">
-                                    <span>Créer un compte</span>
-                                </a>
-                            </li>
+                            </li>  
                         
                             
-                            <li class="flex align-items-center">
-                    <ng-container *ngIf="!isLoggedIn; else dashboardLink">
-                        <button pButton pRipple 
-                                type="button" 
-                                pStyleClass="@grandparent" 
-                                enterFromClass="ng-hidden"
-                                enterActiveClass="px-fadein" 
-                                leaveToClass="ng-hidden" 
-                                label="Connexion"
-                                class="m-0 mt-3 md:mt-0 md:ml-5 white-space-nowrap"
-                                (click)="goToLogin()">
-                        </button>
-                    </ng-container>
-                    <ng-template #dashboardLink>
-                        <button pButton pRipple 
-                                type="button"  
-                                pStyleClass="@grandparent" 
-                                enterFromClass="ng-hidden"
-                                enterActiveClass="px-fadein" 
-                                leaveToClass="ng-hidden" 
-                                label="Dashboard"
-                                class="m-0 mt-3 md:mt-0 md:ml- white-space-nowrap"
-                                (click)="goToDashboard()">
-                        </button>
-                    </ng-template>
-                </li>
+                                    <li class="flex align-items-center">
+    <ng-container *ngIf="!isLoggedIn; else dashboardLink">
+        <!-- Plein / Primary -->
+        <button
+        pButton
+        type="button"
+        label="Créer un compte"
+        class="btn-primary m-0 mt-3 md:mt-0 md:ml-5 white-space-nowrap"
+        (click)="goToLogin()">
+        </button>
+
+        <!-- Outline / Primary -->
+        <button
+        pButton
+        type="button"
+        label="Connexion"
+        class="btn-outline-primary m-0 mt-3 md:mt-0 md:ml-5 white-space-nowrap"
+        (click)="goToLogin()">
+        </button>
+    </ng-container>
+
+    <ng-template #dashboardLink>
+        <button
+        pButton
+        type="button"
+        label="Mon compte"
+        class="btn-primary md:ml-4 mt-3 md:mt-0 white-space-nowrap"
+        (click)="goToDashboard()">
+        </button>
+    </ng-template>
+    </li>
+
                         </ul>
          
         </div>

@@ -1,0 +1,36 @@
+/* Utilise la couleur du thème Prime (Lara). */
+:root {
+  /* si besoin, force ta couleur de marque */
+  /* --primary-color: #17b978; */
+}
+
+/* Plein / Primary */
+.btn-primary {
+  background: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  color: #fff !important;
+  border-radius: 0.75rem; /* look soft */
+  padding: .85rem 1.25rem;
+  font-weight: 600;
+}
+.btn-primary:hover,
+.btn-primary:focus {
+  filter: brightness(0.95);
+}
+
+/* Outline / Primary */
+.btn-outline-primary {
+  background: transparent !important;
+  color: var(--primary-color) !important;
+  border: 2px solid var(--primary-color) !important;
+  border-radius: 0.75rem;
+  padding: .83rem 1.25rem;
+  font-weight: 600;
+}
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+  background: rgba(0,0,0,0.03) !important;   /* léger hover */
+}
+
+/* Optionnel: égaliser l'espacement entre les deux */
+.white-space-nowrap { white-space: nowrap; }

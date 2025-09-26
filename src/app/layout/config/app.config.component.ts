@@ -118,8 +118,10 @@ export class AppConfigComponent implements OnInit {
             { name: 'green', color: '#10b981' },
             { name: 'orange', color: '#f59e0b' },
             { name: 'pink', color: '#d946ef' },
-            { name: 'starbucks', color: '#036240'},
             { name: 'blackwhite', color: '#414141ff' },
+            { name: 'starbucks', color: '#036240'},
+            { name: 'bolt', color: '#11ba82'},
+
         ];
     } 
 
@@ -144,8 +146,11 @@ export class AppConfigComponent implements OnInit {
     }
 
     // iba 
-    onSendButtonClick() {
-        this.router.navigate(['/dashboard/transfert/envoie']);
+    // onSendButtonClick() {
+    //     this.router.navigate(['/dashboard/transfert/envoie']);
+    // }
+     onSendButtonClick() {
+        this.router.navigate(['/dashboard']);
     }
  
 }

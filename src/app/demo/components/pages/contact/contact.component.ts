@@ -26,13 +26,13 @@ export class ContactComponent {
     message: string = '';
 
     content: any[] = [
-        { icon: 'pi pi-fw pi-phone', title: 'Phone', info: '+33 7 58 85 50 39 / +224 666 17 70 06' },
+        { icon: 'pi pi-fw pi-phone', title: 'France', info: '+33 7 58 85 50 39' },
+        { icon: 'pi pi-fw pi-phone', title: 'Guinée', info: '+224 666 17 70 54' },
         {
             icon: 'pi pi-fw pi-map-marker',
             title: 'Siege',
             info: '5 Rue Ostwalde, Strasbourg 64000, France',
         },
-        { icon: 'pi pi-fw pi-print', title: 'Fixe', info: '+33 01 29 71 54 35' },
     ];
 
     constructor(private layoutService: LayoutService) {}
