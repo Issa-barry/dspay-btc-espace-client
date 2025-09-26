@@ -1,15 +1,16 @@
 /* ========= PROMO CARD (DSPAY) ========= */
+$accent: #34916e;
 
 /* Carte globale */
 .promo-card {
-  background: var(--surface-card, #ffffff);
+  background: var($accent, #ffffff);
   overflow: hidden;                /* coupe tout débordement (coins arrondis) */
   border-radius: inherit;          /* si tu utilises border-round-2xl */
 }
 
 /* Panneau vert gauche (texte + bouton) */
 .promo-left {
-  background: var(--primary-color, #036141);
+  background: var(--primary-iba-50, #34916e);
   color: #ffffff;
   min-height: 25rem;               /* belle hauteur en mobile */
   display: flex;
@@ -28,7 +29,7 @@
 /* Pastille GNF dans le titre */
 .promo-badge {
   background: #ffffff;
-  color: #024b33;
+  color: #34916e;
   padding: .15rem .5rem;
   border-radius: 9999px;
   font-size: .35em;
@@ -39,7 +40,7 @@
 /* Bouton blanc arrondi */
 .promo-btn.p-button {
   background: #ffffff;
-  color: var(--primary-700, #024b33);
+  color: var(--primary-700, #34916e);
   border: 0;
   padding: 0.9rem 1.4rem;
   font-weight: 700;
@@ -81,7 +82,7 @@
   color: #ffffff;
   font-weight: 700;
   line-height: 1.2;
-  text-shadow: 0 2px 8px rgba(0,0,0,.35);
+  text-shadow: 0 2px 8px rgba(17, 16, 16, 0.35);
 }
 
 /* ====== Tag (p-tag) taille + padding ====== */
