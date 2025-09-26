@@ -1,0 +1,69 @@
+<p-dialog
+  [(visible)]="visible"
+  (onHide)="visibleChange.emit(false)"
+  [modal]="true"
+  [closable]="false"
+  [draggable]="false"
+  [resizable]="false"
+  [breakpoints]="{'960px':'420px','640px':'96vw'}"
+  [style]="{width:'420px'}"
+  [contentStyle]="{padding:'0'}"
+  [dismissableMask]="true"
+>
+  <form [formGroup]="payForm" (ngSubmit)="onSubmit()" class="p-4">
+    <!-- Header -->
+    <div class="flex align-items-center justify-content-between mb-3">
+      <h3 class="m-0 text-xl font-bold">Pay amount</h3>
+      <p-badge *ngIf="amount!=null" [value]="(amount | number:'1.0-2') + ' €'" size="large"></p-badge>
+    </div>
+
+    <!-- CARD NUMBER -->
+    <label class="block text-600 text-xs font-semibold mb-2">CARD NUMBER</label>
+    <p-inputGroup class="mb-2">
+      <p-inputGroupAddon>
+        <i class="pi pi-credit-card"></i>
+      </p-inputGroupAddon>
+      <p-inputMask
+        formControlName="number"
+        [mask]="numberMask"
+        placeholder="8881 2545 2545 2245"
+        styleClass="w-full"
+      ></p-inputMask>
+      <p-inputGroupAddon *ngIf="brand">
+        <i class="pi pi-verified mr-1"></i><span class="text-sm">{{ brand }}</span>
+      </p-inputGroupAddon>
+    </p-inputGroup>
+    <small class="p-error block mb-2" *ngIf="numberInvalid">Numéro invalide.</small>
+
+    <!-- EXP / CVC -->
+    <div class="grid">
+      <div class="col-12 md:col-6">
+        <label class="block text-600 text-xs font-semibold mb-2">EXPIRY</label>
+        <p-inputMask
+          formControlName="exp"
+          mask="99/99"
+          placeholder="MM / YY"
+          styleClass="w-full text-center"
+        ></p-inputMask>
+      </div>
+
+      <div class="col-12 md:col-6">
+        <label class="block text-600 text-xs font-semibold mb-2">CVV / CVC</label>
+        <p-inputMask
+          formControlName="cvc"
+          [mask]="cvcMask"
+          placeholder="123"
+          styleClass="w-full text-center"
+        ></p-inputMask>
+      </div>
+    </div>
+
+    <p-divider class="my-3"></p-divider>
+
+    <!-- Actions -->
+    <div class="flex align-items-center justify-content-between">
+      <button type="button" pButton class="p-button-text" label="Cancel" (click)="hide()"></button>
+      <button type="submit" pButton icon="pi pi-check" label="Make Payment" [loading]="loading" [disabled]="payForm.invalid"></button>
+    </div>
+  </form>
+</p-dialog>

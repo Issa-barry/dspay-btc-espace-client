@@ -21,7 +21,8 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { SharedUiModule } from 'src/app/shared/ui/shared-ui.module';
-
+import { PaymentCardModule } from 'src/app/shared/ui/payment-card/payment-card.module';
+ 
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { SharedUiModule } from 'src/app/shared/ui/shared-ui.module';
      ProgressSpinnerModule,
      InputSwitchModule,
      InputNumberModule,
-     SharedUiModule
+     SharedUiModule,
+     PaymentCardModule
   ]
 })
 export class SendModule { }

@@ -46,7 +46,6 @@ export class SendComponent implements OnInit, OnDestroy {
   total_ttc = 0;
 
   // ─── UI
-  payementDialog = false;
   envoieDialog = false;
   ticketDialog = false;
   loading = false;
@@ -245,7 +244,6 @@ export class SendComponent implements OnInit, OnDestroy {
   }
 
   openTicketDialog(): void { this.ticketDialog = true; }
-  openPayement(): void { this.payementDialog = true; }
 
   hideDialog(): void {
     this.envoieDialog = false;
@@ -415,4 +413,53 @@ export class SendComponent implements OnInit, OnDestroy {
         }
       });
   }
+
+  // ────────────────────────────────────────────────────────────────────────────
+  // Paiement (dialog compact)
+  // ────────────────────────────────────────────────────────────────────────────
+
+  payementDialog = false; // contrôle le dialog
+  payLoading = false;     // état bouton "Payer"
+
+  openPayement() {
+    this.payementDialog = true;
+  }
+
+  onPaymentCancel() {
+    this.payementDialog = false;
+  }
+
+  // Le child émet: { number, exp_month, exp_year, cvc, brand, name? }
+  async onPaymentSubmit(evt: {
+    number: string;
+    exp_month: string;
+    exp_year: string;
+    cvc: string;
+    brand: string;
+    name?: string; // ← optionnel pour éviter l'erreur de typage
+  }) {
+    this.payLoading = true;
+    try {
+      const holderName =
+        evt.name ??
+        (this as any)?.contact?.nom_complet ??
+        'CLIENT';
+
+      const payload = {
+        number: evt.number,
+        exp_month: evt.exp_month,
+        exp_year: evt.exp_year,
+        cvc: evt.cvc,
+        brand: evt.brand || 'unknown',
+        name: holderName
+      };
+
+      // 🔐 TODO: tokenisation PSP / appel API avec payload
+      await new Promise(r => setTimeout(r, 800)); // demo
+      this.payementDialog = false;
+    } finally {
+      this.payLoading = false;
+    }
+  }
+
 }
