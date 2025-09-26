@@ -12,6 +12,7 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { DividerModule } from 'primeng/divider';
 import { BadgeModule } from 'primeng/badge';
+import { PipeModule } from 'src/app/demo/pipes/pipe.module';
 
 
 @NgModule({
@@ -29,7 +30,8 @@ import { BadgeModule } from 'primeng/badge';
     InputGroupModule,
     InputGroupAddonModule,
     DividerModule,
-    BadgeModule
+    BadgeModule,
+    PipeModule
   ]
 
 })

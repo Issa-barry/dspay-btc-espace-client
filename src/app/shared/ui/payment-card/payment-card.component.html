@@ -8,23 +8,16 @@
 >
   <form [formGroup]="payForm" (ngSubmit)="onSubmit()" class="p-4">
     <!-- Header -->
-    <div class="flex align-items-center justify-content-between mb-3">
-      <h3 class="m-0 text-xl font-bold">Payer en ligne</h3>
-      <p-badge *ngIf="amount!=null" [value]="(amount | number:'1.0-2') + ' €'" size="large"></p-badge>
-    </div>
+  <div class="flex align-items-center justify-content-between mb-4">
+  <h3 class="m-0"> 
+     <span class="m-0 text-xl font-bold">Montant à payer :</span>   
+     <span *ngIf="amount != null" class="m-0 text-lg font-normal">
+      {{ amount | money:'EUR':'normal' }}
+    </span></h3>
+ </div>
 
-    <!-- CARD NUMBER test-->
-              <!-- <div class="p-inputgroup mb-3">
-              <p-inputNumber   
-               [min]="0" [minFractionDigits]="0" 
-               [maxFractionDigits]="2"
-               
-               [inputStyleClass]="'text-xl font-semibold focus:outline-none focus:ring-0 focus:border-green-500'">
-              </p-inputNumber>
-              <span class="p-inputgroup-addon text-700">EUR</span>
-            </div> -->
-    <!-- CARD NUMBER -->
-  <label class="block text-600 text-xs font-semibold mb-2">N° de carte</label>
+
+<label class="block text-600 text-xs font-semibold mb-2">N° de carte</label>
 <div class="p-input-icon-left w-full mb-2">
   <i class="pi pi-credit-card mr-6"></i>
   <p-inputMask
@@ -34,31 +27,31 @@
     styleClass="w-full  text-center"
   ></p-inputMask>
 </div>
-
-
     <small class="p-error block mb-2" *ngIf="numberInvalid">Numéro invalide.</small>
 
-    <!-- EXP / CVC -->
-    <div class="grid mt-2">
-      <div class="col-12 md:col-6">
-        <label class="block text-600 text-xs font-semibold mb-2">EXPIRATION</label>
-        <p-inputMask
-          formControlName="exp"
-          mask="99/99"
-          placeholder="MM / YY"
-          styleClass="w-full text-center"
-        ></p-inputMask>
-      </div>
-      <div class="col-12 md:col-6">
-        <label class="block text-600 text-xs font-semibold mb-2">CVV / CVC</label>
-        <p-inputMask
-          formControlName="cvc"
-          [mask]="cvcMask"
-          placeholder="123"
-          styleClass="w-full text-center"
-        ></p-inputMask>
-      </div>
-    </div>
+  <!-- EXP / CVC -->
+<div class="grid pay-compact mt-2">
+  <div class="col-12 md:col-6">
+    <label class="block text-600 text-xs font-semibold">EXPIRATION</label>
+    <p-inputMask
+      formControlName="exp"
+      mask="99/99"
+      placeholder="MM / YY"
+      styleClass="w-full text-center"
+    ></p-inputMask>
+  </div>
+
+  <div class="col-12 md:col-6">
+    <label class="block text-600 text-xs font-semibold">CVV / CVC</label>
+    <p-inputMask
+      formControlName="cvc"
+      [mask]="cvcMask"
+      placeholder="123"
+      styleClass="w-full text-center"
+    ></p-inputMask>
+  </div>
+</div>
+
 
     
     <p-divider class="my-3"></p-divider>

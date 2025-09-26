@@ -261,6 +261,7 @@
 <app-payment-card
   [(visible)]="payementDialog"
   [loading]="payLoading"
+  [amount]="total_ttc"
   header="Paiement par carte"
   (submit)="onPaymentSubmit($event)"
   (cancel)="onPaymentCancel()"

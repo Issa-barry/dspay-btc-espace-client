@@ -42,6 +42,7 @@
   text-overflow: ellipsis;
 }
 
+:host ::ng-deep .p-badge.p-badge-lg { border-radius: 999px; }
 
 
 /* Sur mobiles : masquer le texte de la marque, garder juste l’icône */
