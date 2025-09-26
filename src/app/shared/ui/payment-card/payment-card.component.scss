@@ -42,6 +42,8 @@
   text-overflow: ellipsis;
 }
 
+
+
 /* Sur mobiles : masquer le texte de la marque, garder juste l’icône */
 @media (max-width: 420px) {
   :host ::ng-deep .brand-text {
