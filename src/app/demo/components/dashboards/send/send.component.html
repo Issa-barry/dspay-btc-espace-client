@@ -178,7 +178,7 @@
 
 
         <div class="col-12 md:col-8">
-          <ui-step-actions (prev)="prev()" (next)="next()"></ui-step-actions>
+          <ui-step-actions (prev)="prev()" (next)="next()"  [nextDisabled]="!isBeneficiaireValide"></ui-step-actions>
         </div>
 
       </div>
