@@ -35,7 +35,8 @@
           pButton
           type="button"
           label="Créer un compte"
-          class="btn-primary white-space-nowrap">
+          class="btn-primary white-space-nowrap"
+          (click)="goToRegister()">
         </button>
 
         <!-- Outline / Primary -->
@@ -43,7 +44,8 @@
           pButton
           type="button"
           label="Me connecter"
-          class="btn-outline-primary white-space-nowrap md:ml-3">
+          class="btn-outline-primary white-space-nowrap md:ml-3"
+          (click)="goToLogin()">
         </button>
       </ng-container>
 
@@ -60,13 +62,17 @@
 </div>
 
 <!-- SIDEBAR MOBILE (plein écran) -->
+<!-- SIDEBAR MOBILE (plein écran + slide from right) -->
 <p-sidebar
   [(visible)]="mobileMenu"
   position="right"
-  [fullScreen]="true"         
+  [fullScreen]="true"
   [modal]="true"
   [dismissible]="true"
+  [blockScroll]="true"
   [showCloseIcon]="false"
+  [baseZIndex]="11000"
+  [transitionOptions]="'.35s cubic-bezier(0.22, 1, 0.36, 1)'"
   styleClass="mobile-menu">
 
   <!-- Header logo + close -->
@@ -79,15 +85,16 @@
 
   <!-- CTA -->
   <div class="px-3 py-4">
-    <button pButton label="Créer un compte" class="w-full btn-pill-primary mb-3"></button>
-    <button pButton label="Me connecter" class="w-full btn-outline-primary"></button>
+    <button pButton label="Créer un compte" class="w-full btn-pill-primary mb-3" (click)="goToRegister()"></button>
+    <button pButton label="Me connecter" class="w-full btn-pill-outline" (click)="goToLogin()"></button>
   </div>
 
   <!-- Liens -->
-  <nav class="px-3 flex flex-column ">
+  <nav class="px-3 flex flex-column">
     <a class="menu-link mb-2" (click)="router.navigate(['/landing'], {fragment:'home'}); mobileMenu=false">Accueil</a>
     <a class="menu-link mb-2" (click)="router.navigate(['/landing'], {fragment:'features'}); mobileMenu=false">Services</a>
-    <a class="menu-link mb-2" (click)="router.navigate(['/landing'], {fragment:'tarifs'}); mobileMenu=false">Tarifs</a>
-    <a class="menu-link mb-2" (click)="router.navigate(['/landing'], {fragment:'aide'}); mobileMenu=false">Aide</a>
+    <a class="menu-link mb-2" (click)="router.navigate(['/about']); mobileMenu=false">A propos de nous</a>
+    <!-- <a class="menu-link mb-2" (click)="router.navigate(['/landing'], {fragment:'aide'}); mobileMenu=false">Aide</a> -->
   </nav>
 </p-sidebar>
+

@@ -29,6 +29,14 @@ export class TopbarComponent implements OnInit {
     }
   }
 
+    goToRegister(): void {
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(['/dashboard']);
+    } else {
+      this.router.navigate(['/auth/register']);
+    }
+  }
+
   goToDashboard(): void {
     this.router.navigate(['/dashboard']);
   }

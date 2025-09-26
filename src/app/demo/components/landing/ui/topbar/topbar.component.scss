@@ -78,3 +78,73 @@
   cursor: pointer;
 }
 .mobile-menu .menu-link:last-child { border-bottom: 0; }
+
+// 
+/* Plein écran en mobile, largeur fixe en desktop */
+:host ::ng-deep .mobile-menu.p-sidebar {
+  @media (max-width: 768px) {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: 100vh !important;
+    border-radius: 0 !important;
+    top: 0; right: 0;
+  }
+  @media (min-width: 769px) {
+    width: 24rem !important;
+    max-width: 24rem !important;
+    border-radius: .5rem;
+  }
+}
+
+/* Slide in/out from right (PrimeNG gère déjà transform; on renforce l'anim) */
+@keyframes dspay-slide-in-right {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+@keyframes dspay-slide-out-right {
+  from { transform: translateX(0); }
+  to   { transform: translateX(100%); }
+}
+
+/* Applique l'anim au panneau */
+:host ::ng-deep .mobile-menu.p-sidebar-right .p-sidebar {
+  will-change: transform;
+}
+
+/* États d’entrée/sortie basés sur classes Angular animations */
+:host ::ng-deep .mobile-menu.p-sidebar-right .p-sidebar-enter-done,
+:host ::ng-deep .mobile-menu.p-sidebar-right .p-sidebar-enter-active,
+:host ::ng-deep .mobile-menu.p-sidebar-right .p-sidebar {
+  animation: dspay-slide-in-right .35s cubic-bezier(0.22,1,0.36,1) both;
+}
+:host ::ng-deep .mobile-menu.p-sidebar-right .p-sidebar-leave-active {
+  animation: dspay-slide-out-right .35s cubic-bezier(0.22,1,0.36,1) both;
+}
+
+/* Masque: fondu doux */
+:host ::ng-deep .p-sidebar-mask {
+  background: rgba(0, 0, 0, .45);
+  transition: opacity .35s cubic-bezier(0.22,1,0.36,1);
+}
+
+/* Contenu et boutons (déjà posés, on garde) */
+:host ::ng-deep .mobile-menu .p-sidebar-content { background:#fff; color:#111; }
+:host ::ng-deep .mobile-menu .btn-pill-primary {
+  background: var(--primary-color, #0a8f62) !important;
+  border: 2px solid var(--primary-color, #0a8f62) !important;
+  color: #fff !important;
+  border-radius: 999px !important;
+  padding: .95rem 1.25rem; font-weight: 700;
+}
+:host ::ng-deep .mobile-menu .btn-pill-outline {
+  background:#fff !important;
+  color: var(--primary-color, #0a8f62) !important;
+  border: 2px solid var(--primary-color, #0a8f62) !important;
+  border-radius: 999px !important;
+  padding: .9rem 1.25rem; font-weight: 700;
+}
+:host ::ng-deep .mobile-menu .menu-link {
+  display:block; padding:1rem 0; font-size:1.1rem; color:#111;
+  text-decoration:none; border-bottom:1px solid #eef0f2; cursor:pointer;
+}
+:host ::ng-deep .mobile-menu .menu-link:last-child { border-bottom:0; }
