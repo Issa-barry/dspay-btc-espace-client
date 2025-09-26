@@ -256,9 +256,9 @@
 </div>
 
 <!-- Dialog paiement -->
-
-
-<app-payment-card
+<!-- EN PROD -->
+ 
+<!-- <app-payment-card
   [(visible)]="payementDialog"
   [loading]="payLoading"
   [amount]="total_ttc"
@@ -267,18 +267,10 @@
   (cancel)="onPaymentCancel()"
 ></app-payment-card>
 
+ -->
 
 
-
-
-
-<button type="button" pButton label="Confirmer et payer" icon="pi pi-check" (click)="openPayement()"></button>
-
-
-
-
-
-<!-- <p-dialog [(visible)]="payementDialog"
+<p-dialog [(visible)]="payementDialog"
           header="Carte bancaire"
           [modal]="true"
           [closable]="false"
@@ -294,14 +286,14 @@
 
     <div class="col-12 md:col-4 mb-3">
       <p-inputGroup class="w-full">
-        <p-inputGroupAddon><i class="pi" style="line-height:1.25;letter-spacing:.1rem;">Mois</i></p-inputGroupAddon>
+        <p-inputGroupAddon><i class="pi" style="line-height:1.25;letter-spacing:.1rem;">MM</i></p-inputGroupAddon>
         <input type="text" pInputText placeholder="10" />
       </p-inputGroup>
     </div>
 
     <div class="col-12 md:col-4 mb-3">
       <p-inputGroup class="w-full">
-        <p-inputGroupAddon><i class="pi" style="line-height:1.25;letter-spacing:.1rem;">Année</i></p-inputGroupAddon>
+        <p-inputGroupAddon><i class="pi" style="line-height:1.25;letter-spacing:.1rem;">AA</i></p-inputGroupAddon>
         <input type="text" pInputText placeholder="25" />
       </p-inputGroup>
     </div>
@@ -318,4 +310,4 @@
     <button pButton pRipple icon="pi pi-times" class="p-button-text" label="Annuler" (click)="hideDialog()"></button>
     <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Payer" (click)="save()" [loading]="loading"></button>
   </ng-template>
-</p-dialog> -->
+</p-dialog>

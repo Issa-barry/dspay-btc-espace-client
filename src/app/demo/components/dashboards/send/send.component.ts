@@ -427,7 +427,7 @@ export class SendComponent implements OnInit, OnDestroy {
 
   onPaymentCancel() {
     this.payementDialog = false;
-  }
+  } 
 
   // Le child émet: { number, exp_month, exp_year, cvc, brand, name? }
   async onPaymentSubmit(evt: {
