@@ -1,34 +1,39 @@
- :host ::ng-deep .p-dialog {
+:host ::ng-deep .p-dialog {
   border-radius: 14px;
 }
+
 :host ::ng-deep .p-badge.p-badge-lg {
   border-radius: 999px;
 }
-/* Empêche le retour à la ligne et force l'input à prendre la place restante */
-:host ::ng-deep .cc-row.p-inputgroup {
+
+/* Input group de la carte */
+:host ::ng-deep .p-inputgroup {
   display: flex;
   flex-wrap: nowrap;
+  width: 100%;
 }
 
-:host ::ng-deep .cc-row .p-inputtext,
-:host ::ng-deep .cc-row .p-inputmask {
-  flex: 1 1 auto;
-  min-width: 0; /* indispensable pour éviter la casse */
+:host ::ng-deep .p-inputgroup .p-inputmask,
+:host ::ng-deep .p-inputgroup .p-inputtext {
+  flex: 1 1 auto !important;
+  width: 100% !important;
+  min-width: 0 !important; /* évite les casses */
 }
 
-/* Addons ne rétrécissent pas, pas de wrap interne */
-:host ::ng-deep .cc-row .p-inputgroup-addon {
+/* Addons fixes (icône, etc.) */
+:host ::ng-deep .p-inputgroup-addon {
   flex: 0 0 auto;
   white-space: nowrap;
+  padding-left: .6rem;
+  padding-right: .6rem;
 }
 
-/* Marque compacte (tronquée si trop longue) */
+/* Pour un badge de marque compact si besoin */
 :host ::ng-deep .brand-addon {
   max-width: 120px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 :host ::ng-deep .brand-text {
   display: inline-block;
   vertical-align: middle;
@@ -37,11 +42,13 @@
   text-overflow: ellipsis;
 }
 
-/* Sur petits écrans: masquer le texte, garder l'icône */
+/* Sur mobiles : masquer le texte de la marque, garder juste l’icône */
 @media (max-width: 420px) {
-  :host ::ng-deep .brand-text { display: none; }
-  :host ::ng-deep .brand-addon { max-width: 36px; padding-right: .5rem; }
+  :host ::ng-deep .brand-text {
+    display: none;
+  }
+  :host ::ng-deep .brand-addon {
+    max-width: 36px;
+    padding-right: .5rem;
+  }
 }
-
-/* Optionnel: réduire l’addon gauche */
-:host ::ng-deep .icon-addon { padding-left: .6rem; padding-right: .6rem; }
