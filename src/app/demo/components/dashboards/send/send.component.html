@@ -110,65 +110,72 @@
       <div class="grid formgrid p-fluid">
 
         <div class="field mb-6 col-12 md:col-8">
-          <label class="font-medium text-900">Bénéficiaire</label>
+  <label class="font-medium text-900">Bénéficiaire</label>
 
-          <div *ngIf="loading; else dropdownTpl" class="flex justify-content-center py-3">
-            <p-progressSpinner styleClass="w-2rem h-2rem"></p-progressSpinner>
-          </div>
+  <!-- Dropdown wrapper -->
+  <div class="relative w-full">
+    <!-- Spinner au lieu du contenu -->
+    <p-dropdown
+      *ngIf="!loading; else loadingTpl"
+      [options]="beneficiairesOptions"
+      optionValue="id"
+      optionLabel="label"
+      [(ngModel)]="selectedBeneficiaireId"
+      [filter]="false"
+      [showClear]="false"
+      placeholder="Sélectionnez un bénéficiaire"
+      styleClass="w-full"
+      appendTo="body"
+      [autoZIndex]="true"
+      [baseZIndex]="11000"
+      [emptyMessage]="'Aucun bénéficiaire'"
+      [emptyFilterMessage]="'Aucun résultat'"
+      (onChange)="onBeneficiaireChange($event.value)"
+      [ngClass]="{
+        'ng-invalid ng-dirty':
+          (submitted && !selectedBeneficiaireId) || !isBeneficiaireValide || errors['beneficiaire']
+      }">
 
-          <ng-template #dropdownTpl>
-            <p-dropdown
-              [options]="beneficiairesOptions"
-              optionValue="id"
-              optionLabel="label"
-              [(ngModel)]="selectedBeneficiaireId"
-              [filter]="false"
-              [showClear]="false"
-              placeholder="Sélectionnez un bénéficiaire"
-              styleClass="w-full"
-              appendTo="body"
-              [autoZIndex]="true"
-              [baseZIndex]="11000"
-              [emptyMessage]="'Aucun bénéficiaire'"
-              [emptyFilterMessage]="'Aucun résultat'"
-              (onChange)="onBeneficiaireChange($event.value)"
-              [ngClass]="{
-                'ng-invalid ng-dirty':
-                 (submitted && !selectedBeneficiaireId) || !isBeneficiaireValide || errors['beneficiaire']
-               }">
-
-              <ng-template pTemplate="item" let-opt>
-                <div class="flex align-items-center justify-content-between w-full">
-                  <span class="font-medium">{{ opt.label }}</span>
-                  <span class="text-600 text-sm">{{ opt.phone | phoneFormat:'GN' }}</span>
-                </div>
-              </ng-template>
-
-              <ng-template pTemplate="selectedItem" let-opt>
-                <div class="flex align-items-center justify-content-between w-full">
-                  <span class="font-medium">{{ opt?.label }}</span>
-                  <span class="text-600 text-sm">{{ opt?.phone | phoneFormat:'GN' }}</span>
-                </div>
-              </ng-template>
-
-              <ng-template pTemplate="footer">
-                <div class="p-2 border-top-1 surface-border">
-                  <button
-                    type="button"
-                    pButton
-                    class="w-full p-button-text"
-                    icon="pi pi-user-plus"
-                    label="Ajouter un bénéficiaire"
-                    (click)="onpenBeneficiaireDialog()">
-                  </button>
-                </div>
-              </ng-template>
-            </p-dropdown>
-          </ng-template>
-
-          <small *ngIf="errors['beneficiaire']">{{ errors['beneficiaire'] }}</small>
-          <small *ngIf="submitted && !isBeneficiaireValide">Veuillez choisir un bénéficiaire.</small>
+      <ng-template pTemplate="item" let-opt>
+        <div class="flex align-items-center justify-content-between w-full">
+          <span class="font-medium">{{ opt.label }}</span>
+          <span class="text-600 text-sm">{{ opt.phone | phoneFormat:'GN' }}</span>
         </div>
+      </ng-template>
+
+      <ng-template pTemplate="selectedItem" let-opt>
+        <div class="flex align-items-center justify-content-between w-full">
+          <span class="font-medium">{{ opt?.label }}</span>
+          <span class="text-600 text-sm">{{ opt?.phone | phoneFormat:'GN' }}</span>
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="footer">
+        <div class="p-2 border-top-1 surface-border">
+          <button
+            type="button"
+            pButton
+            class="w-full p-button-text"
+            icon="pi pi-user-plus"
+            label="Ajouter un bénéficiaire"
+            (click)="onpenBeneficiaireDialog()">
+          </button>
+        </div>
+      </ng-template>
+    </p-dropdown>
+
+    <!-- Template de loading -->
+    <ng-template #loadingTpl>
+      <div class="surface-100 border-round-md flex justify-content-center align-items-center py-3">
+        <p-progressSpinner styleClass="w-2rem h-2rem"></p-progressSpinner>
+      </div>
+    </ng-template>
+  </div>
+
+  <small *ngIf="errors['beneficiaire']">{{ errors['beneficiaire'] }}</small>
+  <small *ngIf="submitted && !isBeneficiaireValide">Veuillez choisir un bénéficiaire.</small>
+</div>
+
 
         <div class="col-12 md:col-8">
           <ui-step-actions (prev)="prev()" (next)="next()"></ui-step-actions>

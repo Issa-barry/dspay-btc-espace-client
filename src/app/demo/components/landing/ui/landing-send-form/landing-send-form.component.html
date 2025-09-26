@@ -49,7 +49,7 @@
                     [disabled]="!amountInput || amountInput <= 0"
                     (click)="startTransfer()"></button>
 
-            <!-- FOOTER Taux -->
+            <!-- FOOTER Taux --> 
             <div class="p-3 border-round mt-3" [ngClass]="promo ? 'bg-green-100' : 'surface-50'">
               <div class="mt-2 text-700">
                 1 EUR = <strong>{{ rate | money:'GNF':'normal' }}</strong>
