@@ -256,7 +256,28 @@
 </div>
 
 <!-- Dialog paiement -->
-<p-dialog [(visible)]="payementDialog"
+
+
+<app-payment-card
+  [(visible)]="payementDialog"
+  [loading]="payLoading"
+  header="Paiement par carte"
+  (submit)="onPaymentSubmit($event)"
+  (cancel)="onPaymentCancel()"
+></app-payment-card>
+
+
+
+
+
+
+<button type="button" pButton label="Confirmer et payer" icon="pi pi-check" (click)="openPayement()"></button>
+
+
+
+
+
+<!-- <p-dialog [(visible)]="payementDialog"
           header="Carte bancaire"
           [modal]="true"
           [closable]="false"
@@ -296,4 +317,4 @@
     <button pButton pRipple icon="pi pi-times" class="p-button-text" label="Annuler" (click)="hideDialog()"></button>
     <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Payer" (click)="save()" [loading]="loading"></button>
   </ng-template>
-</p-dialog>
+</p-dialog> -->

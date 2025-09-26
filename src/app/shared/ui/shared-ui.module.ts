@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { StepActionsComponent } from './step-actions/step-actions.component';
+import { PaymentCardComponent } from './payment-card/payment-card.component';
  
 @NgModule({
   declarations: [StepActionsComponent],

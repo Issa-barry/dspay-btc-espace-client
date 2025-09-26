@@ -1,0 +1,56 @@
+:host ::ng-deep .p-dialog {
+  border-radius: 14px;
+}
+
+:host ::ng-deep .p-badge.p-badge-lg {
+  border-radius: 999px;
+}
+
+/* Input group de la carte */
+:host ::ng-deep .p-inputgroup {
+  display: flex;
+  flex-wrap: nowrap;
+  width: 100%;
+}
+
+:host ::ng-deep .p-inputgroup .p-inputmask,
+:host ::ng-deep .p-inputgroup .p-inputtext {
+  flex: 1 1 auto !important;
+  width: 100% !important;
+  min-width: 0 !important; /* évite les casses */
+}
+
+/* Addons fixes (icône, etc.) */
+:host ::ng-deep .p-inputgroup-addon {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  padding-left: .6rem;
+  padding-right: .6rem;
+}
+
+/* Pour un badge de marque compact si besoin */
+:host ::ng-deep .brand-addon {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+:host ::ng-deep .brand-text {
+  display: inline-block;
+  vertical-align: middle;
+  max-width: 90px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+
+/* Sur mobiles : masquer le texte de la marque, garder juste l’icône */
+@media (max-width: 420px) {
+  :host ::ng-deep .brand-text {
+    display: none;
+  }
+  :host ::ng-deep .brand-addon {
+    max-width: 36px;
+    padding-right: .5rem;
+  }
+}
