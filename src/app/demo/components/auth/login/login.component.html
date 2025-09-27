@@ -33,13 +33,13 @@
             <button pButton pRipple label="Me connecter" class="w-full" (click)="login()" [loading]="submited" [disabled]="!email || !password"></button>
             <div *ngIf="errorMessage" class="text-red-500 mt-3">{{ errorMessage }}</div>
             
-            <div class="mb-4 flex flex-wrap gap-3 mt-4">
+            <div class="mb-4 flex md:flex-row flex-column text-center  flex-wrap gap-3 mt-4">
                 <div>
-                    <a class="text-600 cursor-pointer hover:text-primary ml-auto mt-3 transition-duration-300" (click)="goToRegister()">
+                    <a class="text-600 cursor-pointer hover:text-primary md:ml-auto mt-3 transition-duration-300" (click)="goToRegister()">
                         Créer un compte
                     </a>
                 </div>
-                <a class="text-600 cursor-pointer hover:text-primary ml-auto transition-colors transition-duration-300" (click)="goToResetPassword()">Mot de passe oublié ?</a>
+                <a class="text-600 cursor-pointer hover:text-primary md:ml-auto transition-colors transition-duration-300" (click)="goToResetPassword()">Mot de passe oublié ?</a>
             </div>
         </div>
     </div>
