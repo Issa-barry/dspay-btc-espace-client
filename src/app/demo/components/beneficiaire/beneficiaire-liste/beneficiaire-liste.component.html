@@ -84,3 +84,108 @@
     <tr><td colspan="3" class="text-center py-5">Aucun bénéficiaire</td></tr>
   </ng-template>
 </p-table>
+
+
+<p-dialog
+            [(visible)]="beneficiaireDialog"
+            [style]="{ width: '450px' }"
+            header="Détails du Beneficiaire"
+            [modal]="true"
+            class="p-fluid"
+        >
+            <ng-template pTemplate="content">
+                
+                <div class="field">
+                    <label for="name">Nom</label>
+                    <input
+                        type="text"
+                        pInputText
+                        id="name"
+                        [(ngModel)]="beneficiaire.nom"
+                        required
+                        autofocus
+                        [ngClass]="{
+                            'ng-invalid ng-dirty': submitted && !beneficiaire.nom
+                        }"
+                    />
+                    <small
+                        class="ng-dirty ng-invalid"
+                        *ngIf="submitted && !beneficiaire.nom"
+                        >Nom is required.</small
+                    >
+                </div>
+                <div class="field">
+                    <label for="name">Preom</label>
+                    <input
+                        type="text"
+                        pInputText
+                        id="name"
+                        [(ngModel)]="beneficiaire.prenom"
+                        required
+                        autofocus
+                        [ngClass]="{
+                            'ng-invalid ng-dirty': submitted && !beneficiaire.prenom
+                        }"
+                    />
+                    <small
+                        class="ng-dirty ng-invalid"
+                        *ngIf="submitted && !beneficiaire.prenom"
+                        >Prenom is required.</small
+                    >
+                </div>
+                <div class="field">
+                    <label for="name">Téléphone</label>
+                    <input
+                        type="text"
+                        pInputText
+                        id="name"
+                        [(ngModel)]="beneficiaire.phone"
+                        required
+                        autofocus
+                        [ngClass]="{
+                            'ng-invalid ng-dirty': submitted && !beneficiaire.phone
+                        }"
+                    />
+                    <small
+                        class="ng-dirty ng-invalid"
+                        *ngIf="submitted && !beneficiaire.phone"
+                        >Téléphone is required.</small
+                    >
+                </div>
+           
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button
+                    pButton
+                    pRipple
+                    label="Annuler"
+                    icon="pi pi-times"
+                    class="p-button-text"
+                    (click)="hideDialog()"
+                ></button>
+                <button
+                    pButton
+                    pRipple
+                    label="Enregistrer"
+                    icon="pi pi-check"
+                    class="p-button-text"
+                    (click)="saveBeneficiaire()"
+                ></button>
+            </ng-template>
+        </p-dialog>
+
+
+        <!-- Confirmer suppression unitaire -->
+<p-dialog
+  [(visible)]="deleteBeneficiaireDialog"
+  [style]="{ width: '400px' }"
+  header="Confirmer la suppression"
+  [modal]="true"
+>
+  <p>Voulez-vous vraiment supprimer le bénéficiaire <b>{{ current?.nom_complet || (current?.prenom + ' ' + current?.nom) }}</b> ?</p>
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-text" (click)="deleteBeneficiaireDialog = false"></button>
+    <button pButton pRipple label="Supprimer" icon="pi pi-trash" class="p-button-danger" (click)="confirmDeleteBeneficiaire()"></button>
+  </ng-template>
+</p-dialog>
