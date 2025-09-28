@@ -200,22 +200,29 @@
 
           <p-divider styleClass="my-2 md:my-3"></p-divider>
 
-          <div class="grid align-items-center recap-row mt-3">
-            <div class="col-8 md:col-6 text-900 font-medium mb-2">Bénéficiaire</div>
-            <div class="col-4 md:col-6 text-right text-sm montant-recu-value nowrap">
-              <div class="text-900 text-sm mb-2">{{ selectedBeneficiaireLabel }}</div>
-              <span class="text-600 text-sm mt-2">{{ selectedBeneficiairePhone | phoneFormat:'GN' }}</span>
-            </div>
+          <div class="grid align-items-start recap-row mt-3">
+              <div class="col-12 md:col-6 text-900 font-medium mb-1 md:mb-0">
+                Bénéficiaire
+              </div>
+              <div class="col-12 md:col-6 md:mt-4 text-left md:text-right">
+                <div class="text-800 text-sm text-overflow-ellipsis white-space-nowrap overflow-hidden">
+                  {{ selectedBeneficiaireLabel }}
+                </div>
+                <div class="text-600 text-sm md:mt-3">{{ selectedBeneficiairePhone | phoneFormat:'GN' }}</div>
+              </div>
           </div>
 
           <p-divider styleClass="my-2 md:my-3"></p-divider>
 
-          <div class="grid align-items-center recap-row mt-3">
-            <div class="col-8 md:col-6 text-900 font-medium">Montant reçu</div>
-            <div class="col-4 md:col-6 text-right text-sm montant-recu-value nowrap">
-              1 700 000 GNF
+          <div class="grid align-items-start recap-row mt-3">
+            <div class="col-12 md:col-6 text-900 font-medium mb-1 md:mb-0">
+              Montant reçu
             </div>
-          </div>
+            <div class="col-12 md:col-6 text-left md:text-right">
+              <span class="text-900 text-sm">{{ montantGNF | money:'GNF':'normal' }}</span>
+               
+            </div>
+        </div>
 
           <p-divider styleClass="my-2 md:my-3"></p-divider>
 
