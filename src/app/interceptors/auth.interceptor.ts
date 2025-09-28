@@ -7,18 +7,29 @@ import {
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-@Injectable()
-export class AuthInterceptor implements HttpInterceptor {
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const token = localStorage.getItem('access_token');
+import { environment } from 'src/environements/environment.dev';
+// 🔧 depuis src/app/interceptors/... remonter d'un niveau vers /app puis aller dans /demo/service/token
+import { TokenService } from '../demo/service/token/token.service';
 
-    if (token) {
-      const cloned = req.clone({
-        headers: req.headers.set('Authorization', `Bearer ${token}`),
-      });
-      return next.handle(cloned);
+@Injectable({ providedIn: 'root' })
+export class AuthInterceptor implements HttpInterceptor {
+  constructor(private tokenService: TokenService) {}
+
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    const isApi = req.url.startsWith(environment.apiUrl);
+    let clone = req;
+
+    if (isApi) {
+      // cookies Sanctum si backend en pose
+      clone = clone.clone({ withCredentials: true });
+
+      // Bearer si token dispo (mode hybride)
+      const token = this.tokenService.getToken();
+      if (token) {
+        clone = clone.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
+      }
     }
 
-    return next.handle(req);
+    return next.handle(clone);
   }
 }

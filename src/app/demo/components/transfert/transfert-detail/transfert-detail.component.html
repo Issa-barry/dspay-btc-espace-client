@@ -75,7 +75,7 @@
                 </li>
                    <li class="flex justify-content-between mb-3">
                     <span class="text-900">Date : </span>
-                    <span class="text-900 font-medium text-sm">Transfert du {{ transfert.updated_at | dateFr:'moisEnLettre'  }}</span>
+                    <span class="text-900 font-medium text-sm">Le {{ transfert.updated_at | dateFr:'moisEnLettre':true  }}</span>
                     <!-- <span class="text-900 font-medium text-sm">Transfert du {{ transfert.updated_at | date [ : format [ : timezone [ : locale ] ] ]  }}</span> -->
                 </li>  
             </ul>
@@ -83,4 +83,4 @@
     </div>
 </div>
  
-   
+    

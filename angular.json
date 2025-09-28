@@ -54,6 +54,30 @@
                 { "glob": "robots.txt", "input": "src/seo/prod", "output": "/" }
               ]
             },
+            "preprod": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environements/environment.dev.ts",
+                  "with": "src/environements/environment.pre-prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                { "type": "initial", "maximumWarning": "1mb", "maximumError": "5mb" },
+                { "type": "anyComponentStyle", "maximumWarning": "2kb", "maximumError": "4kb" }
+              ],
+              "assets": [
+                "src/favicon.ico",
+                "src/assets",
+                "src/manifest.webmanifest",
+                { "glob": "robots.txt", "input": "src/seo/preprod", "output": "/" }
+              ]
+            },
             "development": {
               "buildOptimizer": false,
               "optimization": false,
@@ -69,6 +93,7 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": { "buildTarget": "apollo-ng:build:production" },
+            "preprod": { "buildTarget": "apollo-ng:build:preprod" },
             "development": { "buildTarget": "apollo-ng:build:development" }
           },
           "defaultConfiguration": "development"
@@ -84,7 +109,7 @@
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "inlineStyleLanguage": "scss",
-            "assets": [ 
+            "assets": [
               "src/favicon.ico",
               "src/assets",
               "src/manifest.webmanifest"
