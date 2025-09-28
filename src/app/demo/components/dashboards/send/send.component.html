@@ -102,7 +102,7 @@
     <div class="col-12 md:col-8">
       <ui-step-actions (prev)="prev()" (next)="next()"></ui-step-actions>
     </div>
-  </div>
+  </div> 
 
   <!-- Étape 2 : Bénéficiaire -->
   <div class="grid" *ngIf="activeIndex === 2">
@@ -171,7 +171,6 @@
       </div>
     </ng-template>
   </div>
-
   <small *ngIf="errors['beneficiaire']">{{ errors['beneficiaire'] }}</small>
   <small *ngIf="submitted && !isBeneficiaireValide">Veuillez choisir un bénéficiaire.</small>
 </div>

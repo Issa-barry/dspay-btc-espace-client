@@ -35,7 +35,7 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  login(): void {
+   login(): void {
     this.errorMessage = '';
     this.submited = true;
     this.loading = true;
