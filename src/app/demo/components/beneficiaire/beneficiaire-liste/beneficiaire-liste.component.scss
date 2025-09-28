@@ -1,0 +1,26 @@
+/* Affichage conditionnel */
+.show-desktop { display: none; }
+.show-mobile  { display: table-row; }
+
+@media (min-width: 768px) { /* >= md */
+  .show-desktop { display: table-row; }
+  .show-mobile  { display: none; }
+}
+
+/* Carte mobile */
+.mobile-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .9rem 1rem;
+  border-bottom: 1px solid var(--surface-border);
+}
+.avatar-initials {
+  width: 2.25rem; height: 2.25rem; border-radius: 9999px;
+  background: var(--primary-500); color: #fff; font-weight: 600;
+  display: inline-flex; align-items: center; justify-content: center;
+  text-transform: uppercase; flex: 0 0 2.25rem;
+}
+
+/* Paginator un peu plus compact */
+:host ::ng-deep .p-paginator { padding: .5rem; }
