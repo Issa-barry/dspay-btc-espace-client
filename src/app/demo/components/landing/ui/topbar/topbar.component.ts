@@ -9,9 +9,13 @@ import { AuthService } from 'src/app/demo/service/auth/auth.service';
 })
 export class TopbarComponent implements OnInit {
   isLoggedIn = false;
-  navOpen = false;
+  navOpen = false;        // menu desktop (si tu l’utilises encore)
+  mobileMenu = false;     // sidebar mobile
 
-  constructor(public router: Router, private authService: AuthService) {}
+  constructor(
+    public router: Router,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.isLoggedIn = this.authService.isAuthenticated();
@@ -25,10 +29,31 @@ export class TopbarComponent implements OnInit {
     }
   }
 
+    goToRegister(): void {
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(['/dashboard']);
+    } else {
+      this.router.navigate(['/auth/register']);
+    }
+  }
+
   goToDashboard(): void {
     this.router.navigate(['/dashboard']);
   }
 
-  toggleNav() { this.navOpen = !this.navOpen; }
-  closeNav()  { this.navOpen = false; }
+  toggleNav(): void {
+    this.navOpen = !this.navOpen;
+  }
+
+  closeNav(): void {
+    this.navOpen = false;
+  }
+
+  openMobileMenu(): void {
+    this.mobileMenu = true;
+  }
+
+  closeMobileMenu(): void {
+    this.mobileMenu = false;
+  }
 }

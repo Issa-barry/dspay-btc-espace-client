@@ -150,9 +150,14 @@
                     [inputStyle]="{ paddingLeft: '2.5rem' }"
                     inputStyleClass="w-full md:w-25rem"
                     [toggleMask]="true"
+                     weakLabel="Faible"
+                     mediumLabel="Moyen"
+                    strongLabel="Fort"
+                         promptLabel="Saisissez un mot de passe"
+                         [feedback]="true"
                     [ngClass]="{ 'ng-invalid ng-dirty':  errors['password']?.length }"
                 ></p-password>
-            </span>
+            </span> 
             <small *ngIf="errors['password']?.length" class="p-error block mb-3">
                 {{ errors['password']?.[0] }}
             </small>

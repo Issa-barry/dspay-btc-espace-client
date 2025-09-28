@@ -15,8 +15,9 @@ export class PaymentCardComponent implements OnInit {
 
   /** Titre + montant éventuel (pour le pill “Pay amount”) */
   @Input() header = 'Paiement par carte';
-  @Input() amount?: number;
+  @Input() amount: number | null = null;
 
+ 
   /** Bouton payer en état chargement */
   @Input() loading = false;
 

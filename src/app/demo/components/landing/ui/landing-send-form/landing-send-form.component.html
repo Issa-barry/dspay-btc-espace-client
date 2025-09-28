@@ -2,7 +2,7 @@
             </div>
 
             <!-- Montant saisi en EUR -->
-            <label class="block text-600 mb-2">Vous envoyez</label>
+            <label class="block text-600 mb-2 font-semibold">Vous envoyez</label>
             <div class="p-inputgroup mb-3">
               <p-inputNumber 
                [(ngModel)]="amountInput"
@@ -16,7 +16,7 @@
             </div>
 
             <!-- Reçu -->  
-            <label class="block text-600 mb-2">Le destinataire reçoit</label>
+            <label class="block text-600 font-semibold  mb-2">Le destinataire reçoit</label>
             <div class="p-inputgroup mb-3">
             <p-inputNumber
             [(ngModel)]="receiveGNF"
@@ -49,7 +49,7 @@
                     [disabled]="!amountInput || amountInput <= 0"
                     (click)="startTransfer()"></button>
 
-            <!-- FOOTER Taux -->
+            <!-- FOOTER Taux --> 
             <div class="p-3 border-round mt-3" [ngClass]="promo ? 'bg-green-100' : 'surface-50'">
               <div class="mt-2 text-700">
                 1 EUR = <strong>{{ rate | money:'GNF':'normal' }}</strong>

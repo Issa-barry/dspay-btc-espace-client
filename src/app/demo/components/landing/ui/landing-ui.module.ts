@@ -23,6 +23,7 @@ import { LandingSendFormComponent } from './landing-send-form/landing-send-form.
 import { LandingServiceComponent } from './landing-service/landing-service.component';
 import { LandingPromoComponent } from './landing-promo/landing-promo.component';
 import { Card1Component } from './card-1/card-1.component';
+import { SidebarModule } from 'primeng/sidebar';
 
 // UI components 
 
@@ -51,6 +52,7 @@ import { Card1Component } from './card-1/card-1.component';
     RippleModule,
     // Pipes (money, phone, etc.)
     PipeModule,
+    SidebarModule
   ],
   exports: [
     TopbarComponent,
