@@ -109,23 +109,42 @@ export class NewPasswordComponent implements OnInit {
     });
   }
 
-  private showValidationErrors(err: any): void {
-    console.error(err);
-    const validationErrors = err?.error?.data || {};
-    this.errors = {};
+private notifyError(message: string) {
+  this.errorMessage = message;
+  this.messageService.add({
+    severity: 'error',
+    summary: 'Réinitialisation impossible',
+    detail: message,
+    life: 7000
+  });
+}
 
-    for (const field in validationErrors) {
-      if (Object.prototype.hasOwnProperty.call(validationErrors, field)) {
-        this.errors[field] = Array.isArray(validationErrors[field])
-          ? validationErrors[field].join(' ')
-          : String(validationErrors[field]);
-      }
+private showValidationErrors(err: any): void {
+  console.error(err);
+  this.errors = {};
+
+  // erreurs de champs éventuelles renvoyées par l’API
+  const validationErrors = err?.error?.data || {};
+  for (const field in validationErrors) {
+    if (Object.prototype.hasOwnProperty.call(validationErrors, field)) {
+      this.errors[field] = Array.isArray(validationErrors[field])
+        ? validationErrors[field].join(' ')
+        : String(validationErrors[field]);
     }
-
-    this.errorMessage = err?.error?.message || 'Une erreur est survenue.';
-    this.loading = false;
-    this.submitted = false;
   }
+
+  // message global
+  let msg = err?.error?.message || 'Une erreur est survenue.';
+
+  // cas particulier: token invalide/expiré (422)
+  if (err?.status === 422 && /reset token is invalid/i.test(msg)) {
+    msg = 'Lien de réinitialisation invalide ou expiré. Veuillez redemander un email de réinitialisation.';
+  }
+
+  this.notifyError(msg);
+  this.loading = false;
+  this.submitted = false;
+}
 
   private clearErrors(): void {
     this.errors = {};
