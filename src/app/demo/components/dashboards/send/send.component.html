@@ -6,7 +6,7 @@
     <div class="col-12 lg:col-10">
       <div class="grid formgrid p-fluid">
 
-        <div class="field mb-4 col-12 md:col-4">
+        <div class="field mb-4 col-12 md:col-6">
           <label for="amountEur" class="font-medium text-900">Vous envoyez</label>
           <p-inputNumber
             inputId="amountEur"
@@ -22,7 +22,7 @@
           <small *ngIf="errors['montantEuro']">{{ errors['montantEuro'] }}</small>
         </div>
 
-        <div class="field mb-4 col-12 md:col-4">
+        <div class="field mb-4 col-12 md:col-6">
           <label for="amountGnf" class="font-medium text-900">Montant reçu</label>
           <p-inputNumber
             inputId="amountGnf"
@@ -37,7 +37,7 @@
           </p-inputNumber>
         </div>
 
-        <div class="col-8">
+        <div class="col-12 md:col-6">
           <ui-step-actions
             [showPrev]="false"
             [showNext]="true"
@@ -102,7 +102,7 @@
     <div class="col-12 md:col-8">
       <ui-step-actions (prev)="prev()" (next)="next()"></ui-step-actions>
     </div>
-  </div> 
+  </div>
 
   <!-- Étape 2 : Bénéficiaire -->
   <div class="grid" *ngIf="activeIndex === 2">

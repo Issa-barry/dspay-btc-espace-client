@@ -1,21 +1,19 @@
-// src/app/demo/components/auth/login/login.component.ts
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/demo/service/auth/auth.service';
 import { LayoutService } from 'src/app/layout/service/app.layout.service';
 
-@Component({
-  templateUrl: './login.component.html',
-})
+@Component({ templateUrl: './login.component.html' })
 export class LoginComponent implements OnInit {
   email = '';
   password = '';
   rememberMe = false;
+
   errorMessage = '';
   loading = false;
-  submited: boolean = false;
+  submited = false;
 
-  constructor( 
+  constructor(
     private router: Router,
     private route: ActivatedRoute,
     private authService: AuthService,
@@ -27,39 +25,62 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Déjà connecté ? Aller directement vers la cible (ou dashboard)
-    if (this.authService.isAuthenticated()) {
-      const qp = this.route.snapshot.queryParamMap;
-      const urlAfter = qp.get('redirect') || sessionStorage.getItem('redirectUrl') || '/dashboard';
-      this.router.navigateByUrl(urlAfter, { replaceUrl: true });
+    // Prefill email si rememberMe était activé
+    const savedEmail = localStorage.getItem('remember_email');
+    if (savedEmail) {
+      this.email = savedEmail;
+      this.rememberMe = true;
     }
+
+    const qp = this.route.snapshot.queryParamMap;
+    const urlAfter =
+      qp.get('redirect') || sessionStorage.getItem('redirectUrl') || '/dashboard';
+
+    // 1) si token => direct
+    if (this.authService.isAuthenticated()) {
+      this.router.navigateByUrl(urlAfter, { replaceUrl: true });
+      return;
+    }
+
+    // 2) sinon, teste la session cookie via /users/me (intercepteur => withCredentials)
+    this.authService.getMe().subscribe({
+      next: () => this.router.navigateByUrl(urlAfter, { replaceUrl: true }),
+      error: () => {
+        // rester sur login
+      },
+    });
   }
 
-   login(): void {
+  login(): void {
     this.errorMessage = '';
     this.submited = true;
+
+    const email = (this.email || '').trim();
+    const password = (this.password || '').trim();
+
+    if (!email || !password) {
+      this.errorMessage = 'Veuillez saisir votre email et votre mot de passe.';
+      return;
+    }
+
     this.loading = true;
 
-    const credentials = { email: this.email, password: this.password };
+    this.authService.login({ email, password }).subscribe({
+      next: () => {
+        // Remember me: on conserve uniquement l'email (jamais le mot de passe)
+        if (this.rememberMe) {
+          localStorage.setItem('remember_email', email);
+        } else {
+          localStorage.removeItem('remember_email');
+        }
 
-    this.authService.login(credentials).subscribe({
-      next: (res) => {
-        // Si ton AuthService ne stocke pas la session ici, fais-le :
-        // this.authService.setSession(res);
         this.handlePostLoginRedirect();
         this.loading = false;
         this.submited = false;
       },
-      error: (err) => {
+      error: (err: Error) => {
+        this.errorMessage = err?.message || 'Identifiants incorrects';
         this.loading = false;
-        const apiMsg =
-          err?.error?.message ||
-          err?.error?.error ||
-          err?.error?.error?.email ||
-          err?.error?.errors?.email?.[0] ||
-          err?.error?.errors?.password?.[0];
-        this.errorMessage = apiMsg || 'Identifiants incorrects';
-          this.loading = false;
         this.submited = false;
       },
     });
@@ -69,15 +90,15 @@ export class LoginComponent implements OnInit {
     this.router.navigate(['/auth/forgotpassword']);
   }
 
-   goToRegister(): void {
+  goToRegister(): void {
     this.router.navigate(['/auth/register']);
   }
 
   // ---------- PRIVÉ ----------
-
   private handlePostLoginRedirect(): void {
     const qp = this.route.snapshot.queryParamMap;
-    const urlAfter = qp.get('redirect') || sessionStorage.getItem('redirectUrl') || '/dashboard';
+    const urlAfter =
+      qp.get('redirect') || sessionStorage.getItem('redirectUrl') || '/dashboard';
     const pendingJson = sessionStorage.getItem('pendingTransferParams');
 
     // nettoyage
