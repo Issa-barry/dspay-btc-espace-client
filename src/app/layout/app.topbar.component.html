@@ -19,10 +19,13 @@
                 <button pButton type="button" icon="pi pi-bell" class="p-button-text p-button-secondary p-button-rounded flex-shrink-0" (click)="onConfigButtonClick()"></button>
             </li>
             <li class="topbar-profile ml-2 sm:ml-0">
-                <button type="button" class="p-link" (click)="onProfileButtonClick()">
-                    <img src="assets/demo/images/avatar/circle/utilisateur (2).png" alt="Profile" />
-                </button>
+            <button type="button" class="p-link" (click)="onProfileButtonClick()">
+                <div class="profile-circle flex align-items-center justify-content-center">
+                {{ initialesProfil }}
+                </div>
+            </button>
             </li>
+
         </ul>
     </div>
 </div> 
