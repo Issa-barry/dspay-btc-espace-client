@@ -255,6 +255,19 @@
 
         <div class="col-12 md:col-8">
           <ui-step-actions [showNext]="false" (prev)="prev()">
+              <button
+              right
+              type="button"
+              pButton
+              pRipple
+              class="w-full md:w-auto"
+              label="Simuler paiement"
+              icon="pi pi-check"
+              iconPos="right"
+              [loading]="loading"
+              (click)="save()">
+            </button>
+
             <button
               right
               type="button"

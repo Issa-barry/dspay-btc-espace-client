@@ -44,7 +44,12 @@
 
     <!-- Ligne desktop -->
     <tr *ngIf="!loading" class="show-desktop">
-      <td class="font-medium text-900">{{ b.nom_complet }}</td>
+      <td>
+      <div class="flex align-items-center gap-2">
+        <div class="avatar-initials">{{ getInitials(b.nom_complet) }}</div>
+        <span class="font-medium text-900">{{ b.nom_complet }}</span>
+      </div>
+    </td>
       <td>{{ b.phone | phoneFormat:'GN' }}</td>
       <td class="text-center">
         <div class="inline-flex gap-2">
@@ -170,6 +175,7 @@
                     label="Enregistrer"
                     icon="pi pi-check"
                     class="p-button-text"
+                    [loading]="loading"
                     (click)="saveBeneficiaire()"
                 ></button>
             </ng-template>
@@ -185,7 +191,7 @@
 >
   <p>Voulez-vous vraiment supprimer le bénéficiaire <b>{{ current?.nom_complet || (current?.prenom + ' ' + current?.nom) }}</b> ?</p>
   <ng-template pTemplate="footer">
-    <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-text" (click)="deleteBeneficiaireDialog = false"></button>
-    <button pButton pRipple label="Supprimer" icon="pi pi-trash" class="p-button-danger" (click)="confirmDeleteBeneficiaire()"></button>
+    <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-text"      (click)="deleteBeneficiaireDialog = false"></button>
+    <button pButton pRipple label="Supprimer" icon="pi pi-trash" class="p-button-danger" [loading]="loading" (click)="confirmDeleteBeneficiaire()"></button>
   </ng-template>
 </p-dialog>

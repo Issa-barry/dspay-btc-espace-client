@@ -7,19 +7,53 @@
   .show-mobile  { display: none; }
 }
 
+/* Variable locale pour la taille d’avatar (un peu plus petit en desktop) */
+:host { --avatar-size: 2.25rem; }           /* mobile par défaut */
+@media (min-width: 768px) {
+  :host { --avatar-size: 2rem; }            /* desktop */
+}
+
 /* Carte mobile */
 .mobile-card {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: .75rem;
   padding: .9rem 1rem;
   border-bottom: 1px solid var(--surface-border);
 }
+
+/* Avatar initiales (mobile + desktop) */
 .avatar-initials {
-  width: 2.25rem; height: 2.25rem; border-radius: 9999px;
-  background: var(--primary-500); color: #fff; font-weight: 600;
-  display: inline-flex; align-items: center; justify-content: center;
-  text-transform: uppercase; flex: 0 0 2.25rem;
+  width: var(--avatar-size);
+  height: var(--avatar-size);
+  border-radius: 9999px;
+  background: var(--primary-500);
+  color: #fff;
+  font-weight: 600;
+  font-size: calc(var(--avatar-size) * 0.44);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  flex: 0 0 var(--avatar-size);
+}
+
+/* Table: align milieu et couper proprement les noms longs */
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+  vertical-align: middle;
+}
+
+/* Colonne Nom en desktop: ellipsis si trop long */
+.show-desktop td:first-child span {
+  max-width: 28rem;
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@media (max-width: 991px) {
+  .show-desktop td:first-child span { max-width: 16rem; }
 }
 
 /* Paginator un peu plus compact */
