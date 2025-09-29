@@ -50,15 +50,15 @@
       styleClass="w-full text-center"
     ></p-inputMask>
   </div>
-</div>
+</div> 
 
 
     
     <p-divider class="my-3"></p-divider>
     <!-- Actions -->
     <div class="flex align-items-center justify-content-between">
-      <button type="button" pButton class="p-button-text" label="Annuler" (click)="hide()"></button>
-      <button type="submit" pButton icon="pi pi-check" label="Payer" [loading]="loading" [disabled]="payForm.invalid"></button>
+      <button type="button" pButton  label="Annuler" icon="pi pi-times"  (click)="hide()" class="p-button-text" ></button>
+      <button type="submit" pButton  label="Payer"  icon="pi pi-check"  [loading]="loading" [disabled]="payForm.invalid" ></button>
     </div>
 
     

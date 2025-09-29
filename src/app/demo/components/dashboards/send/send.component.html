@@ -1,235 +1,220 @@
 <div class="card">
   <p-toast></p-toast>
 
-  <!-- Étape 0 : Montants -->
-  <div class="grid" *ngIf="activeIndex === 0">
-    <div class="col-12 lg:col-10">
-      <div class="grid formgrid p-fluid">
+  <!-- Étapes -->
+  <ng-container [ngSwitch]="activeIndex">
 
-        <div class="field mb-4 col-12 md:col-6">
-          <label for="amountEur" class="font-medium text-900">Vous envoyez</label>
-          <p-inputNumber
-            inputId="amountEur"
-            [(ngModel)]="montantEuro"
-            mode="currency"
-            currency="EUR"
-            locale="fr-FR"
-            [minFractionDigits]="0"
-            [maxFractionDigits]="2"
-            [max]="1000"
-            (onInput)="convertirDepuisEuro()">
-          </p-inputNumber>
-          <small *ngIf="errors['montantEuro']">{{ errors['montantEuro'] }}</small>
-        </div>
-
-        <div class="field mb-4 col-12 md:col-6">
-          <label for="amountGnf" class="font-medium text-900">Montant reçu</label>
-          <p-inputNumber
-            inputId="amountGnf"
-            [(ngModel)]="montantGNF"
-            mode="currency"
-            currency="GNF"
-            locale="fr-FR"
-            [useGrouping]="true"
-            [minFractionDigits]="0"
-            [maxFractionDigits]="0"
-            (onInput)="convertirDepuisGNF()">
-          </p-inputNumber>
-        </div>
-
-        <div class="col-12 md:col-6">
-          <ui-step-actions
-            [showPrev]="false"
-            [showNext]="true"
-            [nextDisabled]="!isMontantValide"
-            (next)="next()"
-            (prev)="prev()">
-          </ui-step-actions>
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-  <!-- Étape 1 : Mode de réception -->
-  <div class="grid" *ngIf="activeIndex === 1">
-    <div class="field mb-2 col-12 md:col-8">
-      <label for="modeReception" class="font-medium text-900 mb-4">Mode réception</label>
-
-      <p-dropdown
-        inputId="modeReception"
-        [options]="modesReception"
-        optionLabel="label"
-        optionValue="value"
-        [(ngModel)]="selectedModeReception"
-        [showClear]="false"
-        placeholder="Choisir un mode"
-        appendTo="body"
-        [autoZIndex]="true"
-        [baseZIndex]="11000"
-        styleClass="w-full">
-
-        <ng-template pTemplate="item" let-opt>
-          <div class="flex align-items-center gap-2">
-            <i class="pi"
-               [ngClass]="{
-                 'pi-wallet': opt.value === 'ewallet',
-                 'pi-mobile': opt.value === 'orange_money',
-                 'pi-money-bill': opt.value === 'retrait_cash'
-               }">
-            </i>
-            <span>{{ opt.label }}</span>
+    <!-- Étape 0 : Montants -->
+    <section *ngSwitchCase="0" class="grid">
+      <div class="col-12 md:col-8">
+        <div class="grid formgrid p-fluid">
+          <div class="field mb-4 col-12 md:col-6">
+            <label for="amountEur" class="font-medium text-900">Vous envoyez</label>
+            <p-inputNumber
+              inputId="amountEur"
+              [(ngModel)]="montantEuro"
+              mode="currency"
+              currency="EUR"
+              locale="fr-FR"
+              [minFractionDigits]="0"
+              [maxFractionDigits]="2"
+              [max]="1000"
+              (onInput)="convertirDepuisEuro()">
+            </p-inputNumber>
+            <small class="p-error" *ngIf="errors['montantEuro']">{{ errors['montantEuro'] }}</small>
           </div>
-        </ng-template>
 
-        <ng-template pTemplate="selectedItem" let-opt>
-          <div class="flex align-items-center gap-2">
-            <i class="pi"
-               [ngClass]="{
-                 'pi-wallet': opt?.value === 'ewallet',
-                 'pi-mobile': opt?.value === 'orange_money',
-                 'pi-money-bill': opt?.value === 'retrait_cash'
-               }">
-            </i>
-            <span>{{ opt?.label || 'Choisir un mode' }}</span>
+          <div class="field mb-4 col-12 md:col-6">
+            <label for="amountGnf" class="font-medium text-900">Montant reçu</label>
+            <p-inputNumber
+              inputId="amountGnf"
+              [(ngModel)]="montantGNF"
+              mode="currency"
+              currency="GNF"
+              locale="fr-FR"
+              [useGrouping]="true"
+              [minFractionDigits]="0"
+              [maxFractionDigits]="0"
+              (onInput)="convertirDepuisGNF()">
+            </p-inputNumber>
           </div>
-        </ng-template>
-      </p-dropdown>
 
-      <small *ngIf="errors['mode_reception']">{{ errors['mode_reception'] }}</small>
-    </div>
-
-    <div class="col-12 md:col-8">
-      <ui-step-actions (prev)="prev()" (next)="next()"></ui-step-actions>
-    </div>
-  </div>
-
-  <!-- Étape 2 : Bénéficiaire -->
-  <div class="grid" *ngIf="activeIndex === 2">
-    <div class="col-12 lg:col-12">
-      <div class="grid formgrid p-fluid">
-
-        <div class="field mb-6 col-12 md:col-8">
-  <label class="font-medium text-900">Bénéficiaire</label>
-
-  <!-- Dropdown wrapper -->
-  <div class="relative w-full">
-    <!-- Spinner au lieu du contenu -->
-    <p-dropdown
-      *ngIf="!loading; else loadingTpl"
-      [options]="beneficiairesOptions"
-      optionValue="id"
-      optionLabel="label"
-      [(ngModel)]="selectedBeneficiaireId"
-      [filter]="false"
-      [showClear]="false"
-      placeholder="Sélectionnez un bénéficiaire"
-      styleClass="w-full"
-      appendTo="body"
-      [autoZIndex]="true"
-      [baseZIndex]="11000"
-      [emptyMessage]="'Aucun bénéficiaire'"
-      [emptyFilterMessage]="'Aucun résultat'"
-      (onChange)="onBeneficiaireChange($event.value)"
-       styleClass="w-full"
-      panelStyleClass="benef-panel"
-      [ngClass]="{
-        'ng-invalid ng-dirty':
-          (submitted && !selectedBeneficiaireId) || !isBeneficiaireValide || errors['beneficiaire']
-      }">
-
-    <ng-template pTemplate="item" let-opt>
-        <div class="flex flex-column sm:flex-row sm:justify-content-between w-full">
-          <span class="font-medium text-900 text-overflow-ellipsis white-space-nowrap overflow-hidden">
-            {{ opt.label }}
-          </span>
-          <span class="text-600 text-sm sm:text-right">{{ opt.phone | phoneFormat:'GN' }}</span>
+          <div class="col-12">
+            <ui-step-actions
+              [showPrev]="false"
+              [showNext]="true"
+              [nextDisabled]="!isMontantValide"
+              (next)="next()">
+            </ui-step-actions>
+          </div>
         </div>
-      </ng-template>
-
-     <ng-template pTemplate="selectedItem" let-opt>
-    <div class="flex flex-column sm:flex-row sm:justify-content-between w-full">
-      <span class="font-medium text-900 text-overflow-ellipsis white-space-nowrap overflow-hidden">
-        {{ opt?.label }}
-      </span>
-      <span class="text-600 text-sm sm:text-right">{{ opt?.phone | phoneFormat:'GN' }}</span>
-    </div>
-  </ng-template>
-
-      <ng-template pTemplate="footer">
-        <div class="p-2 border-top-1 surface-border">
-          <button
-            type="button"
-            pButton
-            class="w-full p-button-text"
-            icon="pi pi-user-plus"
-            label="Ajouter un bénéficiaire"
-            (click)="onpenBeneficiaireDialog()">
-          </button>
-        </div>
-      </ng-template>
-    </p-dropdown>
-
-    <!-- Template de loading -->
-    <ng-template #loadingTpl>
-      <div class="surface-100 border-round-md flex justify-content-center align-items-center py-3">
-        <p-progressSpinner styleClass="w-2rem h-2rem"></p-progressSpinner>
       </div>
-    </ng-template>
-  </div>
-  <small *ngIf="errors['beneficiaire']">{{ errors['beneficiaire'] }}</small>
-  <small *ngIf="submitted && !isBeneficiaireValide">Veuillez choisir un bénéficiaire.</small>
-</div>
+    </section>
 
+    <!-- Étape 1 : Mode de réception -->
+    <section *ngSwitchCase="1" class="grid">
+      <div class="col-12 md:col-8">
+        <div class="field mb-3">
+          <label for="modeReception" class="font-medium text-900">Mode réception</label>
 
-        <div class="col-12 md:col-8 md:mb-4">
-          <ui-step-actions (prev)="prev()" (next)="next()"  [nextDisabled]="!isBeneficiaireValide"></ui-step-actions>
+          <p-dropdown
+            inputId="modeReception"
+            [options]="modesReception"
+            optionLabel="label"
+            optionValue="value"
+            [(ngModel)]="selectedModeReception"
+            [showClear]="false"
+            placeholder="Choisir un mode"
+            appendTo="body"
+            [autoZIndex]="true"
+            [baseZIndex]="11000"
+            styleClass="w-full">
+
+            <ng-template pTemplate="item" let-opt>
+              <div class="flex align-items-center gap-2">
+                <i class="pi"
+                   [ngClass]="{
+                     'pi-wallet': opt.value === 'ewallet',
+                     'pi-mobile': opt.value === 'orange_money',
+                     'pi-money-bill': opt.value === 'retrait_cash'
+                   }">
+                </i>
+                <span>{{ opt.label }}</span>
+              </div>
+            </ng-template>
+
+            <ng-template pTemplate="selectedItem" let-opt>
+              <div class="flex align-items-center gap-2">
+                <i class="pi"
+                   [ngClass]="{
+                     'pi-wallet': opt?.value === 'ewallet',
+                     'pi-mobile': opt?.value === 'orange_money',
+                     'pi-money-bill': opt?.value === 'retrait_cash'
+                   }">
+                </i>
+                <span>{{ opt?.label || 'Choisir un mode' }}</span>
+              </div>
+            </ng-template>
+          </p-dropdown>
+
+          <small class="p-error" *ngIf="errors['mode_reception']">
+            {{ errors['mode_reception'] }}
+          </small>
         </div>
 
+        <ui-step-actions (prev)="prev()" (next)="next()"></ui-step-actions>
       </div>
-    </div>
-  </div>
+    </section>
 
-  <!-- Étape 3 : Récapitulatif -->
-  <div class="grid" *ngIf="activeIndex === 3">
-    <div class="col-12 lg:col-12">
-      <div class="grid formgrid p-fluid">
+    <!-- Étape 2 : Bénéficiaire -->
+    <section *ngSwitchCase="2" class="grid">
+      <div class="col-12 md:col-8">
+        <div class="field mb-3">
+          <label class="font-medium text-900">Bénéficiaire</label>
 
-        <div class="field mb-4 col-12 md:col-8 align-items-center recap-row">
+          <div class="relative w-full">
+            <p-dropdown
+              *ngIf="!loading; else loadingTpl"
+              [options]="beneficiairesOptions"
+              optionValue="id"
+              optionLabel="label"
+              [(ngModel)]="selectedBeneficiaireId"
+              [filter]="false"
+              [showClear]="false"
+              placeholder="Sélectionnez un bénéficiaire"
+              styleClass="w-full"
+              appendTo="body"
+              [autoZIndex]="true"
+              [baseZIndex]="11000"
+              [emptyMessage]="'Aucun bénéficiaire'"
+              [emptyFilterMessage]="'Aucun résultat'"
+              (onChange)="onBeneficiaireChange($event.value)"
+              panelStyleClass="benef-panel"
+              [ngClass]="{
+                'ng-invalid ng-dirty':
+                  (submitted && !selectedBeneficiaireId) || !isBeneficiaireValide || errors['beneficiaire']
+              }">
+
+              <ng-template pTemplate="item" let-opt>
+                <div class="flex flex-column sm:flex-row sm:justify-content-between w-full">
+                  <span class="font-medium text-900 text-overflow-ellipsis white-space-nowrap overflow-hidden">
+                    {{ opt.label }}
+                  </span>
+                  <span class="text-600 text-sm sm:text-right">{{ opt.phone | phoneFormat:'GN' }}</span>
+                </div>
+              </ng-template>
+
+              <ng-template pTemplate="selectedItem" let-opt>
+                <div class="flex flex-column sm:flex-row sm:justify-content-between w-full">
+                  <span class="font-medium text-900 text-overflow-ellipsis white-space-nowrap overflow-hidden">
+                    {{ opt?.label }}
+                  </span>
+                  <span class="text-600 text-sm sm:text-right">{{ opt?.phone | phoneFormat:'GN' }}</span>
+                </div>
+              </ng-template>
+
+              <ng-template pTemplate="footer">
+                <div class="p-2 border-top-1 surface-border">
+                  <button
+                    type="button"
+                    pButton
+                    class="w-full p-button-text"
+                    icon="pi pi-user-plus"
+                    label="Ajouter un bénéficiaire"
+                    (click)="onpenBeneficiaireDialog()">
+                  </button>
+                </div>
+              </ng-template>
+            </p-dropdown>
+
+            <ng-template #loadingTpl>
+              <div class="surface-100 border-round-md flex justify-content-center align-items-center py-3">
+                <p-progressSpinner styleClass="w-2rem h-2rem"></p-progressSpinner>
+              </div>
+            </ng-template>
+          </div>
+
+          <small class="p-error" *ngIf="errors['beneficiaire']">{{ errors['beneficiaire'] }}</small>
+          <small class="p-error" *ngIf="submitted && !isBeneficiaireValide">Veuillez choisir un bénéficiaire.</small>
+        </div>
+
+        <ui-step-actions (prev)="prev()" (next)="next()" [nextDisabled]="!isBeneficiaireValide"></ui-step-actions>
+      </div>
+    </section>
+
+    <!-- Étape 3 : Récapitulatif -->
+    <section *ngSwitchCase="3" class="grid">
+      <div class="col-12 md:col-8">
+        <div class="field mb-4 align-items-center recap-row">
           <label class="font-semibold text-900">Récapitulatif</label>
 
-          <p-divider styleClass="my-2 md:my-3"></p-divider>
+          <p-divider styleClass="my-3"></p-divider>
 
-          <div class="grid align-items-start recap-row mt-3">
-              <div class="col-12 md:col-6 text-900 font-medium mb-1 md:mb-0">
-                Bénéficiaire
+          <div class="grid align-items-start recap-row mt-2">
+            <div class="col-12 md:col-6 text-900 font-medium">Bénéficiaire</div>
+            <div class="col-12 md:col-6 md:mt-1 text-left md:text-right">
+              <div class="text-800 text-sm text-overflow-ellipsis white-space-nowrap overflow-hidden">
+                {{ selectedBeneficiaireLabel }}
               </div>
-              <div class="col-12 md:col-6 md:mt-4 text-left md:text-right">
-                <div class="text-800 text-sm text-overflow-ellipsis white-space-nowrap overflow-hidden">
-                  {{ selectedBeneficiaireLabel }}
-                </div>
-                <div class="text-600 text-sm md:mt-3">{{ selectedBeneficiairePhone | phoneFormat:'GN' }}</div>
-              </div>
+              <div class="text-600 text-sm md:mt-2">{{ selectedBeneficiairePhone | phoneFormat:'GN' }}</div>
+            </div>
           </div>
 
-          <p-divider styleClass="my-2 md:my-3"></p-divider>
+          <p-divider styleClass="my-3"></p-divider>
 
-          <div class="grid align-items-start recap-row mt-3">
-            <div class="col-12 md:col-6 text-900 font-medium mb-1 md:mb-0">
-              Montant reçu
-            </div>
+          <div class="grid align-items-start recap-row mt-2">
+            <div class="col-12 md:col-6 text-900 font-medium">Montant reçu</div>
             <div class="col-12 md:col-6 text-left md:text-right">
               <span class="text-900 text-sm">{{ montantGNF | money:'GNF':'normal' }}</span>
-               
             </div>
-        </div>
+          </div>
 
-          <p-divider styleClass="my-2 md:my-3"></p-divider>
+          <p-divider styleClass="my-3"></p-divider>
 
-          <div class="grid align-items-center recap-row mt-3">
+          <div class="grid align-items-center recap-row mt-2">
             <div class="col-8 md:col-6">
               <div class="flex align-items-center gap-2">
-                <span class="text-900 font-medium mb-2">Frais</span>
+                <span class="text-900 font-medium">Frais</span>
                 <p-inputSwitch
                   [(ngModel)]="includeFrais"
                   (onChange)="majFraisTotal_ttc()"
@@ -243,9 +228,9 @@
             </div>
           </div>
 
-          <p-divider styleClass="my-2 md:my-3"></p-divider>
+          <p-divider styleClass="my-3"></p-divider>
 
-          <div class="grid align-items-center recap-row mt-3">
+          <div class="grid align-items-center recap-row mt-2">
             <div class="col-8 md:col-6 text-900 font-bold">Total à payer</div>
             <div class="col-4 md:col-6 text-right text-900 font-bold">
               {{ total_ttc | money:'EUR':'normal' }}
@@ -253,89 +238,85 @@
           </div>
         </div>
 
-        <div class="col-12 md:col-8">
-          <ui-step-actions [showNext]="false" (prev)="prev()">
-              <button
-              right
-              type="button"
-              pButton
-              pRipple
-              class="w-full md:w-auto"
-              label="Simuler paiement"
-              icon="pi pi-check"
-              iconPos="right"
-              [loading]="loading"
-              (click)="save()">
-            </button>
+        <ui-step-actions [showNext]="false" (prev)="prev()">
+          <button
+            right
+            type="button"
+            pButton
+            pRipple
+            class="w-full md:w-auto"
+            label="Simuler paiement"
+            class="p-button-info"
+            icon="pi pi-check"
+            iconPos="right"
+            [loading]="loading"
+            (click)="save()">
+          </button>
 
-            <button
-              right
-              type="button"
-              pButton
-              pRipple
-              class="w-full md:w-auto"
-              label="Confirmer et payer"
-              icon="pi pi-check"
-              iconPos="right"
-              (click)="openPayement()">
-            </button>
-          </ui-step-actions>
-        </div>
-
+          <button
+            right
+            type="button"
+            pButton
+            pRipple
+            class="w-full md:w-auto"
+            label="payer"
+            icon="pi pi-check"
+            iconPos="right"
+            (click)="openPayement()">
+          </button>
+        </ui-step-actions>
       </div>
-    </div>
-  </div>
+    </section>
+
+  </ng-container>
 </div>
 
 <!-- Dialog paiement -->
-<!-- EN PROD -->
- <app-payment-card
+<app-payment-card
   [(visible)]="payementDialog"
   [loading]="payLoading"
   [amount]="total_ttc"
   header="Paiement par carte"
   (submit)="onPaymentSubmit($event)"
-  (cancel)="onPaymentCancel()"
-></app-payment-card>
- 
+  (cancel)="onPaymentCancel()">
+</app-payment-card>
 
-<!-- DIALOG BÉNÉFICIAIRE -->
-    <p-dialog
-      [(visible)]="beneficiaireDialog"
-      [style]="{ width: '450px' }"
-      header="Détails du Bénéficiaire"
-      [modal]="true"
-      class="p-fluid">
+<!-- Dialog Bénéficiaire -->
+<p-dialog
+  [(visible)]="beneficiaireDialog"
+  [style]="{ width: '450px' }"
+  header="Détails du Bénéficiaire"
+  [modal]="true"
+  class="p-fluid">
 
-      <ng-template pTemplate="content">
-        <div class="field">
-          <label for="b_nom">Nom</label>
-          <input type="text" pInputText id="b_nom"
-                 [(ngModel)]="beneficiaire.nom" required
-                 [ngClass]="{'ng-invalid ng-dirty': submitted && !beneficiaire.nom}" />
-          <small class="ng-dirty ng-invalid" *ngIf="submitted && !beneficiaire.nom">Nom is required.</small>
-        </div>
+  <ng-template pTemplate="content">
+    <div class="field">
+      <label for="b_nom">Nom</label>
+      <input type="text" pInputText id="b_nom"
+             [(ngModel)]="beneficiaire.nom" required
+             [ngClass]="{'ng-invalid ng-dirty': submitted && !beneficiaire.nom}" />
+      <small class="p-error" *ngIf="submitted && !beneficiaire.nom">Nom requis.</small>
+    </div>
 
-        <div class="field">
-          <label for="b_prenom">Prénom</label>
-          <input type="text" pInputText id="b_prenom"
-                 [(ngModel)]="beneficiaire.prenom" required
-                 [ngClass]="{'ng-invalid ng-dirty': submitted && !beneficiaire.prenom}" />
-          <small class="ng-dirty ng-invalid" *ngIf="submitted && !beneficiaire.prenom">Prenom is required.</small>
-        </div>
+    <div class="field">
+      <label for="b_prenom">Prénom</label>
+      <input type="text" pInputText id="b_prenom"
+             [(ngModel)]="beneficiaire.prenom" required
+             [ngClass]="{'ng-invalid ng-dirty': submitted && !beneficiaire.prenom}" />
+      <small class="p-error" *ngIf="submitted && !beneficiaire.prenom">Prénom requis.</small>
+    </div>
 
-        <div class="field">
-          <label for="b_phone">Téléphone</label>
-          <input type="text" pInputText id="b_phone"
-                 [(ngModel)]="beneficiaire.phone" required
-                 [ngClass]="{'ng-invalid ng-dirty': submitted && !beneficiaire.phone}" />
-          <small class="ng-dirty ng-invalid" *ngIf="submitted && !beneficiaire.phone">Téléphone is required.</small>
-        </div>
-      </ng-template>
+    <div class="field">
+      <label for="b_phone">Téléphone</label>
+      <input type="text" pInputText id="b_phone"
+             [(ngModel)]="beneficiaire.phone" required
+             [ngClass]="{'ng-invalid ng-dirty': submitted && !beneficiaire.phone}" />
+      <small class="p-error" *ngIf="submitted && !beneficiaire.phone">Téléphone requis.</small>
+    </div>
+  </ng-template>
 
-      <ng-template pTemplate="footer">
-        <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
-        <button pButton pRipple label="Enregistrer" icon="pi pi-check" class="p-button-text" (click)="saveBeneficiaire()" [loading]="loading"></button>
-      </ng-template>
-    </p-dialog>
-  
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+    <button pButton pRipple label="Enregistrer" icon="pi pi-check" class="p-button-text" (click)="saveBeneficiaire()" [loading]="loading"></button>
+  </ng-template>
+</p-dialog>
