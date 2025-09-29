@@ -1,13 +1,12 @@
 <p-toast></p-toast>
 
 <p-toolbar styleClass="mb-4">
-  <ng-template pTemplate="left">
-    <button pButton pRipple label="Ajouter un bénéficiaire" icon="pi pi-plus"
-            class="p-button-primary" (click)="openNew()"></button>
+  <ng-template pTemplate="left" class="p-button-primary w-full sm:w-22rem">
+    <button pButton pRipple label="Ajouter un bénéficiaire" icon="pi pi-plus"  (click)="openNew()"></button>
   </ng-template>
 
   <ng-template pTemplate="right">
-    <span class="p-input-icon-left w-full sm:w-20rem">
+    <span class="p-input-icon-left w-full sm:w-18rem">
       <i class="pi pi-search"></i>
       <input pInputText type="text" (input)="onGlobalFilter(dt, $event)"
              placeholder="Rechercher..." class="w-full" />
@@ -23,7 +22,8 @@
   currentPageReportTemplate="Liste {first} / {last}"
   responsiveLayout="scroll"
   dataKey="id"
-  [globalFilterFields]="['nom_complet','phone']">
+  [globalFilterFields]="['nom_complet','phone']"
+  class="w-full">
 
   <!-- En-têtes (desktop) -->
   <ng-template pTemplate="header">
