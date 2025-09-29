@@ -10,33 +10,39 @@
         <div class="grid formgrid p-fluid">
           <div class="field mb-4 col-12 md:col-6">
             <label for="amountEur" class="font-medium text-900">Vous envoyez</label>
-            <p-inputNumber
-              inputId="amountEur"
-              [(ngModel)]="montantEuro"
-              mode="currency"
-              currency="EUR"
-              locale="fr-FR"
-              [minFractionDigits]="0"
-              [maxFractionDigits]="2"
-              [max]="1000"
-              (onInput)="convertirDepuisEuro()">
-            </p-inputNumber>
+            <div class="p-inputgroup">
+                       <p-inputNumber
+                          inputId="amountEur"
+                          [(ngModel)]="montantEuro"
+                          mode="currency"
+                          currency="EUR"
+                          locale="fr-FR"
+                          [minFractionDigits]="0"
+                          [maxFractionDigits]="2"
+                          [max]="1000"
+                          (onInput)="convertirDepuisEuro()">
+                        </p-inputNumber>
+                  <span class="p-inputgroup-addon text-700">EUR</span>
+            </div>
             <small class="p-error" *ngIf="errors['montantEuro']">{{ errors['montantEuro'] }}</small>
           </div>
 
           <div class="field mb-4 col-12 md:col-6">
             <label for="amountGnf" class="font-medium text-900">Montant reçu</label>
-            <p-inputNumber
-              inputId="amountGnf"
-              [(ngModel)]="montantGNF"
-              mode="currency"
-              currency="GNF"
-              locale="fr-FR"
-              [useGrouping]="true"
-              [minFractionDigits]="0"
-              [maxFractionDigits]="0"
-              (onInput)="convertirDepuisGNF()">
+            <div class="p-inputgroup">
+               <p-inputNumber
+                inputId="amountGnf"
+                [(ngModel)]="montantGNF"
+                mode="currency"
+                currency="GNF"
+                locale="fr-FR"
+                [useGrouping]="true"
+                [minFractionDigits]="0"
+                [maxFractionDigits]="0"
+                (onInput)="convertirDepuisGNF()">
             </p-inputNumber>
+             <span class="p-inputgroup-addon text-700">GNF</span>
+            </div>
           </div>
 
           <div class="col-12">

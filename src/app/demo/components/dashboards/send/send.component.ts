@@ -382,7 +382,7 @@ export class SendComponent implements OnInit, OnDestroy {
           this.messageService.add({
             severity: 'success',
             summary: 'Succès',
-            detail: 'Transfert effectué.',
+            detail: 'Transfert effectué. Vérifiez votre boite E-mail',
             life: 4000
           });
 
