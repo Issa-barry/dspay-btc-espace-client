@@ -41,7 +41,7 @@ export class TransfertListeComponent implements OnInit {
       next: (response) => {
         this.transferts = response;
         this.loading = false;
-        console.log(this.transferts);
+        // console.log(this.transferts);
         
       },
       error: (err) => {
@@ -153,4 +153,34 @@ export class TransfertListeComponent implements OnInit {
   onGlobalFilter(table: Table, event: Event) {
     table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
   }
+
+
+  statusSeverity(statut: string): 'success' | 'info' | 'warning' | 'danger' | undefined {
+  switch ((statut || '').toLowerCase()) {
+    case 'retiré':
+    case 'retire':
+      return 'success';
+    case 'envoyé':
+    case 'envoye':
+      return 'info';
+    case 'bloqué':
+    case 'bloque':
+      return 'warning';
+    case 'annulé':
+    case 'annule':
+      return 'danger';
+    default:
+      return undefined;
+  }
+}
+
+modeLabel(mode?: string): string {
+  switch (mode) {
+    case 'orange_money': return 'Orange Money';
+    case 'ewallet':      return 'E-Wallet';
+    case 'retrait_cash': return 'Retrait cash';
+    default:             return '—';
+  }
+}
+
 }

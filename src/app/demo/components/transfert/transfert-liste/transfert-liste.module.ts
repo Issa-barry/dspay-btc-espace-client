@@ -22,6 +22,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { SkeletonModule } from 'primeng/skeleton';
 import { PipeModule } from 'src/app/demo/pipes/pipe.module';
 import { ChipModule } from 'primeng/chip';
+import { TagModule } from 'primeng/tag';
 
 @NgModule({
   declarations: [TransfertListeComponent],
@@ -44,7 +45,8 @@ import { ChipModule } from 'primeng/chip';
 		DialogModule,ConfirmDialogModule,
 		SkeletonModule,
 		PipeModule,
-		ChipModule
+		ChipModule,
+		TagModule
   ]
 })
 export class TransfertListeModule { }
