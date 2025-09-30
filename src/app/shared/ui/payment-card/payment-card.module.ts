@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { PaymentCardComponent } from './payment-card.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputMaskModule } from 'primeng/inputmask';
@@ -31,7 +31,8 @@ import { PipeModule } from 'src/app/demo/pipes/pipe.module';
     InputGroupAddonModule,
     DividerModule,
     BadgeModule,
-    PipeModule
+    PipeModule,
+    FormsModule
   ]
 
 })

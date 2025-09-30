@@ -1,74 +1,42 @@
-<p-dialog
-  [(visible)]="visible"
-  (onHide)="visibleChange.emit(false)"
-  [modal]="true"
-  [closable]="false"
-  [style]="{width:'420px'}"
-  [dismissableMask]="true"
->
-  <form [formGroup]="payForm" (ngSubmit)="onSubmit()" class="p-4">
-    <!-- Header -->
-  <div class="flex align-items-center justify-content-between mb-4">
-  <h3 class="m-0"> 
-     <span class="m-0 text-xl font-bold">Montant à payer :</span>   
-     <span *ngIf="amount != null" class="m-0 text-lg font-normal">
-      {{ amount | money:'EUR':'normal' }}
-    </span></h3>
- </div>
+<form class="pcard" *ngIf="visible" [formGroup]="payForm" (ngSubmit)="onSubmit()">
+  <h3 *ngIf="showHeader" class="pcard-title">
+    Paiement par carte
+    <small *ngIf="amount != null" class="pcard-amount">
+      &nbsp;•&nbsp;{{ amount | number:'1.2-2' }} €
+    </small>
+  </h3>
 
+  <div class="pcard-body">
+    <label class="pcard-label" for="pcard-name">Nom du titulaire (optionnel)</label>
+    <input id="pcard-name" type="text" pInputText formControlName="name"
+           placeholder="Jean Dupont" class="w-full" autocomplete="cc-name"/>
 
-<label class="block text-600 text-xs font-semibold mb-2">N° de carte</label>
-<div class="p-input-icon-left w-full mb-2">
-  <i class="pi pi-credit-card mr-6"></i>
-  <p-inputMask
-    formControlName="number"
-    [mask]="numberMask"
-    placeholder="0000 0000 0000 0000"
-    styleClass="w-full  text-center"
-  ></p-inputMask>
-</div>
+    <label class="pcard-label mt-3">Carte</label>
+    <div class="p-input-icon-left w-full mb-2">
+      <i class="pi pi-credit-card mr-6"></i>
+      <div #numberHost class="card-host w-full p-inputtext p-component text-center"></div>
+    </div>
     <small class="p-error block mb-2" *ngIf="numberInvalid">Numéro invalide.</small>
 
-  <!-- EXP / CVC -->
-<div class="grid pay-compact mt-2">
-  <div class="col-12 md:col-6">
-    <label class="block text-600 text-xs font-semibold">EXPIRATION</label>
-    <p-inputMask
-      formControlName="exp"
-      mask="99/99"
-      placeholder="MM / AA"
-      styleClass="w-full text-center"
-    ></p-inputMask>
-  </div>
-
-  <div class="col-12 md:col-6">
-    <label class="block text-600 text-xs font-semibold">CVV / CVC</label>
-    <p-inputMask
-      formControlName="cvc"
-      [mask]="cvcMask"
-      placeholder="123"
-      styleClass="w-full text-center"
-    ></p-inputMask>
-  </div>
-</div> 
-
-
-    
-    <p-divider class="my-3"></p-divider>
-    <!-- Actions -->
-    <div class="flex align-items-center justify-content-between">
-      <button type="button" pButton  label="Annuler" icon="pi pi-times"  (click)="hide()" class="p-button-text" ></button>
-      <button type="submit" pButton  label="Payer"  icon="pi pi-check"  [loading]="loading" [disabled]="payForm.invalid" ></button>
+    <div class="grid pay-compact mt-2">
+      <div class="col-12 md:col-6">
+        <label class="pcard-label">EXPIRATION</label>
+        <div #expiryHost class="card-host w-full p-inputtext p-component text-center"></div>
+      </div>
+      <div class="col-12 md:col-6">
+        <label class="pcard-label">CVV / CVC</label>
+        <div #cvcHost class="card-host w-full p-inputtext p-component text-center"></div>
+      </div>
     </div>
 
-    
-   <!-- Logos fixes -->
-    <!-- <p-divider class="my-3"></p-divider>
-  
-    <div class="flex align-items-center justify-content-center gap-3 mb-3">
-      <img src="assets/demo/images/blocks/logos/visa.png" alt="Visa" height="28" />
-      <img src="assets/demo/images/blocks/logos/visa.png" alt="Mastercard" height="28" />
-      <img src="assets/demo/images/blocks/logos/visa.png" alt="Amex" height="28" />
-    </div> -->
-  </form>
-</p-dialog>
+    <p class="pcard-error" *ngIf="errorMsg" aria-live="assertive">{{ errorMsg }}</p>
+  </div>
+
+  <div class="pcard-footer">
+    <button pButton type="button" label="Annuler" class="p-button-text" (click)="hide()" [disabled]="loading"></button>
+    <button pButton type="submit" icon="pi pi-credit-card"
+            [label]="'Payer ' + ((amount ?? 0) | number:'1.2-2') + ' €'"
+            [disabled]="!canSubmit" [loading]="loading">
+    </button>
+  </div>
+</form>

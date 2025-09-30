@@ -1,41 +1,58 @@
+// paiement.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { loadStripe, Stripe } from '@stripe/stripe-js';
+import {
+  Stripe,
+  StripeCardNumberElement,
+  StripeCardElement,
+  PaymentIntentResult,
+} from '@stripe/stripe-js';
 import { environment } from 'src/environements/environment.dev';
- 
-@Injectable({
-  providedIn: 'root'
-})
+
+@Injectable({ providedIn: 'root' })
 export class PaiementService {
-    private apiUrl = `${environment.apiUrl}`;
-   private stripePromise = loadStripe(environment.stripePublicKey); // Clé publique depuis environment
+  // Sécurise l'URL (enlève un éventuel / final)
+  private apiUrl = environment.apiUrl.replace(/\/+$/, '');
 
   constructor(private http: HttpClient) {}
 
   /**
-   * Demande au backend Laravel de créer un PaymentIntent
-   * @param amount Montant en centimes (ex: 1000 = 10,00 €)
+   * Crée un PaymentIntent côté Laravel.
+   * POST  {apiUrl}/payments/stripe/create-payment-intent
    */
-  createPaymentIntent(amount: number) {
-    return this.http.post<{ clientSecret: string }>(
-      'http://localhost:8000/api/create-payment-intent',
-      { amount }
+  createPaymentIntent(payload: {
+    amount: number;                   // en centimes
+    currency?: string;                // 'eur' par défaut si non fourni
+    order_id?: string;
+    metadata?: Record<string, any>;
+    dev?: boolean;
+    force_new?: boolean;
+  }) {
+    return this.http.post<any>(
+      `${this.apiUrl}/payments/stripe/create-payment-intent`,
+      payload
     );
   }
 
   /**
-   * Confirme un paiement avec Stripe Elements
-   * @param clientSecret renvoyé par le backend
-   * @param cardElement l’élément carte Stripe monté dans le DOM
+   * Confirme le paiement AVEC LA MÊME INSTANCE STRIPE
+   * qui a créé les Elements (obligatoire).
    */
-  async confirmCardPayment(clientSecret: string, cardElement: any) {
-    const stripe = await this.stripePromise;
-    if (!stripe) throw new Error(' Le paiement  n’a pas pu être chargé');
-
+  confirmCardPayment(
+    stripe: Stripe,
+    clientSecret: string,
+    cardElement: StripeCardNumberElement | StripeCardElement,
+    billing?: { name?: string }
+  ): Promise<PaymentIntentResult> {
+    if (!stripe) {
+      return Promise.reject(new Error('Instance Stripe manquante'));
+    }
     return stripe.confirmCardPayment(clientSecret, {
       payment_method: {
-        card: cardElement
-      }
+        card: cardElement,
+        billing_details: billing,
+      },
     });
+    // 3DS est géré automatiquement par confirmCardPayment
   }
 }
