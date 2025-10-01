@@ -32,7 +32,7 @@
     <p class="pcard-error" *ngIf="errorMsg" aria-live="assertive">{{ errorMsg }}</p>
   </div>
 
-  <div class="pcard-footer">
+  <div class="pcard-footer flex align-items-center justify-content-between">
     <button pButton type="button" label="Annuler" class="p-button-text" (click)="hide()" [disabled]="loading"></button>
     <button pButton type="submit" icon="pi pi-credit-card"
             [label]="'Payer ' + ((amount ?? 0) | number:'1.2-2') + ' €'"
