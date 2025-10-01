@@ -24,28 +24,22 @@ interface BeneficiaireOption {
   providers: [MessageService, ConfirmationService],
 })
 export class SendComponent implements OnInit, OnDestroy {
-
-  // ─── Constantes & limites
   private readonly destroy$ = new Subject<void>();
   private readonly MAX_EUR = 1000;
   private readonly FRAIS_RATE = 0.05;
 
-  // ─── Montants & taux (affichage)
   montantEuro = 0;
   montantGNF = 0;
   tauxConversion = 10700;
 
-  // ─── Bénéficiaire + taux
   beneficiairesOptions: BeneficiaireOption[] = [];
   selectedBeneficiaireId: number | null = null;
   selectedTauxId = 1;
 
-  // ─── Frais / récap
   includeFrais = true;
   frais = 0;
   total_ttc = 0;
 
-  // ─── UI
   envoieDialog = false;
   ticketDialog = false;
   loading = false;
@@ -54,17 +48,20 @@ export class SendComponent implements OnInit, OnDestroy {
 
   transfert: Transfert = new Transfert();
 
-  // ─── Stepper
   items: MenuItem[] = [];
   activeIndex = 0;
 
-  // ─── Modes de réception
   readonly modesReception: Array<{ label: string; value: ModeReception }> = [
     { label: 'Retrait cash', value: 'retrait_cash' },
     { label: 'Orange Money', value: 'orange_money' },
     { label: 'eWallet', value: 'ewallet' },
   ];
   selectedModeReception: ModeReception = 'retrait_cash';
+
+  // Paiement (uniquement pilotage de la modale)
+  payementDialog = false;
+  payLoading = false;
+  clientSecret = ''; // volontairement vide : l’enfant le créera au clic « Payer »
 
   constructor(
     private readonly router: Router,
@@ -75,10 +72,6 @@ export class SendComponent implements OnInit, OnDestroy {
     private readonly confirmationService: ConfirmationService
   ) {}
 
-  // ────────────────────────────────────────────────────────────────────────────
-  // Lifecycle
-  // ────────────────────────────────────────────────────────────────────────────
-
   ngOnInit(): void {
     this.loadBeneficiaires();
     this.prefillFromQuery();
@@ -88,10 +81,6 @@ export class SendComponent implements OnInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
   }
-
-  // ────────────────────────────────────────────────────────────────────────────
-  // Préremplissage / chargements
-  // ────────────────────────────────────────────────────────────────────────────
 
   private prefillFromQuery(): void {
     const p = this.route.snapshot.queryParamMap;
@@ -155,10 +144,6 @@ export class SendComponent implements OnInit, OnDestroy {
       });
   }
 
-  // ────────────────────────────────────────────────────────────────────────────
-  // Getters UI
-  // ────────────────────────────────────────────────────────────────────────────
-
   get selectedBeneficiaireLabel(): string {
     return this.beneficiairesOptions.find(o => o.id === this.selectedBeneficiaireId)?.label ?? '—';
   }
@@ -182,10 +167,6 @@ export class SendComponent implements OnInit, OnDestroy {
     if (this.activeIndex === 2) return this.isBeneficiaireValide;
     return true;
   }
-
-  // ────────────────────────────────────────────────────────────────────────────
-  // Conversions & calculs
-  // ────────────────────────────────────────────────────────────────────────────
 
   majFraisTotal_ttc(): void {
     const eur = Math.max(0, +this.montantEuro || 0);
@@ -225,10 +206,6 @@ export class SendComponent implements OnInit, OnDestroy {
     return Math.round(n * 100) / 100;
   }
 
-  // ────────────────────────────────────────────────────────────────────────────
-  // Actions UI
-  // ────────────────────────────────────────────────────────────────────────────
-
   onBeneficiaireChange(id: number | null): void {
     this.selectedBeneficiaireId = id;
   }
@@ -251,10 +228,6 @@ export class SendComponent implements OnInit, OnDestroy {
     this.payementDialog = false;
     this.submitted = false;
   }
-
-  // ────────────────────────────────────────────────────────────────────────────
-  // Bénéficiaire (dialog)
-  // ────────────────────────────────────────────────────────────────────────────
 
   beneficiaires: Beneficiaire[] = [];
   beneficiaire: Beneficiaire = new Beneficiaire();
@@ -330,10 +303,6 @@ export class SendComponent implements OnInit, OnDestroy {
       });
   }
 
-  // ────────────────────────────────────────────────────────────────────────────
-  // Envoi du transfert
-  // ────────────────────────────────────────────────────────────────────────────
-
   save(): void {
     this.submitted = true;
     this.errors = {};
@@ -356,7 +325,6 @@ export class SendComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Clamp final
     this.montantEuro = Math.min(this.montantEuro, this.MAX_EUR);
 
     const dto: TransfertCreateDto = {
@@ -382,7 +350,7 @@ export class SendComponent implements OnInit, OnDestroy {
           this.messageService.add({
             severity: 'success',
             summary: 'Succès',
-            detail: 'Transfert effectué.',
+            detail: 'Transfert effectué. Vérifiez votre boite E-mail',
             life: 4000
           });
 
@@ -415,51 +383,49 @@ export class SendComponent implements OnInit, OnDestroy {
   }
 
   // ────────────────────────────────────────────────────────────────────────────
-  // Paiement (dialog compact)
+  // Paiement — on OUVRE juste la modale (le PaymentIntent sera créé au clic « Payer » dans l’enfant)
   // ────────────────────────────────────────────────────────────────────────────
-
-  payementDialog = false; // contrôle le dialog
-  payLoading = false;     // état bouton "Payer"
-
   openPayement() {
+    if (!this.isMontantValide) {
+      this.messageService.add({ severity: 'warn', summary: 'Montant', detail: `Montant invalide (1 à ${this.MAX_EUR} €).` });
+      return;
+    }
+    if (!this.isBeneficiaireValide) {
+      this.messageService.add({ severity: 'warn', summary: 'Bénéficiaire', detail: 'Veuillez sélectionner un bénéficiaire.' });
+      return;
+    }
+
+    this.majFraisTotal_ttc();
+    if (Math.round((this.total_ttc || 0) * 100) < 50) {
+      this.messageService.add({ severity: 'warn', summary: 'Montant', detail: 'Minimum 0,50 €.' });
+      return;
+    }
+
+    // Important : on laisse clientSecret vide → le composant enfant gérera la création + confirmation
+    this.clientSecret = '';
     this.payementDialog = true;
   }
 
   onPaymentCancel() {
     this.payementDialog = false;
-  } 
-
-  // Le child émet: { number, exp_month, exp_year, cvc, brand, name? }
-  async onPaymentSubmit(evt: {
-    number: string;
-    exp_month: string;
-    exp_year: string;
-    cvc: string;
-    brand: string;
-    name?: string; // ← optionnel pour éviter l'erreur de typage
-  }) {
-    this.payLoading = true;
-    try {
-      const holderName =
-        evt.name ??
-        (this as any)?.contact?.nom_complet ??
-        'CLIENT';
-
-      const payload = {
-        number: evt.number,
-        exp_month: evt.exp_month,
-        exp_year: evt.exp_year,
-        cvc: evt.cvc,
-        brand: evt.brand || 'unknown',
-        name: holderName
-      };
-
-      // 🔐 TODO: tokenisation PSP / appel API avec payload
-      await new Promise(r => setTimeout(r, 800)); // demo
-      this.payementDialog = false;
-    } finally {
-      this.payLoading = false;
-    }
   }
 
+  onPaymentSuccess(e: { paymentIntentId: string }) {
+    this.payementDialog = false;
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Paiement',
+      detail: 'Paiement confirmé ✅',
+      life: 3000
+    });
+  }
+
+  onPaymentFail(e: { message: string }) {
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Paiement',
+      detail: e?.message || 'Paiement refusé',
+      life: 4000
+    });
+  }
 }
