@@ -278,6 +278,7 @@
 </div>
 
 <!-- Dialog paiement -->
+<!-- Dialog paiement -->
 <p-dialog
   [(visible)]="payementDialog"
   [modal]="true"
@@ -289,15 +290,19 @@
 
   <app-payment-card
     [visible]="true"
-    [showHeader]="false"          
+    [showHeader]="false"
     [loading]="payLoading"
     [amount]="total_ttc"
+    [currency]="currency"
     [clientSecret]="clientSecret"
+    [orderId]="orderId"
+    [metadata]="paymentMetadata"
     (success)="onPaymentSuccess($event)"
     (fail)="onPaymentFail($event)"
     (cancel)="onPaymentCancel()">
   </app-payment-card>
 </p-dialog>
+
 
 
 <!-- Dialog Bénéficiaire -->

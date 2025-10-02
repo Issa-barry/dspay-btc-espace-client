@@ -138,30 +138,40 @@ export class PaymentCardComponent implements AfterViewInit, OnDestroy, OnChanges
   }
 
   // ─────────── PaymentIntent (création si nécessaire) ───────────
+  
   private async getOrCreateClientSecret(): Promise<string> {
-    if (this.clientSecret) return this.clientSecret;
+  if (this.clientSecret) return this.clientSecret;
 
-    if (this.amount == null) {
-      throw new Error('Montant manquant.');
-    }
-    const amountInCents = Math.round(this.amount * 100); // entier
-
-    const payload = {
-      amount: amountInCents,
-      currency: this.currency || 'eur',
-      order_id: this.orderId,
-      metadata: this.metadata || {},
-      dev: !environment.production,
-    };
-
-    const res = await firstValueFrom(this.pay.createPaymentIntent(payload));
-    // Attendu côté back: { success: boolean, message: string, data: { clientSecret, id, status } }
-    if (!res?.success || !res?.data?.clientSecret) {
-      throw new Error(res?.message || 'Impossible de créer le paiement.');
-    }
-    this.clientSecret = res.data.clientSecret;
-    return this.clientSecret;
+  if (this.amount == null) {
+    throw new Error('Montant manquant.');
   }
+  const amountInCents = Math.round(this.amount * 100);
+
+  const payload = {
+    amount: amountInCents,
+    currency: this.currency || 'eur',
+    order_id: this.orderId,
+    metadata: this.metadata || {},
+    dev: !environment.production,
+  };
+
+  const res = await firstValueFrom(this.pay.createPaymentIntent(payload));
+
+  // --- Vérification mode cohérent ---
+  const frontIsLive = environment.stripePublicKey?.startsWith('pk_live_');
+  const backIsLive  = !!res?.data?.livemode || res?.data?.server_mode === 'live';
+  if (frontIsLive !== backIsLive) {
+    throw new Error('Configuration incohérente : clés Stripe front et back ne sont pas dans le même mode.');
+  }
+  // ---------------------------------
+
+  if (!res?.success || !res?.data?.clientSecret) {
+    throw new Error(res?.message || 'Impossible de créer le paiement.');
+  }
+
+  this.clientSecret = res.data.clientSecret;
+  return this.clientSecret;
+}
 
   // ─────────── Soumission paiement ───────────
   async onSubmit() {
