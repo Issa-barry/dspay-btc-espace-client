@@ -9,6 +9,27 @@ import {
 } from '@stripe/stripe-js';
 import { environment } from 'src/environements/environment.dev';
 
+export interface CheckoutSessionPayload {
+  amount: number;                  // en centimes
+  currency?: 'eur' | 'usd';
+  success_url: string;
+  cancel_url: string;
+  customer_email?: string | null;
+  order_id?: string | null;
+  metadata?: Record<string, any>;
+}
+
+export interface ApiResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
+}
+
+export interface CheckoutData {
+  id: string;
+  url: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class PaiementService {
   // Sécurise l'URL (enlève un éventuel / final)
@@ -54,5 +75,13 @@ export class PaiementService {
       },
     });
     // 3DS est géré automatiquement par confirmCardPayment
+  }
+
+
+  createCheckoutSession(payload: CheckoutSessionPayload) {
+    return this.http.post<{ id: string; url: string }>(
+      `${this.apiUrl}/payments/stripe/checkout-session`,
+      payload
+    );
   }
 }

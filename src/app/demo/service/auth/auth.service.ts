@@ -169,7 +169,7 @@ export class AuthService {
       .pipe(
         map((res) => res.data as Contact),
         catchError(this.handleError)
-      );
+      ); 
   }
 
   isAuthenticated(): boolean { return this.tokenService.hasToken(); }
