@@ -252,23 +252,11 @@
             pRipple
             class="w-full md:w-auto"
             label="Simuler paiement"
-            class="p-button-info"
             icon="pi pi-check"
             iconPos="right"
             [loading]="loading"
-            (click)="save()">
-          </button>
-
-          <button
-            right
-            type="button"
-            pButton
-            pRipple
-            class="w-full md:w-auto"
-            label="Confirmer et payer"
-            icon="pi pi-check"
-            iconPos="right"
-            (click)="openPayement()">
+            (click)="payWithStripeCheckout()"
+            >
           </button>
         </ui-step-actions>
       </div>
@@ -288,21 +276,7 @@
 >
   <ng-template pTemplate="header">Paiement par carte</ng-template>
 
-  <app-payment-card
-    [visible]="true"
-    [showHeader]="false"
-    [loading]="payLoading"
-    [amount]="total_ttc"
-    [currency]="currency"
-    [clientSecret]="clientSecret"
-    [orderId]="orderId"
-    [metadata]="paymentMetadata"
-    (success)="onPaymentSuccess($event)"
-    (fail)="onPaymentFail($event)"
-    (cancel)="onPaymentCancel()">
-  </app-payment-card>
-</p-dialog>
-
+ 
 
 
 <!-- Dialog Bénéficiaire -->

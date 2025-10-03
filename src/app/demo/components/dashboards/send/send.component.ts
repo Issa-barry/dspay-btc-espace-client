@@ -6,6 +6,7 @@ import { finalize, Subject, takeUntil } from 'rxjs';
 import { Beneficiaire } from 'src/app/demo/models/beneficiaire';
 import { Transfert, TransfertCreateDto } from 'src/app/demo/models/transfert';
 import { BeneficiaireService } from 'src/app/demo/service/beneficiaire/beneficiaire.service';
+import { PaiementService } from 'src/app/demo/service/paiement/paiement.service';
 import { TransfertService } from 'src/app/demo/service/transfert/transfert.service';
 
 type ModeReception = 'orange_money' | 'ewallet' | 'retrait_cash';
@@ -28,7 +29,11 @@ export class SendComponent implements OnInit, OnDestroy {
   private readonly MAX_EUR = 1000;
   private readonly FRAIS_RATE = 0.05;
 
-  // Montants & taux
+  // utilisateur
+  currentUserEmail?: string | null = null;
+
+  // Montants & devises
+  currency: 'eur' | 'usd' = 'eur';
   montantEuro = 0;
   montantGNF = 0;
   tauxConversion = 10700;
@@ -59,13 +64,12 @@ export class SendComponent implements OnInit, OnDestroy {
   items: MenuItem[] = [];
   activeIndex = 0;
 
-  // Paiement → données passées à l’enfant
+  // Paiement (héritage, si tu gardes Elements plus tard)
   payementDialog = false;
   payLoading = false;
-  clientSecret = '';                          // laissé vide : l’enfant crée le PI
-  orderId = '';                               // idempotence Stripe
-  paymentMetadata: Record<string, any> = {};  // metadata pour le webhook
-  currency: 'eur' | 'usd' = 'eur';
+  clientSecret = '';
+  orderId = '';
+  paymentMetadata: Record<string, any> = {};
 
   constructor(
     private readonly router: Router,
@@ -73,17 +77,123 @@ export class SendComponent implements OnInit, OnDestroy {
     private readonly beneficiaireService: BeneficiaireService,
     private readonly transfertService: TransfertService,
     private readonly messageService: MessageService,
-    private readonly confirmationService: ConfirmationService
+    private readonly confirmationService: ConfirmationService,
+    private readonly paiementService: PaiementService,
   ) {}
 
   ngOnInit(): void {
     this.loadBeneficiaires();
     this.prefillFromQuery();
+    this.handleStripeReturn();
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  // ───────── Gestion retour Stripe (success / cancel) ─────────
+  private handleStripeReturn(): void {
+    const qp = this.route.snapshot.queryParamMap;
+    const sessionId = qp.get('session_id');
+    const canceled  = qp.get('canceled');
+
+    if (sessionId) {
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Paiement',
+        detail: 'Paiement confirmé. Traitement en cours…',
+        life: 3500,
+      });
+    } else if (canceled === '1') {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Paiement annulé',
+        detail: 'Vous avez quitté la page Stripe.',
+        life: 3500,
+      });
+    }
+  }
+
+  // ───────── Clique sur "Payer" → Checkout Stripe ─────────
+  payWithStripeCheckout(): void {
+    this.submitted = true;
+
+    if (!this.isMontantValide) {
+      this.messageService.add({ severity: 'warn', summary: 'Montant', detail: `Montant invalide (1 à ${this.MAX_EUR} €).` });
+      return;
+    }
+    if (!this.isBeneficiaireValide) {
+      this.messageService.add({ severity: 'warn', summary: 'Bénéficiaire', detail: 'Veuillez sélectionner un bénéficiaire.' });
+      return;
+    }
+
+    // Calcule total & centimes
+    this.majFraisTotal_ttc();
+    const totalTtc = Math.max(0, Number(this.total_ttc) || 0);
+    const amountCents = Math.round(totalTtc * 100);
+    if (!Number.isFinite(amountCents) || amountCents < 50) {
+      this.messageService.add({ severity: 'warn', summary: 'Montant', detail: 'Minimum 0,50 €.', life: 3500 });
+      return;
+    }
+
+    // Metadata pour le webhook
+    this.paymentMetadata = {
+      beneficiaire_id: this.selectedBeneficiaireId!,
+      taux_echange_id: this.selectedTauxId,
+      montant_envoie: Number(this.montantEuro.toFixed(2)),
+      mode_reception: this.selectedModeReception,
+      frais_eur: Number(this.frais.toFixed(2)),
+      total_ttc: Number(this.total_ttc.toFixed(2)),
+    };
+
+    // Idempotence
+    this.orderId = `trf_${this.selectedBeneficiaireId}_${Date.now()}`;
+
+    // URLs absolues
+    const base = window.location.origin;
+    const successUrl = `${base}/dashboard/success`;
+    const cancelUrl  = `${base}/dashboard/send?canceled=1`;
+
+    this.loading = true;
+    this.paiementService.createCheckoutSession({
+      amount: amountCents,
+      currency: this.currency,
+      success_url: successUrl,
+      cancel_url: cancelUrl,
+      customer_email: (this.currentUserEmail && /\S+@\S+\.\S+/.test(this.currentUserEmail)) ? this.currentUserEmail : null,
+      order_id: this.orderId,
+      metadata: this.paymentMetadata,
+    })
+    .pipe(finalize(() => (this.loading = false)), takeUntil(this.destroy$))
+    .subscribe({
+      next: (res: any) => {
+        const url = res?.data?.url ?? res?.url;
+        if (url) {
+          window.location.assign(url);
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Stripe',
+            detail: res?.message || 'Réponse inattendue du serveur (url manquante).',
+            life: 4000,
+          });
+        }
+      },
+      error: (err) => {
+        console.log('Erreur création session Stripe', err);
+        
+        const valErrs = err?.error?.data?.errors;
+        const apiMsg  = err?.error?.message || err?.message;
+
+        if (valErrs) {
+          const first = (Object.values(valErrs).flat().find(Boolean) as string | undefined) ?? 'Erreur de validation.';
+          this.messageService.add({ severity: 'warn', summary: 'Validation', detail: first });
+        } else {
+          this.messageService.add({ severity: 'error', summary: 'Stripe', detail: apiMsg || 'Échec de création de la session.', life: 4000 });
+        }
+      },
+    });
   }
 
   // ───────── Pré-remplissage ─────────
@@ -168,7 +278,7 @@ export class SendComponent implements OnInit, OnDestroy {
 
   // ───────── Montants / frais ─────────
   majFraisTotal_ttc(): void {
-    const eur = Math.max(0, +this.montantEuro || 0);
+    const eur = Math.max(0, Number(this.montantEuro) || 0);
     this.frais = this.round2(eur * this.FRAIS_RATE);
     const totalEur = this.includeFrais ? (eur + this.frais) : eur;
     this.total_ttc = this.round2(totalEur);
@@ -240,7 +350,7 @@ export class SendComponent implements OnInit, OnDestroy {
       });
   }
 
-  // ───────── Simulation création Transfert (sans paiement) ─────────
+  // ───────── Simulation Transfert (sans paiement) ─────────
   save(): void {
     this.submitted = true;
     this.errors = {};
@@ -289,7 +399,7 @@ export class SendComponent implements OnInit, OnDestroy {
       });
   }
 
-  // ───────── Paiement (PI + 3DS gérés par l’enfant) ─────────
+  // ───────── Ancien flux Elements (conservé si besoin) ─────────
   openPayement() {
     if (!this.isMontantValide) {
       this.messageService.add({ severity: 'warn', summary: 'Montant', detail: `Montant invalide (1 à ${this.MAX_EUR} €).` });
@@ -299,49 +409,40 @@ export class SendComponent implements OnInit, OnDestroy {
       this.messageService.add({ severity: 'warn', summary: 'Bénéficiaire', detail: 'Veuillez sélectionner un bénéficiaire.' });
       return;
     }
-
     this.majFraisTotal_ttc();
     if (Math.round((this.total_ttc || 0) * 100) < 50) {
       this.messageService.add({ severity: 'warn', summary: 'Montant', detail: 'Minimum 0,50 €.' });
       return;
     }
 
-    // Metadata pour le webhook (création du Transfert côté back)
     this.paymentMetadata = {
       beneficiaire_id: this.selectedBeneficiaireId!,
       taux_echange_id: this.selectedTauxId,
-      montant_envoie: this.round2(this.montantEuro), // EUR (decimal)
+      montant_envoie: this.round2(this.montantEuro),
       mode_reception: this.selectedModeReception,
       frais_eur: this.frais,
       total_ttc: this.total_ttc,
     };
 
-    // Idempotence / rapprochement
     this.orderId = `trf_${this.selectedBeneficiaireId}_${Date.now()}`;
-
-    // L’enfant crée/récupère le client_secret et confirme
     this.clientSecret = '';
     this.payementDialog = true;
   }
 
   onPaymentCancel() { this.payementDialog = false; }
-
   onPaymentSuccess(e: { paymentIntentId: string }) {
     this.payementDialog = false;
     this.messageService.add({ severity: 'success', summary: 'Paiement', detail: 'Paiement confirmé ✅', life: 3000 });
-    // Le webhook termine : création Transfert + Facture + Mail.
   }
-
   onPaymentFail(e: { message: string }) {
     this.messageService.add({ severity: 'error', summary: 'Paiement', detail: e?.message || 'Paiement refusé', life: 4000 });
   }
 
   public hideDialog(): void {
-  this.envoieDialog = false;
-  this.ticketDialog = false;
-  this.payementDialog = false;
-  this.beneficiaireDialog = false; // ← ferme aussi celui du bénéficiaire
-  this.submitted = false;
-}
-
+    this.envoieDialog = false;
+    this.ticketDialog = false;
+    this.payementDialog = false;
+    this.beneficiaireDialog = false;
+    this.submitted = false;
+  }
 }

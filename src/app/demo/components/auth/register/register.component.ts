@@ -256,7 +256,7 @@ export class RegisterComponent implements OnInit {
           });
           this.showSuccess = true;
           this.router.navigate(['/auth/registersuccess']);
-        },
+        }, 
         error: (err) => {
           // On fusionne les erreurs API dans ton modèle d’erreurs
            this.errors = err?.error?.data ?? {};
