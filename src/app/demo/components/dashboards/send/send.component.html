@@ -1,6 +1,13 @@
 <div class="card">
   <p-toast></p-toast>
 
+  <!-- template de chargement réutilisable -->
+  <ng-template #loadingTpl>
+    <div class="surface-100 border-round-md flex justify-content-center align-items-center py-3">
+      <p-progressSpinner styleClass="w-2rem h-2rem"></p-progressSpinner>
+    </div>
+  </ng-template>
+
   <!-- Étapes -->
   <ng-container [ngSwitch]="activeIndex">
 
@@ -9,20 +16,20 @@
       <div class="col-12 md:col-8">
         <div class="grid formgrid p-fluid">
           <div class="field mb-4 col-12 md:col-6">
-            <label for="amountEur" class="font-medium text-900">Vous envoyez</label>
+            <label for="amountEur" class="font-medium text-900">Vous envoyez?</label>
             <div class="p-inputgroup">
-                       <p-inputNumber
-                          inputId="amountEur"
-                          [(ngModel)]="montantEuro"
-                          mode="currency"
-                          currency="EUR"
-                          locale="fr-FR"
-                          [minFractionDigits]="0"
-                          [maxFractionDigits]="2"
-                          [max]="1000"
-                          (onInput)="convertirDepuisEuro()">
-                        </p-inputNumber>
-                  <span class="p-inputgroup-addon text-700">EUR</span>
+              <p-inputNumber
+                inputId="amountEur"
+                [(ngModel)]="montantEuro"
+                mode="currency"
+                currency="EUR"
+                locale="fr-FR"
+                [minFractionDigits]="0"
+                [maxFractionDigits]="2"
+                [max]="1000"
+                (onInput)="convertirDepuisEuro()">
+              </p-inputNumber>
+              <span class="p-inputgroup-addon text-700">EUR</span>
             </div>
             <small class="p-error" *ngIf="errors['montantEuro']">{{ errors['montantEuro'] }}</small>
           </div>
@@ -30,7 +37,7 @@
           <div class="field mb-4 col-12 md:col-6">
             <label for="amountGnf" class="font-medium text-900">Montant reçu</label>
             <div class="p-inputgroup">
-               <p-inputNumber
+              <p-inputNumber
                 inputId="amountGnf"
                 [(ngModel)]="montantGNF"
                 mode="currency"
@@ -40,8 +47,8 @@
                 [minFractionDigits]="0"
                 [maxFractionDigits]="0"
                 (onInput)="convertirDepuisGNF()">
-            </p-inputNumber>
-             <span class="p-inputgroup-addon text-700">GNF</span>
+              </p-inputNumber>
+              <span class="p-inputgroup-addon text-700">GNF</span>
             </div>
           </div>
 
@@ -71,7 +78,7 @@
             [(ngModel)]="selectedModeReception"
             [showClear]="false"
             placeholder="Choisir un mode"
-            appendTo="body"
+            [appendTo]="'body'"
             [autoZIndex]="true"
             [baseZIndex]="11000"
             styleClass="w-full">
@@ -87,7 +94,7 @@
                 </i>
                 <span>{{ opt.label }}</span>
               </div>
-            </ng-template> 
+            </ng-template>
 
             <ng-template pTemplate="selectedItem" let-opt>
               <div class="flex align-items-center gap-2">
@@ -129,7 +136,7 @@
               [showClear]="false"
               placeholder="Sélectionnez un bénéficiaire"
               styleClass="w-full"
-              appendTo="body"
+              [appendTo]="'body'"
               [autoZIndex]="true"
               [baseZIndex]="11000"
               [emptyMessage]="'Aucun bénéficiaire'"
@@ -172,12 +179,6 @@
                 </div>
               </ng-template>
             </p-dropdown>
-
-            <ng-template #loadingTpl>
-              <div class="surface-100 border-round-md flex justify-content-center align-items-center py-3">
-                <p-progressSpinner styleClass="w-2rem h-2rem"></p-progressSpinner>
-              </div>
-            </ng-template>
           </div>
 
           <small class="p-error" *ngIf="errors['beneficiaire']">{{ errors['beneficiaire'] }}</small>
@@ -251,12 +252,11 @@
             pButton
             pRipple
             class="w-full md:w-auto"
-            label="Simuler paiement"
-            icon="pi pi-check"
+            label="Confirmer et  Payer"
+            icon="pi pi-credit-card"
             iconPos="right"
             [loading]="loading"
-            (click)="payWithStripeCheckout()"
-            >
+            (click)="payWithStripeCheckout()">
           </button>
         </ui-step-actions>
       </div>
@@ -265,27 +265,44 @@
   </ng-container>
 </div>
 
-<!-- Dialog paiement -->
-<!-- Dialog paiement -->
+<!-- ╭────────────────────────────────────────────────────────────╮
+     │ Dialog Paiement (fermé correctement, pas d'imbrication)   │
+     ╰────────────────────────────────────────────────────────────╯ -->
 <p-dialog
   [(visible)]="payementDialog"
   [modal]="true"
   [closable]="false"
   [style]="{ width: '420px' }"
   [dismissableMask]="true"
->
+  [appendTo]="'body'"
+  [autoZIndex]="true"
+  [baseZIndex]="11000">
+
   <ng-template pTemplate="header">Paiement par carte</ng-template>
 
- 
+  <div class="p-3">
+    <!-- Place ton Stripe Elements / message ici si besoin -->
+    <p class="m-0 text-600">Veuillez finaliser votre paiement sur la page Stripe.</p>
+  </div>
 
+  <ng-template pTemplate="footer">
+    <button pButton class="p-button-text" label="Fermer" icon="pi pi-times" (click)="payementDialog=false"></button>
+  </ng-template>
+</p-dialog>
 
-<!-- Dialog Bénéficiaire -->
+<!-- ╭────────────────────────────────────────────────────────────╮
+     │ Dialog Bénéficiaire (frère du précédent, fonctionne)      │
+     ╰────────────────────────────────────────────────────────────╯ -->
 <p-dialog
   [(visible)]="beneficiaireDialog"
   [style]="{ width: '450px' }"
   header="Détails du Bénéficiaire"
   [modal]="true"
-  class="p-fluid">
+  class="p-fluid"
+  [appendTo]="'body'"
+  [autoZIndex]="true"
+  [baseZIndex]="11000"
+  (onHide)="submitted=false">
 
   <ng-template pTemplate="content">
     <div class="field">

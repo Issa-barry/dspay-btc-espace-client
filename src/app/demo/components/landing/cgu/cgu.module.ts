@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { CguRoutingModule } from './cgu-routing.module';
 import { CguComponent } from './cgu.component';
+import { ButtonModule } from 'primeng/button';
 
 
 @NgModule({
@@ -11,7 +12,8 @@ import { CguComponent } from './cgu.component';
   ],
   imports: [
     CommonModule,
-    CguRoutingModule
+    CguRoutingModule,
+    ButtonModule
   ]
 })
 export class CguModule { }

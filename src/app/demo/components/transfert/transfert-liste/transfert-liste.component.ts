@@ -41,7 +41,7 @@ export class TransfertListeComponent implements OnInit {
       next: (response) => {
         this.transferts = response;
         this.loading = false;
-        // console.log(this.transferts);
+        // console.log(this.transferts); 
         
       },
       error: (err) => {

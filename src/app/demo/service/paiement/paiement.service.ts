@@ -19,6 +19,18 @@ export interface CheckoutSessionPayload {
   metadata?: Record<string, any>;
 }
 
+export interface CheckoutLookup {
+  session_id: string;
+  status: 'pending'|'processing'|'succeeded'|'failed'|'canceled'|string;
+  amount: number;            // centimes
+  currency: string;
+  processed_at?: string | null;
+  metadata: any;
+  transfert_id?: number | null;
+  transfert?: any | null;
+}
+
+
 export interface ApiResponse<T> {
   success: boolean;
   message: string;
@@ -84,4 +96,10 @@ export class PaiementService {
       payload
     );
   }
+
+  getCheckoutStatus(sessionId: string) {
+  return this.http.get<ApiResponse<CheckoutLookup>>(
+    `${this.apiUrl}/payments/stripe/checkout-session/${sessionId}`
+  );
+}
 }
