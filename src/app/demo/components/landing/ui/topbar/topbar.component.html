@@ -28,40 +28,27 @@
       </a>
     </li>
 
-    <li class="flex align-items-center">
-      <ng-container *ngIf="!isLoggedIn; else dashboardLink">
-        <!-- Plein / Primary -->
-        <button
-          pButton
-          type="button"
-          label="Créer un compte"
-          class="btn-primary white-space-nowrap"
-          (click)="goToRegister()">
-        </button>
+   <li class="flex align-items-center">
+  <ng-container *ngIf="!isLoggedIn; else desktopDashboardTmpl">
+    <button pButton type="button" label="Créer un compte" class="btn-primary white-space-nowrap" (click)="goToRegister()"></button>
+    <button pButton type="button" label="Me connecter" class="btn-outline-primary white-space-nowrap md:ml-3" (click)="goToLogin()"></button>
+  </ng-container>
 
-        <!-- Outline / Primary -->
-        <button
-          pButton
-          type="button"
-          label="Me connecter"
-          class="btn-outline-primary white-space-nowrap md:ml-3"
-          (click)="goToLogin()">
-        </button>
-      </ng-container>
+  <ng-template #desktopDashboardTmpl>
+    <button
+      pButton
+      type="button"
+      label="Mon compte"
+      class="btn-primary white-space-nowrap"
+      [routerLink]="['/dashboard']"
+      routerLinkActive="router-link-active">
+    </button>
+  </ng-template>
+</li>
 
-      <ng-template #dashboardLink>
-        <button
-          pButton
-          type="button"
-          label="Mon compte"
-          class="btn-primary white-space-nowrap">
-        </button>
-      </ng-template>
-    </li>
   </ul>
 </div>
 
-<!-- SIDEBAR MOBILE (plein écran) -->
 <!-- SIDEBAR MOBILE (plein écran + slide from right) -->
 <p-sidebar
   [(visible)]="mobileMenu"
@@ -84,10 +71,24 @@
   </div>
 
   <!-- CTA -->
+  <!-- CTA -->
+<div class="px-3 py-4" *ngIf="!isLoggedIn; else mobileDashboardTmpl">
+  <button pButton label="Créer un compte" class="w-full btn-pill-primary mb-3" (click)="goToRegister(); mobileMenu=false"></button>
+  <button pButton label="Me connecter" class="w-full btn-pill-outline" (click)="goToLogin(); mobileMenu=false"></button>
+</div>
+
+<ng-template #mobileDashboardTmpl>
   <div class="px-3 py-4">
-    <button pButton label="Créer un compte" class="w-full btn-pill-primary mb-3" (click)="goToRegister()"></button>
-    <button pButton label="Me connecter" class="w-full btn-pill-outline" (click)="goToLogin()"></button>
+    <button
+      pButton
+      label="Mon compte"
+      class="w-full btn-pill-outline"
+      [routerLink]="['/dashboard']"
+      (click)="mobileMenu=false">
+    </button>
   </div>
+</ng-template>
+
 
   <!-- Liens -->
   <nav class="px-3 flex flex-column">
