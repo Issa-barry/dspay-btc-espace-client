@@ -3,7 +3,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/demo/service/auth/auth.service';
 import { LayoutService } from 'src/app/layout/service/app.layout.service';
 
-@Component({ templateUrl: './login.component.html' })
+@Component({ 
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.scss',
+}) 
 export class LoginComponent implements OnInit {
   email = '';
   password = '';

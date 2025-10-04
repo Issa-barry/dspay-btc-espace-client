@@ -15,11 +15,11 @@
         <div class="flex flex-column">
             <span class="p-input-icon-left w-full mb-4">
                 <i class="pi pi-envelope"></i>
-                <input id="email" type="text" [(ngModel)]="email" pInputText class="w-full md:w-25rem" placeholder="Email">
+                <input id="email" type="text" [(ngModel)]="email" pInputText class="w-full md:w-25rem placeholder-asterisk" placeholder="Email *" required>
             </span>
             <span class="p-input-icon-left w-full mb-4"> 
                 <i class="pi pi-lock"></i>
-                <input id="password" type="password" [(ngModel)]="password" pInputText class="w-full md:w-25rem" placeholder="Mot de passe">
+                <input id="password" type="password" [(ngModel)]="password" pInputText class="w-full md:w-25rem placeholder-asterisk" placeholder="Mot de passe *">
             </span>
             <!-- <div class="mb-4 flex flex-wrap gap-3">
                 <div>
