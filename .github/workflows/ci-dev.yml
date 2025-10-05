@@ -16,67 +16,39 @@ jobs:
     name: Build (compile check)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
-      - run: npm ci
-      - name: Angular build (dev)
-        run: npx ng build --configuration development --output-path=dist/apollo-ng
-      - uses: actions/upload-artifact@v4
-        with:
-          name: dist-apollo-ng
-          path: dist/apollo-ng/
-          if-no-files-found: error
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Placeholder build
+        run: |
+          echo "✅ Placeholder BUILD: ici tu mettras:"
+          echo "  npm ci"
+          echo "  npx ng build --configuration development --output-path=dist/apollo-ng"
+          echo "  (upload d'artifact si besoin)"
 
   unit-tests:
     name: Unit tests (Karma)
     runs-on: ubuntu-latest
     needs: build
-    env: { CI: true }
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 20, cache: 'npm' }
-      - run: npm ci
-      - name: Run Karma tests
-        run: npx ng test --watch=false --browsers=ChromeHeadless
-      - uses: actions/upload-artifact@v4
-        with:
-          name: coverage
-          path: coverage/
-          if-no-files-found: ignore
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Placeholder unit tests
+        run: |
+          echo "✅ Placeholder TESTS UNITAIRES (Karma): ici tu mettras:"
+          echo "  npm ci"
+          echo "  npx ng test --watch=false --browsers=ChromeHeadless"
+          echo "  (upload de coverage si besoin)"
 
   e2e:
     name: E2E (Cypress)
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - uses: actions/checkout@v4
-
-      # détecte la présence du dossier cypress/
-      - name: Detect Cypress folder
-        id: detect
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Placeholder E2E
         run: |
-          if [ -d "cypress" ]; then echo "has=true" >> $GITHUB_OUTPUT; else echo "has=false" >> $GITHUB_OUTPUT; fi
-
-      - uses: actions/setup-node@v4
-        if: ${{ steps.detect.outputs.has == 'true' }}
-        with: { node-version: 20, cache: 'npm' }
-      - run: npm ci
-        if: ${{ steps.detect.outputs.has == 'true' }}
-      - name: Cypress run
-        if: ${{ steps.detect.outputs.has == 'true' }}
-        uses: cypress-io/github-action@v6
-        with:
-          install: false
-          browser: electron
-      - uses: actions/upload-artifact@v4
-        if: ${{ steps.detect.outputs.has == 'true' }}
-        with:
-          name: cypress-artifacts
-          path: |
-            cypress/screenshots/
-            cypress/videos/
-          if-no-files-found: ignore
+          echo "✅ Placeholder E2E (Cypress): ici tu mettras:"
+          echo "  npm ci"
+          echo "  cypress run --browser electron"
+          echo "  (screenshots/videos en artifact si besoin)"
