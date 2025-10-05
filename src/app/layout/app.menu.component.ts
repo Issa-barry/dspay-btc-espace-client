@@ -31,7 +31,7 @@ export class AppMenuComponent implements OnInit {
                         routerLink: ['/dashboard/agence']
                     },
                     {
-                        label: "hostoriques",
+                        label: "Historiques",
                         icon: 'pi pi-fw pi-history',
                         routerLink: ['/dashboard/transfert/liste']
                     }

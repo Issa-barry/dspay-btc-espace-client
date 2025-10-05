@@ -1,0 +1,95 @@
+/* ===== Affichage conditionnel ===== */
+.show-desktop { display: none; }
+.show-mobile  { display: table-row; }
+@media (min-width: 768px) {
+  .show-desktop { display: table-row; }
+  .show-mobile  { display: none; }
+}
+
+/* ===== Typo pilotée par le thème ===== */
+:host {
+  font-family: var(--font-family);
+  --fs-base: .80rem;  /* mobile */
+  --fs-sm:   .65rem;
+  --fs-xs:   .58rem;
+}
+@media (min-width: 768px) {
+  :host {
+    --fs-base: .95rem; /* desktop */
+    --fs-sm:   .85rem;
+    --fs-xs:   .78rem;
+  }
+}
+
+/* ===== DataTable: tailles et largeur ===== */
+:host ::ng-deep .p-datatable { font-size: var(--fs-base); width:100%; }
+:host ::ng-deep .p-datatable .p-datatable-thead > tr > th { font-size: var(--fs-sm); }
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr > td{ vertical-align: middle; }
+
+/* ===== Ligne mobile cliquable ===== */
+.tx-line{
+  display:flex; justify-content:space-between; align-items:center;
+  gap:.6rem; width:100%; padding:.7rem 0; border:0; background:transparent;
+  text-align:left; border-bottom:1px solid var(--surface-border); cursor:pointer;
+}
+.tx-line:hover{ background:color-mix(in srgb, var(--surface-100), transparent 90%); }
+
+.tx-left{ min-width:0; }
+.tx-name{
+  font-weight:600; font-size: var(--fs-base); color: var(--text-color);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.tx-date{
+  font-size: var(--fs-sm);
+  color: var(--text-color-secondary); opacity:.9; margin-top:.15rem;
+}
+.tx-right{
+  display:flex; flex-direction:column; align-items:flex-end; text-align:right;
+  gap:.2rem; font-size: var(--fs-base);
+}
+.tx-amount{ white-space:nowrap; color: var(--text-color); font-weight:700; }
+.tx-status :where(.p-tag){ font-size: var(--fs-xs); line-height:1rem; padding:.1rem .45rem; }
+
+/* ===== Paginator responsive ===== */
+:host ::ng-deep .p-paginator{ padding:.4rem; font-size: var(--fs-sm); width:100%; }
+
+@media (max-width: 767.98px) {
+  /* étendre et figer la table sur mobile */
+  :host ::ng-deep .p-datatable,
+  :host ::ng-deep .p-datatable .p-datatable-wrapper,
+  :host ::ng-deep .p-datatable .p-datatable-table { width:100% !important; }
+  :host ::ng-deep .p-datatable .p-datatable-table { table-layout: fixed; }
+  :host ::ng-deep .p-datatable .p-datatable-wrapper { overflow-x:hidden; }
+
+  .show-mobile > td { padding-left:0 !important; padding-right:0 !important; }
+  .tx-line { padding-left:1rem; padding-right:1rem; }
+
+  /* paginator qui se met à la ligne et se centre */
+  :host ::ng-deep .p-paginator{
+    display:flex; flex-wrap:wrap; justify-content:center; gap:.5rem .75rem;
+  }
+  :host ::ng-deep .p-paginator .p-paginator-current{ display:none !important; } /* cache "Liste x / y" */
+  :host ::ng-deep .p-paginator .p-paginator-rpp-options{
+    order:3; width:100%; display:flex; justify-content:center;
+  }
+  :host ::ng-deep .p-paginator .p-dropdown{ width:6rem; }
+
+  /* boutons compacts */
+  :host ::ng-deep .p-paginator .p-paginator-first,
+  :host ::ng-deep .p-paginator .p-paginator-prev,
+  :host ::ng-deep .p-paginator .p-paginator-next,
+  :host ::ng-deep .p-paginator .p-paginator-last,
+  :host ::ng-deep .p-paginator .p-paginator-pages .p-paginator-page{
+    height:2rem; min-width:2rem; padding:0 .5rem; font-size: var(--fs-sm);
+  }
+
+  /* ===== Badge (p-tag) encore plus petit en mobile ===== */
+  .tx-status :where(.p-tag){
+    font-size: .38rem;
+    line-height: .8rem;
+    padding: .05rem .35rem;
+    border-radius: .35rem;
+    min-height: unset;
+  }
+  .tx-status :where(.p-tag-icon){ font-size: .6em; margin-right: .25rem; }
+}

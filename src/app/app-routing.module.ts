@@ -37,6 +37,7 @@ const routes: Routes = [
     { path: 'auth', data: { breadcrumb: 'Auth' }, loadChildren: () => import('./demo/components/auth/auth.module').then(m => m.AuthModule) },
     { path: 'landing', loadChildren: () => import('./demo/components/landing/landing.module').then(m => m.LandingModule) },
     { path: 'notfound', loadChildren: () => import('./demo/components/notfound/notfound.module').then(m => m.NotfoundModule) },
+    { path: 'landing2', loadChildren: () => import('./demo/components/landing2/landing2.module').then(m => m.Landing2Module) },
     { path: '**', redirectTo: '/notfound' }
 ];
 

@@ -62,5 +62,31 @@ ng generate module demo/components/contact/contact-affecter-agence --route conta
 {{ transfert.montant_gnf | money:'GNF':'auto':false:'none':'fr-FR':'wide' }}
 
 → wide/normal/em/figure c'est pour espace de montant : donne 1 070 000 GNF (deux espaces insécables).
+
+test
  
-. 
+ dev
+# DEPLOIEMENT
+
+🚀 Nouveaux scripts disponibles
+
+Développement
+
+npm start
+
+
+Préprod
+
+npm run start:preprod
+npm run build:preprod
+
+
+Production
+
+npm run build
+
+
+Génération manuelle sitemap
+
+npm run generate:sitemap
+

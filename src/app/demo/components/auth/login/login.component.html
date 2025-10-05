@@ -8,18 +8,18 @@
 <div class="px-5 min-h-screen flex justify-content-center align-items-center">
     <div class="border-1 surface-border surface-card border-round py-7 px-4 md:px-7 z-1">
         <div class="mb-4 flex flex-column items-center">
-            <div class="text-900 text-xl text-center text-primary font-bold mb-3 cursor-pointer tracking-widest" [routerLink]="['/landing']">
-                <p>FELLO</p>
+            <div class="text-900 text-xl text-center text-primary font-bold mb-3 mr-3 cursor-pointer tracking-widest" [routerLink]="['/landing']">
+                <p>DSPAY</p>
             </div>
         </div> 
         <div class="flex flex-column">
             <span class="p-input-icon-left w-full mb-4">
                 <i class="pi pi-envelope"></i>
-                <input id="email" type="text" [(ngModel)]="email" pInputText class="w-full md:w-25rem" placeholder="Email">
+                <input id="email" type="text" [(ngModel)]="email" pInputText class="w-full md:w-25rem placeholder-asterisk" placeholder="Email *" required>
             </span>
             <span class="p-input-icon-left w-full mb-4"> 
                 <i class="pi pi-lock"></i>
-                <input id="password" type="password" [(ngModel)]="password" pInputText class="w-full md:w-25rem" placeholder="Mot de passe">
+                <input id="password" type="password" [(ngModel)]="password" pInputText class="w-full md:w-25rem placeholder-asterisk" placeholder="Mot de passe *">
             </span>
             <!-- <div class="mb-4 flex flex-wrap gap-3">
                 <div>
@@ -30,16 +30,16 @@
             </div> -->
              
             
-            <button pButton pRipple label="Me connecter" class="w-full" (click)="login()"></button>
+            <button pButton pRipple label="Me connecter" class="w-full" (click)="login()" [loading]="submited" [disabled]="!email || !password"></button>
             <div *ngIf="errorMessage" class="text-red-500 mt-3">{{ errorMessage }}</div>
             
-            <div class="mb-4 flex flex-wrap gap-3 mt-4">
+            <div class="mb-4 flex md:flex-row flex-column text-center  flex-wrap gap-3 mt-4">
                 <div>
-                    <!-- <a class="text-600 cursor-pointer hover:text-primary ml-auto mt-3 transition-duration-300" (click)="goToResetPassword()">
+                    <a class="text-600 cursor-pointer hover:text-primary md:ml-auto mt-3 transition-duration-300" (click)="goToRegister()">
                         Créer un compte
-                    </a> -->
+                    </a>
                 </div>
-                <a class="text-600 cursor-pointer hover:text-primary ml-auto transition-colors transition-duration-300" (click)="goToResetPassword()">Mot de passe oublié ?</a>
+                <a class="text-600 cursor-pointer hover:text-primary md:ml-auto transition-colors transition-duration-300" (click)="goToResetPassword()">Mot de passe oublié ?</a>
             </div>
         </div>
     </div>

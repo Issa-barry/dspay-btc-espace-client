@@ -55,7 +55,7 @@ export class AgenceListeComponent implements OnInit {
 
         this.weeks = [
             {
-                label: 'Ouverte',
+                label: 'Ouvert',
                 value: 0,
                 data: [
                     [65, 59, 80, 81, 56, 55, 40],

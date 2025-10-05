@@ -1,5 +1,5 @@
 <div class="card">
-  <div class="grid grid-nogutter step-container">
+   
 
     <!-- ÉTAPE 0 : Montant -->
     <div class="col-12 lg:col-6 h-full px-4 py-4 md:px-6" *ngIf="activeIndex === 0">
@@ -56,57 +56,66 @@
     </div>
 
     <!-- ÉTAPE 1 : Bénéficiaire -->
-    <div class="col-12 lg:col-6 h-full px-4 py-4 md:px-6" *ngIf="activeIndex === 1">
+    <div class="col-12 lg:col-10 h-full px-4 py-4 md:px-6" *ngIf="activeIndex === 1">
       <div class="grid formgrid">
         <div class="col-12 field mb-4">
           <label class="font-medium text-900">Bénéficiaire</label>
 
-          <p-dropdown
-            [options]="beneficiairesOptions"
-            optionValue="id"
-            optionLabel="label"
-            [(ngModel)]="selectedBeneficiaireId"
-            [filter]="true"
-            [showClear]="true"
-            placeholder="Sélectionnez un bénéficiaire"
-            styleClass="w-full"
-            appendTo="body"
-            [disabled]="loading"
-            [emptyMessage]="'Aucun bénéficiaire'"
-            [emptyFilterMessage]="'Aucun résultat'"
-            (onChange)="onBeneficiaireChange($event.value)"
-            [ngClass]="{'ng-invalid ng-dirty': (submitted && !selectedBeneficiaireId) || !isBeneficiaireValide || errors['beneficiaire'] }">
+          <!-- Spinner pendant le chargement -->
+          <div *ngIf="loading; else dropdownTpl" class="flex justify-content-center py-3">
+            <p-progressSpinner styleClass="w-2rem h-2rem"></p-progressSpinner>
+          </div>
 
-            <!-- item -->
-            <ng-template pTemplate="item" let-opt>
-              <div class="flex align-items-center justify-content-between w-full">
-                <span class="font-medium">{{ opt.label }}</span>
-                <span class="text-600 text-sm">{{ opt.phone | phoneFormat:'GN'}}</span>
-              </div>
-            </ng-template>
+          <!-- Dropdown une fois chargé -->
+          <ng-template #dropdownTpl>
+            <p-dropdown
+              [options]="beneficiairesOptions"
+              optionValue="id"
+              optionLabel="label"
+              [(ngModel)]="selectedBeneficiaireId"
+              [filter]="true"
+              [showClear]="true"
+              placeholder="Sélectionnez un bénéficiaire"
+              styleClass="w-full"
+              appendTo="body"
+              [autoZIndex]="true"
+              [baseZIndex]="11000"
+              [emptyMessage]="'Aucun bénéficiaire'"
+              [emptyFilterMessage]="'Aucun résultat'"
+              (onChange)="onBeneficiaireChange($event.value)"
+              [ngClass]="{'ng-invalid ng-dirty': (submitted && !selectedBeneficiaireId) || !isBeneficiaireValide || errors['beneficiaire'] }">
 
-            <!-- valeur sélectionnée -->
-            <ng-template pTemplate="selectedItem" let-opt>
-              <div class="flex align-items-center justify-content-between w-full">
-                <span class="font-medium">{{ opt?.label }}</span>
-                <span class="text-600 text-sm">{{ opt?.phone | phoneFormat:'GN'}}</span>
-              </div>
-            </ng-template>
+              <!-- item -->
+              <ng-template pTemplate="item" let-opt>
+                <div class="flex align-items-center justify-content-between w-full">
+                  <span class="font-medium">{{ opt.label }}</span>
+                  <span class="text-600 text-sm">{{ opt.phone | phoneFormat:'GN' }}</span>
+                </div>
+              </ng-template>
 
-            <!-- Footer du panneau : bouton Ajouter -->
-            <ng-template pTemplate="footer">
-              <div class="p-2 border-top-1 surface-border">
-                <button
-                  type="button"
-                  pButton
-                  class="w-full p-button-text"
-                  icon="pi pi-user-plus"
-                  label="Ajouter un bénéficiaire"
-                  (click)="onpenBeneficiaireDialog()">
-                </button>
-              </div>
-            </ng-template>
-          </p-dropdown>
+              <!-- valeur sélectionnée -->
+              <ng-template pTemplate="selectedItem" let-opt>
+                <div class="flex align-items-center justify-content-between w-full">
+                  <span class="font-medium">{{ opt?.label }}</span>
+                  <span class="text-600 text-sm">{{ opt?.phone | phoneFormat:'GN' }}</span>
+                </div>
+              </ng-template>
+
+              <!-- Footer du panneau : bouton Ajouter -->
+              <ng-template pTemplate="footer">
+                <div class="p-2 border-top-1 surface-border">
+                  <button
+                    type="button"
+                    pButton
+                    class="w-full p-button-text"
+                    icon="pi pi-user-plus"
+                    label="Ajouter un bénéficiaire"
+                    (click)="onpenBeneficiaireDialog()">
+                  </button>
+                </div>
+              </ng-template>
+            </p-dropdown>
+          </ng-template>
 
           <small *ngIf="errors['beneficiaire']">{{ errors['beneficiaire'] }}</small>
           <small *ngIf="submitted && !isBeneficiaireValide">Veuillez choisir un bénéficiaire.</small>
@@ -121,7 +130,7 @@
     </div>
 
     <!-- ÉTAPE 2 : RÉCAPITULATIF -->
-    <div class="col-12 lg:col-6 px-4 py-4 md:px-6" *ngIf="activeIndex === 2">
+    <div class="col-12 lg:col-10 px-4 py-4 md:px-6" *ngIf="activeIndex === 2">
       <div class="recap-card surface-card border-round-xl p-3 md:p-4 shadow-1">
 
         <div class="mb-3">
@@ -153,12 +162,12 @@
         <div class="grid align-items-center recap-row mt-3">
           <div class="col-8 md:col-6">
             <div class="flex align-items-center gap-2">
-              <span class="text-900 font-medium">Frais</span>
+              <span class="text-900 font-medium mb-2">Frais</span>
               <p-inputSwitch
-                styleClass="switch-sm"
                 [(ngModel)]="includeFrais"
                 (onChange)="majFraisTotal_ttc()"
-                [disabled]="!montantEuro">
+                [disabled]="!montantEuro"
+                styleClass="inputswitch-sm">
               </p-inputSwitch>
             </div>
           </div>
@@ -220,15 +229,14 @@
           </p-inputGroup>
         </div>
 
-       <div class="col-12 md:col-4 mb-3">
-  <p-inputGroup class="w-full">
-    <p-inputGroupAddon>
-      <i class="pi" style="line-height: 1.25; letter-spacing: .1rem;">CVC</i>
-    </p-inputGroupAddon>
-    <input type="text" pInputText />
-  </p-inputGroup>
-</div>
-
+        <div class="col-12 md:col-4 mb-3">
+          <p-inputGroup class="w-full">
+            <p-inputGroupAddon>
+              <i class="pi" style="line-height: 1.25; letter-spacing: .1rem;">CVC</i>
+            </p-inputGroupAddon>
+            <input type="text" pInputText />
+          </p-inputGroup>
+        </div>
       </div>
 
       <ng-template pTemplate="footer">
@@ -245,7 +253,7 @@
       [style]="{ width: '450px' }"
       header="Détails du Bénéficiaire"
       [modal]="true"
-      class="p-fluid">
+      class="p-fluid"> 
 
       <ng-template pTemplate="content">
         <div class="field">
@@ -279,4 +287,4 @@
       </ng-template>
     </p-dialog>
   </div>
-</div>
+ 

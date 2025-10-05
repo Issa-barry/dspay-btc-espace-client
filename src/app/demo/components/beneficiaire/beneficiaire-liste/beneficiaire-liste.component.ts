@@ -353,6 +353,13 @@ confirmDeleteBeneficiaire(): void {
   onGlobalFilter(table: Table, event: Event): void {
     table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
   }
+ 
+getInitials(fullName: string): string {
+  if (!fullName) return '?';
+  const p = fullName.trim().split(/\s+/);
+  return (p[0][0] + (p[p.length - 1]?.[0] || '')).toUpperCase();
+}
+
 
    onGotToNewBeneficiaire(): void {
     this.router.navigate(['/dashboard/beneficiaire/beneficiaire-new']);

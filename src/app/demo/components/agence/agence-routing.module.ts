@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AgenceListeComponent } from './agence-liste/agence-liste.component';
 
 const routes: Routes = [
-   { path: '', component: AgenceListeComponent }, 
+   { path: '', data: {breadcrumb: 'Agences'}, component: AgenceListeComponent }, 
    { path: 'new-agence', loadChildren: () => import('./agence-new/agence-new.module').then(m => m.AgenceNewModule) },
    { path: 'agence-liste', loadChildren: () => import('./agence-liste/agence-liste.module').then(m => m.AgenceListeModule) },
    { path: 'agence-edit/:id', loadChildren: () => import('./agence-edit/agence-edit.module').then(m => m.AgenceEditModule) },

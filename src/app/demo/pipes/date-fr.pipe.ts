@@ -7,40 +7,55 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class DateFrPipe implements PipeTransform {
   transform(
     value: string | Date | null | undefined,
-    format: 'full' | 'dateSansHeure' | 'moisEnLettre' = 'full'
+    format: 'full' | 'dateSansHeure' | 'moisEnLettre' = 'full',
+    avecHeure: boolean = false
   ): string {
     if (!value) return '';
     const date = new Date(value);
 
+    let result = '';
+
     switch (format) {
       case 'full':
-        // 1. date avec heure
-        return date.toLocaleString('fr-FR', {
+        // Date complète
+        result = date.toLocaleDateString('fr-FR', {
           weekday: 'long',
           year: 'numeric',
           month: 'long',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
+          day: 'numeric'
         });
+        break;
 
       case 'dateSansHeure':
-        // 2. date sans heure
-        return date.toLocaleDateString('fr-FR', {
+        // Date classique
+        result = date.toLocaleDateString('fr-FR', {
           year: 'numeric',
           month: 'long',
-          day: 'numeric', 
+          day: 'numeric'
         });
+        break;
 
       case 'moisEnLettre':
-        // 3. mois en fr, reste en nombre
+        // Jour + mois (en lettres courtes) + année
         const jour = date.getDate().toString().padStart(2, '0');
-        const mois = date.toLocaleString('fr-FR', { month: 'short' }); // ex: sep
+        const mois = date.toLocaleString('fr-FR', { month: 'short' }).replace('.', '');
         const annee = date.getFullYear();
-        return `${jour}/${mois}/${annee}`;
+        result = `${jour}/${mois}/${annee}`;
+        break;
 
       default:
-        return date.toLocaleDateString('fr-FR');
+        result = date.toLocaleDateString('fr-FR');
     }
+
+    // Si on demande d'ajouter l'heure
+    if (avecHeure) {
+      const heure = date.toLocaleTimeString('fr-FR', {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      result += ` à ${heure}`;
+    }
+
+    return result;
   }
 }

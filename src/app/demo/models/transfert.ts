@@ -35,10 +35,13 @@ export class Transfert {
   created_at?: string;
   updated_at?: string;
 
+   // Mode de réception (NEW)
+  mode_reception: 'orange_money' | 'ewallet' | 'retrait_cash' = 'retrait_cash';
+
   constructor(init?: Partial<Transfert>) {
     Object.assign(this, init);
   }
 }
 
 // (optionnel) DTO minimal pour l’envoi
-export type TransfertCreateDto = Pick<Transfert, 'beneficiaire_id' | 'taux_echange_id' | 'montant_envoie'>;
+export type TransfertCreateDto = Pick<Transfert, 'beneficiaire_id' | 'taux_echange_id' | 'montant_envoie' | 'mode_reception'>;

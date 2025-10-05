@@ -1,0 +1,89 @@
+:host ::ng-deep .p-dialog {
+  border-radius: 14px;
+}
+
+:host ::ng-deep .p-badge.p-badge-lg {
+  border-radius: 999px;
+}
+
+/* Input group de la carte */
+:host ::ng-deep .p-inputgroup {
+  display: flex;
+  flex-wrap: nowrap;
+  width: 100%;
+}
+
+:host ::ng-deep .p-inputgroup .p-inputmask,
+:host ::ng-deep .p-inputgroup .p-inputtext {
+  flex: 1 1 auto !important;
+  width: 100% !important;
+  min-width: 0 !important; /* évite les casses */
+}
+
+/* Addons fixes (icône, etc.) */
+:host ::ng-deep .p-inputgroup-addon {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  padding-left: .6rem;
+  padding-right: .6rem;
+}
+
+/* Pour un badge de marque compact si besoin */
+:host ::ng-deep .brand-addon {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+:host ::ng-deep .brand-text {
+  display: inline-block;
+  vertical-align: middle;
+  max-width: 90px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+:host ::ng-deep .p-badge.p-badge-lg { border-radius: 999px; }
+
+
+/* Sur mobiles : masquer le texte de la marque, garder juste l’icône */
+@media (max-width: 420px) {
+  :host ::ng-deep .brand-text {
+    display: none;
+  }
+  :host ::ng-deep .brand-addon {
+    max-width: 36px;
+    padding-right: .5rem;
+  }
+}
+
+
+/* déjà présent… */
+:host ::ng-deep .pay-compact > [class*="col-"] {
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+}
+
+/* encore plus serré sur mobile */
+@media (max-width: 640px) {
+  :host ::ng-deep .tighter-mobile {
+    gap: .15rem 0; /* réduit l'écart entre les blocs (si supporté) */
+  }
+
+  :host ::ng-deep .tighter-mobile > [class*="col-"] {
+    padding-top: .10rem !important;   /* ↓ encore */
+    padding-bottom: .10rem !important;
+  }
+
+  :host ::ng-deep .tighter-mobile label {
+    margin-bottom: .15rem !important; /* label + proche du champ */
+  }
+
+  /* compacter légèrement la hauteur des champs */
+  :host ::ng-deep .tighter-mobile .p-inputtext,
+  :host ::ng-deep .tighter-mobile .p-inputmask {
+    padding-top: .55rem !important;
+    padding-bottom: .55rem !important;
+  }
+}
+
+ 

@@ -1,0 +1,101 @@
+<!-- HEADER -->
+<div class="flex align-items-center justify-content-between relative lg:static py-6 px-4 mx-0 md:px-7 lg:px-8 lg:py-6 lg:mx-8">
+
+  <!-- Logo -->
+  <a class="cursor-pointer" (click)="router.navigate(['/landing'])">
+    <img src="assets/demo/images/blocks/logos/Logo_bolt_normal.svg" alt="DSPAY" class="app-logo-normal" />
+  </a>
+
+  <!-- Hamburger (mobile) -->
+  <a pRipple class="cursor-pointer block md:hidden text-primary" (click)="mobileMenu = true">
+    <i class="pi pi-bars text-4xl"></i>
+  </a>
+
+  <!-- Menu desktop -->
+  <ul class="list-none p-0 m-0 hidden md:flex align-items-center justify-content-end gap-3 md:gap-4 w-auto">
+
+    <li>
+      <a (click)="router.navigate(['/landing'], {fragment: 'home'})"
+         class="flex px-0 py-3 text-900 font-medium line-height-3 cursor-pointer">
+        <span>Accueil</span>
+      </a>
+    </li>
+
+    <li>
+      <a (click)="router.navigate(['/landing'], {fragment: 'services'})"
+         class="flex px-0 py-3 text-900 font-medium line-height-3 cursor-pointer">
+        <span>Services</span>
+      </a>
+    </li>
+
+   <li class="flex align-items-center">
+  <ng-container *ngIf="!isLoggedIn; else desktopDashboardTmpl">
+    <button pButton type="button" label="Créer un compte" class="btn-primary white-space-nowrap" (click)="goToRegister()"></button>
+    <button pButton type="button" label="Me connecter" class="btn-outline-primary white-space-nowrap md:ml-3" (click)="goToLogin()"></button>
+  </ng-container>
+
+  <ng-template #desktopDashboardTmpl>
+    <button
+      pButton
+      type="button"
+      label="Mon compte"
+      class="btn-primary white-space-nowrap"
+      [routerLink]="['/dashboard']"
+      routerLinkActive="router-link-active">
+    </button>
+  </ng-template>
+</li>
+
+  </ul>
+</div>
+
+<!-- SIDEBAR MOBILE (plein écran + slide from right) -->
+<p-sidebar
+  [(visible)]="mobileMenu"
+  position="right"
+  [fullScreen]="true"
+  [modal]="true"
+  [dismissible]="true"
+  [blockScroll]="true"
+  [showCloseIcon]="false"
+  [baseZIndex]="11000"
+  [transitionOptions]="'.35s cubic-bezier(0.22, 1, 0.36, 1)'"
+  styleClass="mobile-menu">
+
+  <!-- Header logo + close -->
+  <div class="flex align-items-center justify-content-between px-3 py-2 border-bottom-1 surface-border">
+    <img src="assets/demo/images/blocks/logos/Logo_bolt_normal.svg" alt="DSPAY" style="height:34px;">
+    <button pButton class="p-button-text p-button-rounded p-1" (click)="mobileMenu = false" aria-label="Fermer">
+      <i class="pi pi-times text-2xl"></i>
+    </button>
+  </div>
+
+  <!-- CTA -->
+  <!-- CTA -->
+<div class="px-3 py-4" *ngIf="!isLoggedIn; else mobileDashboardTmpl">
+  <button pButton label="Créer un compte" class="w-full btn-pill-primary mb-3" (click)="goToRegister(); mobileMenu=false"></button>
+  <button pButton label="Me connecter" class="w-full btn-pill-outline" (click)="goToLogin(); mobileMenu=false"></button>
+</div>
+
+<ng-template #mobileDashboardTmpl>
+  <div class="px-3 py-4">
+    <button
+      pButton
+      label="Mon compte"
+      class="w-full btn-pill-outline"
+      [routerLink]="['/dashboard']"
+      (click)="mobileMenu=false">
+    </button>
+  </div>
+</ng-template>
+
+
+  <!-- Liens -->
+  <nav class="px-3 flex flex-column">
+    <a class="menu-link mb-2" (click)="router.navigate(['/landing'], {fragment:'home'}); mobileMenu=false">Accueil</a>
+    <a class="menu-link mb-2" (click)="router.navigate(['/landing'], {fragment:'features'}); mobileMenu=false">Services</a>
+    <a class="menu-link mb-2" (click)="router.navigate(['/about']); mobileMenu=false">A propos de nous</a>
+    <!-- <a class="menu-link mb-2" (click)="router.navigate(['/landing'], {fragment:'aide'}); mobileMenu=false">Aide</a> -->
+  </nav>
+</p-sidebar>
+
