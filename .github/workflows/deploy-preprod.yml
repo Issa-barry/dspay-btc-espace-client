@@ -1,0 +1,43 @@
+name: Deploy Preprod (Hostinger)
+
+on:
+  push:
+    branches: [ preprod ]   # Déclenchement seulement sur la branche "preprod"
+  workflow_dispatch:        # Permet aussi le lancement manuel
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Installation des dépendances
+        run: npm ci
+
+      - name: Build Angular (configuration préprod)
+        run: npx ng build --configuration preprod --output-path=dist/apollo-ng
+
+      - name: Déploiement via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        with:
+          server: ${{ secrets.PREPROD_FTP_SERVER }}
+          username: ${{ secrets.PREPROD_FTP_USERNAME }}
+          password: ${{ secrets.PREPROD_FTP_PASSWORD }}
+          port: ${{ secrets.PREPROD_FTP_PORT }}
+          protocol: ftps           # mets "ftp" si FTPS n'est pas dispo
+          local-dir: dist/apollo-ng/
+          server-dir: ${{ secrets.PREPROD_FTP_DIR }}
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/.github/**
+            **/node_modules/**
+            **/src/**
