@@ -9,9 +9,11 @@
     "build:preprod": "ng build --configuration preprod && npm run postbuild:preprod",
     "build": "ng build --configuration production && npm run postbuild",
     "test": "ng test",
-    "postbuild": "node scripts/generate-sitemap.mjs https://ibarry.fr && node scripts/generate-sitemap-index.mjs https://ibarry.fr",
-    "generate:sitemap": "node scripts/generate-sitemap.mjs https://ibarry.fr",
-    "generate:sitemap:index": "node scripts/generate-sitemap-index.mjs https://ibarry.fr"
+    "postbuild": "node scripts/generate-sitemap.mjs https://dspay.fr && node scripts/generate-sitemap-index.mjs https://dspay.fr",
+    "generate:sitemap": "node scripts/generate-sitemap.mjs https://dspay.fr",
+    "generate:sitemap:index": "node scripts/generate-sitemap-index.mjs https://dspay.fr",
+     "e2e": "cypress run",
+     "e2e:open": "cypress open"
   },
   "private": true,
   "dependencies": {
@@ -46,7 +48,9 @@
     "@angular/compiler-cli": "^17.0.5",
     "@ngtools/webpack": "^17.3.12",
     "@types/jasmine": "~4.3.1",
+    "@types/node": "^24.6.2",
     "css-loader": "^6.11.0",
+    "cypress": "^15.3.0",
     "jasmine-core": "~4.6.0",
     "karma": "~6.4.2",
     "karma-chrome-launcher": "~3.2.0",

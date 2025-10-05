@@ -42,10 +42,11 @@ export class ForgotPasswordComponent {
                     this.loading = false
             },
             error: (err) => {
+                 this.loading = false;
                 console.log(err);
                 this.errorMessage =
                     err.error.data.email || "Erreur lors de l'envoi du lien.";
-                    this.loading = false
+                   
             },
         });
     }
