@@ -1,0 +1,90 @@
+name: CI Dev
+
+on:
+  push:
+    branches: [ dev ]
+  pull_request:
+    branches: [ preprod, main ]   # contrôle avant merge vers préprod/prod
+  workflow_dispatch:
+
+# annule les runs précédents pour la même ref (évite la queue infinie)
+concurrency:
+  group: ci-dev-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build (compile check)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install deps
+        run: npm ci
+
+      # compile en config dev (rapide) pour valider que le projet build
+      - name: Angular build (dev)
+        run: npx ng build --configuration development --output-path=dist/apollo-ng
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-apollo-ng
+          path: dist/apollo-ng/
+          if-no-files-found: error
+
+  unit-tests:
+    name: Unit tests (Karma)
+    runs-on: ubuntu-latest
+    needs: build
+    env:
+      CI: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci
+      # ChromeHeadless est présent sur les runners GitHub
+      - name: Run Karma tests
+        run: npx ng test --watch=false --browsers=ChromeHeadless
+      - name: Upload coverage (si généré)
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage/
+          if-no-files-found: ignore
+
+  e2e:
+    name: E2E (Cypress)
+    runs-on: ubuntu-latest
+    needs: build
+    if: ${{ hashFiles('cypress/**') != '' }}     # ne s’exécute que si le dossier existe
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci
+      - name: Cypress run
+        uses: cypress-io/github-action@v6
+        with:
+          install: false     # déjà fait par npm ci
+          browser: electron  # évite dépendance Chrome
+      - name: Upload Cypress screenshots/videos (si présents)
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-artifacts
+          path: |
+            cypress/screenshots/
+            cypress/videos/
+          if-no-files-found: ignore
