@@ -16,23 +16,15 @@ jobs:
     name: Build (compile check)
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
-
-      - name: Install deps
-        run: npm ci
-
+      - run: npm ci
       - name: Angular build (dev)
         run: npx ng build --configuration development --output-path=dist/apollo-ng
-
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: dist-apollo-ng
           path: dist/apollo-ng/
@@ -42,19 +34,15 @@ jobs:
     name: Unit tests (Karma)
     runs-on: ubuntu-latest
     needs: build
-    env:
-      CI: true
+    env: { CI: true }
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
+        with: { node-version: 20, cache: 'npm' }
       - run: npm ci
       - name: Run Karma tests
         run: npx ng test --watch=false --browsers=ChromeHeadless
-      - name: Upload coverage (si généré)
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: coverage
           path: coverage/
@@ -67,35 +55,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Détecte si le dossier cypress/ existe
+      # détecte la présence du dossier cypress/
       - name: Detect Cypress folder
         id: detect
         run: |
-          if [ -d "cypress" ]; then
-            echo "has=true" >> $GITHUB_OUTPUT
-          else
-            echo "has=false" >> $GITHUB_OUTPUT
-          fi
+          if [ -d "cypress" ]; then echo "has=true" >> $GITHUB_OUTPUT; else echo "has=false" >> $GITHUB_OUTPUT; fi
 
       - uses: actions/setup-node@v4
         if: ${{ steps.detect.outputs.has == 'true' }}
-        with:
-          node-version: 20
-          cache: 'npm'
-
+        with: { node-version: 20, cache: 'npm' }
       - run: npm ci
         if: ${{ steps.detect.outputs.has == 'true' }}
-
       - name: Cypress run
         if: ${{ steps.detect.outputs.has == 'true' }}
         uses: cypress-io/github-action@v6
         with:
           install: false
           browser: electron
-
-      - name: Upload Cypress screenshots/videos (si présents)
+      - uses: actions/upload-artifact@v4
         if: ${{ steps.detect.outputs.has == 'true' }}
-        uses: actions/upload-artifact@v4
         with:
           name: cypress-artifacts
           path: |
