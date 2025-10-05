@@ -8,10 +8,11 @@
     "start:preprod": "ng serve --configuration preprod",
     "build:preprod": "ng build --configuration preprod && npm run postbuild:preprod",
     "build": "ng build --configuration production && npm run postbuild",
-    "test": "ng test",
     "postbuild": "node scripts/generate-sitemap.mjs https://dspay.fr && node scripts/generate-sitemap-index.mjs https://dspay.fr",
     "generate:sitemap": "node scripts/generate-sitemap.mjs https://dspay.fr",
     "generate:sitemap:index": "node scripts/generate-sitemap-index.mjs https://dspay.fr",
+    "test": "ng test",
+     "test:ci": "ng test --watch=false --browsers=ChromeHeadless",
      "e2e": "cypress run",
      "e2e:open": "cypress open"
   },
