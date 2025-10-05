@@ -1,0 +1,42 @@
+<form class="pcard" *ngIf="visible" [formGroup]="payForm" (ngSubmit)="onSubmit()">
+  <h3 *ngIf="showHeader" class="pcard-title">
+    Paiement par carte
+    <small *ngIf="amount != null" class="pcard-amount">
+      &nbsp;•&nbsp;{{ amount | number:'1.2-2' }} €
+    </small>
+  </h3>
+
+  <div class="pcard-body">
+    <label class="pcard-label" for="pcard-name">Nom du titulaire (optionnel)</label>
+    <input id="pcard-name" type="text" pInputText formControlName="name"
+           placeholder="Jean Dupont" class="w-full" autocomplete="cc-name"/>
+
+    <label class="pcard-label mt-3">Carte</label>
+    <div class="p-input-icon-left w-full mb-2">
+      <i class="pi pi-credit-card mr-6"></i>
+      <div #numberHost class="card-host w-full p-inputtext p-component text-center"></div>
+    </div>
+    <small class="p-error block mb-2" *ngIf="numberInvalid">Numéro invalide.</small>
+
+    <div class="grid pay-compact mt-2">
+      <div class="col-12 md:col-6">
+        <label class="pcard-label">EXPIRATION</label>
+        <div #expiryHost class="card-host w-full p-inputtext p-component text-center"></div>
+      </div>
+      <div class="col-12 md:col-6">
+        <label class="pcard-label">CVV / CVC</label>
+        <div #cvcHost class="card-host w-full p-inputtext p-component text-center"></div>
+      </div>
+    </div>
+
+    <p class="pcard-error" *ngIf="errorMsg" aria-live="assertive">{{ errorMsg }}</p>
+  </div>
+
+  <div class="pcard-footer flex align-items-center justify-content-between">
+    <button pButton type="button" label="Annuler" class="p-button-text" (click)="hide()" [disabled]="loading"></button>
+    <button pButton type="submit" icon="pi pi-credit-card"
+            [label]="'Payer ' + ((amount ?? 0) | number:'1.2-2') + ' €'"
+            [disabled]="!canSubmit" [loading]="loading">
+    </button>
+  </div>
+</form>

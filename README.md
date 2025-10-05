@@ -65,4 +65,28 @@ ng generate module demo/components/contact/contact-affecter-agence --route conta
 
 test
  
-. 
+ dev
+# DEPLOIEMENT
+
+🚀 Nouveaux scripts disponibles
+
+Développement
+
+npm start
+
+
+Préprod
+
+npm run start:preprod
+npm run build:preprod
+
+
+Production
+
+npm run build
+
+
+Génération manuelle sitemap
+
+npm run generate:sitemap
+

@@ -1,133 +1,109 @@
-<div class="grid">
+
+<div class="grid"> 
     <div class="col-12">
         <div class="card px-6 py-6">
             <p-toast></p-toast>
             <p-confirmDialog></p-confirmDialog>
-
-            <!-- <p-toolbar styleClass="mb-4">
-                <ng-template pTemplate="left">
-                    <div class="my-2"> 
-                        <button
-                            pButton
-                            pRipple
-                            label="Filtre"
-                            icon="pi pi-arrow-down-left"
-                            class="p-button-primary mr-2"
-                         ></button>
-                     </div>
-                </ng-template>
-
-                <ng-template pTemplate="right">
-                    <button
-                        pButton
-                        pRipple
-                        label="Filtre"
-                        icon="pi pi-upload"
-                        class="p-button-help"
-                        (click)="dt.exportCSV()"
-                    ></button>
-                </ng-template>
-            </p-toolbar> -->
-
             <p-table
-                #dt
-                [value]="loading ? skeletonRows : transferts"
-                responsiveLayout="scroll"
-                [paginator]="true"
-                [rows]="10"
-                [rowsPerPageOptions]="[10, 20, 30]"
-                [(selection)]="selectedTransferts"
-                selectionMode="multiple"
-                [rowHover]="true"
-                [globalFilterFields]="[
-                    'code',
-                    'beneficiaire.nom_complet',
-                    'beneficiaire.nom',
-                    'beneficiaire.prenom',
-                    'beneficiaire.phone',
-                    'montant_gnf',
-                    'montant_converti',
-                    'montant',
-                    'statut'
-                ]"
-                dataKey="id"
-            >
-                <ng-template pTemplate="caption">
-                    <div
-                        class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
-                    >
-                        <h5 class="m-0">Historique des Transferts</h5>
-                        <span class="block mt-2 md:mt-0 p-input-icon-left">
-                            <i class="pi pi-search"></i>
-                            <input
-                                pInputText
-                                type="text"
-                                (input)="onGlobalFilter(dt, $event)"
-                                placeholder="Rechercher..."
-                                class="w-full sm:w-auto"
-                            />
-                        </span>
-                    </div>
-                </ng-template>
+  #dt
+  [value]="loading ? skeletonRows : transferts"
+  [paginator]="true"
+  [rows]="10"
+  [rowsPerPageOptions]="[10, 20, 30]"
+  [showCurrentPageReport]="false"
+  currentPageReportTemplate=" {first} / {last}"
+  [showFirstLastIcon]="false"
+  responsiveLayout="scroll"
+  dataKey="id"
+  [globalFilterFields]="[
+    'code',
+    'beneficiaire.nom_complet',
+    'beneficiaire.phone',
+    'mode_reception',
+    'statut'
+  ]"
+>
+  <!-- CAPTION -->
+  <ng-template pTemplate="caption">
+    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+      <h5 class="m-0">Historique</h5>
+      <span class="block mt-2 md:mt-0 p-input-icon-left w-full md:w-20rem">
+        <i class="pi pi-search"></i>
+        <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Rechercher..." class="w-full" />
+      </span>
+    </div>
+  </ng-template>
 
-                <ng-template pTemplate="header">
-                    <tr>
-                        <th pSortableColumn="beneficiaire.nom_complet">
-                            Bénéficiaire
-                            <p-sortIcon field="beneficiaire.nom_complet"></p-sortIcon>
-                        </th>
-                        <th pSortableColumn="beneficiaire.phone">
-                            Phone
-                            <p-sortIcon field="beneficiaire.phone"></p-sortIcon>
-                        </th>
-                        <th pSortableColumn="montant_gnf">
-                            Montant reçu
-                            <p-sortIcon field="montant_gnf"></p-sortIcon>
-                        </th> 
-                        <th pSortableColumn="statut">
-                            Statut <p-sortIcon field="statut"></p-sortIcon>
-                        </th>
-                        <th>Action</th>
-                    </tr>
-                </ng-template>
+  <!-- EN-TÊTES (DESKTOP) -->
+  <ng-template pTemplate="header">
+    <tr class="show-desktop">
+       <th pSortableColumn="beneficiaire.nom_complet">Bénéficiaire <p-sortIcon field="beneficiaire.nom_complet"></p-sortIcon></th>
+      <th pSortableColumn="beneficiaire.phone">Phone <p-sortIcon field="beneficiaire.phone"></p-sortIcon></th>
+      <th pSortableColumn="montant_gnf">Montant reçu (GNF) <p-sortIcon field="montant_gnf"></p-sortIcon></th>
+        <th pSortableColumn="statut">Statut <p-sortIcon field="statut"></p-sortIcon></th>
+      <th class="text-center" style="width:8rem">Action</th>
+    </tr>
+  </ng-template>
 
-                <ng-template pTemplate="body" let-transfert>
-                    <tr *ngIf="loading">
-                        <td><p-skeleton width="6rem" /></td>
-                        <td><p-skeleton width="10rem" /></td>
-                        <td><p-skeleton width="8rem" /></td>
-                        <td><p-skeleton width="12rem" /></td>
-                        <td><p-skeleton width="10rem" /></td>
-                        <td>
-                            <p-skeleton
-                                width="5rem"
-                                height="2rem"
-                                borderRadius="1rem"
-                            />
-                        </td>
-                    </tr>
+  <!-- BODY -->
+  <ng-template pTemplate="body" let-t>
+    <!-- SKELETON (DESKTOP) -->
+    <tr *ngIf="loading" class="show-desktop">
+      <td><p-skeleton width="6rem" /></td>
+      <td><p-skeleton width="12rem" /></td>
+      <td><p-skeleton width="10rem" /></td>
+      <td><p-skeleton width="8rem" /></td>
+      <td><p-skeleton width="6rem" /></td>
+      <td class="text-center">
+        <p-skeleton width="2.25rem" height="2.25rem" borderRadius="50%" />
+      </td>
+    </tr>
 
-                    <tr *ngIf="!loading"> 
-                        <td>{{ transfert.beneficiaire.nom_complet }}</td>
-                        <td>{{ transfert.beneficiaire.phone | phoneFormat:'GN' }}</td>
-                        <td>
-                            {{ transfert.montant_gnf | money:'GNF':'normal'}}
-                        </td>
-                        <td>{{ transfert.statut }}</td>
-                        <td>
-                            <div class="flex">
-                                <button
-                                    pButton
-                                    pRipple
-                                    icon="pi pi-eye"
-                                    class="p-button-rounded p-button-success mr-2"
-                                    (click)="goToTransfertDetail(transfert)"
-                                ></button>
-                            </div>
-                        </td>
-                    </tr>
-                </ng-template>
-            </p-table>
+    <!-- LIGNE (DESKTOP) -->
+    <tr *ngIf="!loading" class="show-desktop">
+       <td class="font-medium text-900">{{ t.beneficiaire?.nom_complet }}</td>
+      <td>{{ t.beneficiaire?.phone | phoneFormat:'GN' }}</td>
+      <td class="font-medium">{{ t.montant_gnf | money:'GNF':'normal' }}</td>
+       <td>
+        <p-tag [severity]="statusSeverity(t.statut)" [value]="t.statut"></p-tag>
+      </td>
+      <td class="text-center">
+        <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-success"
+                (click)="goToTransfertDetail(t)"></button>
+      </td>
+    </tr>
+
+    <!-- CARTE / LIGNE MOBILE -->
+        <tr class="show-mobile">
+        <td colspan="5" class="p-0">
+            <button type="button" class="tx-line p-link w-full"
+                    (click)="goToTransfertDetail(t)">
+            <div class="tx-left">
+                <div class="tx-name">{{ t.beneficiaire?.nom_complet }}</div>
+                <div class="tx-date text-sm">{{ t.created_at | date:'dd/MM/yyyy' }}</div>
+            </div>
+
+            <div class="tx-right">
+                <div class="tx-amount ">
+                {{ t.montant_gnf | money:'GNF':'normal' }}
+                </div>
+                <p-tag class="tx-status"
+                    [severity]="statusSeverity(t.statut)"
+                    [value]="t.statut">
+                </p-tag>
+            </div>
+            </button>
+        </td>
+        </tr>
+
+
+  </ng-template>
+
+  <ng-template pTemplate="emptymessage">
+    <tr><td colspan="9" class="text-center py-5">Aucun transfert</td></tr>
+  </ng-template>
+</p-table>
+
         </div>
     </div>
 </div>

@@ -1,0 +1,134 @@
+<p-toast></p-toast>
+
+<div class="grid">
+  <div class="col-12 md:col-8 md:col-offset-2">
+    <p-card styleClass="mb-3">
+      <ng-template pTemplate="header">
+        <div class="flex align-items-center justify-content-between w-full">
+          <span class="text-xl font-bold m-4">Paiement réussi</span>
+          <p-tag
+            [value]="lookup?.status || 'pending'"
+            [severity]="
+              lookup?.status === 'succeeded' ? 'success' :
+              lookup?.status === 'processing' ? 'info' :
+              lookup?.status === 'pending' ? 'warning' :
+              'danger'
+            "
+            class="m-4">
+          </p-tag>
+        </div>
+      </ng-template>
+
+      <!-- Skeletons pendant le chargement -->
+      <ng-container *ngIf="loading">
+        <p-skeleton height="1.2rem" class="mb-2"></p-skeleton>
+        <p-skeleton height="1.2rem" class="mb-2"></p-skeleton>
+        <p-skeleton height="1.2rem" width="60%"></p-skeleton>
+      </ng-container>
+
+      <!-- Contenu -->
+      <ng-container *ngIf="!loading">
+        <div class="grid">
+          <div class="col-12 md:col-6">
+            <div class="text-600 mb-1">Le code de transfert est envoyé par email</div>
+            <!-- <div class="font-medium text-overflow-ellipsis">{{ lookup?.session_id }}</div> -->
+          </div> 
+
+          <div class="col-12 md:col-6 text-right">
+            <div class="text-600 mb-1">Montant payé</div>
+            <div class="text-900 text-xl font-bold">
+              {{ eurosFromCents(lookup?.amount) | money:'EUR':'normal' }} 
+            </div>
+          </div>
+        </div>
+
+        <p-divider></p-divider>
+
+        <div class="grid">
+          <div class="col-12 md:col-6">
+            <div class="text-900 font-semibold mb-1">Bénéficiaire</div>
+            <div class="font-medium">
+              {{ lookup?.transfert?.beneficiaire?.nom_complet || '—' }}
+            </div>
+          </div>
+
+          <div class="col-12 md:col-12">
+            <div class="text-900 font-semibold  mb-1">Mode de réception</div>
+            <div class="font-medium">
+              {{ lookup?.metadata?.mode_reception || '—' }}
+            </div>
+          </div>
+        </div>
+
+        <div class="grid">
+           <div class="col-12 md:col-12">
+            <div class="text-900 font-semibold  mb-1">Montant reçu</div>
+            <div class="font-medium">
+              {{ lookup?.transfert?.montant_gnf | money:'GNF':'normal' }}
+            </div>
+          </div>
+          <div class="col-12 md:col-4">
+            <div class="text-900 font-semibold  mb-1">Montant envoyé</div>
+            <div class="font-medium">
+              {{ lookup?.metadata?.montant_envoie | number:'1.2-2' }} €
+            </div>
+          </div>
+          <div class="col-12 md:col-12">
+            <div class="text-900 font-semibold  mb-1">Frais</div>
+            <div class="font-medium">
+              {{ lookup?.metadata?.frais_eur | number:'1.2-2' }} €
+            </div>
+          </div>
+          <!-- <div class="col-12 md:col-4">
+            <div class="text-600 font-semibold  mb-1">Total TTC</div>
+            <div class="font-medium">
+              {{ lookup?.metadata?.total_ttc | number:'1.2-2' }} €
+            </div>
+          </div> -->
+        </div>
+
+        <p-divider></p-divider>
+
+        <div class="flex gap-2 justify-content-end">
+          <!-- <button
+            pButton
+            label="Voir le transfert"
+            icon="pi pi-external-link"
+            class="p-button-success"
+            [disabled]="!lookup?.transfert_id"
+            [routerLink]="['/dashboard/transfert/detail', lookup?.transfert_id]">
+          </button> -->
+
+             <button
+            right
+            type="button"
+            label="Nouveau transfert"
+            pButton
+            pRipple
+            class="w-full md:w-auto"
+            icon="pi pi-external-link"
+            iconPos="right"
+             [disabled]="!lookup?.transfert_id"
+            [routerLink]="['/dashboard']" routerLinkActive="router-link-active" 
+            >
+          </button>
+
+            <!-- <button
+            right
+            type="button"
+            label="Mes transferts"
+            pButton
+            pRipple
+            class="w-full md:w-auto"
+            label="Mes transferts"
+            icon="pi pi-check"
+            iconPos="right"
+            [routerLink]="['/dashboard/transfert']"
+            >
+          </button> -->
+        </div>
+      </ng-container>
+    </p-card>
+ 
+  </div>
+</div>

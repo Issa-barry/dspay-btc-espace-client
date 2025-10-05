@@ -11,6 +11,9 @@ import { AppConfigModule } from 'src/app/layout/config/app.config.module';
 import { PasswordModule } from 'primeng/password';
 import { DialogModule } from 'primeng/dialog';
 import { ToastModule } from 'primeng/toast';
+import { DropdownModule } from 'primeng/dropdown';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 
 @NgModule({
     imports: [
@@ -24,7 +27,10 @@ import { ToastModule } from 'primeng/toast';
         AppConfigModule,
         PasswordModule,
         DialogModule,
-        ToastModule
+        ToastModule,
+ 		DropdownModule,
+ 		InputGroupModule,
+        InputGroupAddonModule
     ],
     declarations: [RegisterComponent]
 })

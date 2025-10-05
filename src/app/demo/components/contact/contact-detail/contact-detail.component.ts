@@ -114,7 +114,7 @@ export class ContactDetailComponent implements OnInit, OnDestroy {
 
     private initAdresse(): void {
         if (!this.contact.adresse) {
-            this.contact.adresse = { pays: '', ville: '', code_postal: '', adresse: '', quartier: '', complement_adresse: '', region: '' };
+            this.contact.adresse = { pays: '', ville: '', code_postal: '', adresse: '', quartier: '', complement_adresse: '', region: '', code: '' };
         }
         const pays = this.contact.adresse.pays?.trim().toLowerCase();
         this.isGuineeSelected = pays === this.GUINEE.toLowerCase();
@@ -140,7 +140,7 @@ export class ContactDetailComponent implements OnInit, OnDestroy {
         if (this.adresseCache.pays === 'France') {
             Object.assign(this.contact.adresse, this.adresseCache);
         } else {
-            this.contact.adresse = { pays, ville: '', adresse: '', code_postal: '', quartier: '', complement_adresse: '', region: '' };
+            this.contact.adresse = { pays, ville: '', adresse: '', code_postal: '', quartier: '', complement_adresse: '', region: '', code: '' };
         }
     }
 
