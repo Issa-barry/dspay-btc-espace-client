@@ -251,7 +251,25 @@ export class BeneficiaireListeComponent implements OnInit {
   onPhoneInput(event: Event) {
     const target = event?.target as HTMLInputElement | null;
     const raw = target?.value ?? '';
-    this.beneficiaire.phone = formatPhoneOnType(raw, 'GN');
+    // Retire toute lettre/symbole saisi; ne garde que les chiffres
+    const digitsOnly = raw.replace(/\D+/g, '');
+    this.beneficiaire.phone = formatPhoneOnType(digitsOnly, 'GN');
+  }
+
+  onPhoneKeyDown(event: KeyboardEvent) {
+    const allowedCtrl = event.ctrlKey || event.metaKey;
+    const key = event.key;
+    // Autoriser touches de contrôle, navigation et raccourcis
+    const controlKeys = [
+      'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Home', 'End', 'Tab', 'Enter', 'Escape'
+    ];
+    if (controlKeys.includes(key) || (allowedCtrl && ['a','c','v','x'].includes(key.toLowerCase()))) {
+      return; // autoriser
+    }
+    // Autoriser uniquement les chiffres
+    if (!/^[0-9]$/.test(key)) {
+      event.preventDefault();
+    }
   }
 
 /** Ouvrir la modale de suppression multiple */

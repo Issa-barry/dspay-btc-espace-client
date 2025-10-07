@@ -169,6 +169,9 @@
                         id="phone"
                         [(ngModel)]="beneficiaire.phone"
                         (input)="onPhoneInput($event)"
+                        (keydown)="onPhoneKeyDown($event)"
+                        inputmode="numeric"
+                        placeholder="Ex: 621 02 17 02 06"
                         required
                         [ngClass]="{
                             'ng-invalid ng-dirty': submitted && !beneficiaire.phone
