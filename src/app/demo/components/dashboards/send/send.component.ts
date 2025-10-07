@@ -182,7 +182,7 @@ export class SendComponent implements OnInit, OnDestroy {
         }
       },
       error: (err) => {
-        console.log('Erreur création session Stripe', err);
+        console.log('Erreur création session Stripe', err); 
         
         const valErrs = err?.error?.data?.errors;
         const apiMsg  = err?.error?.message || err?.message;
