@@ -61,9 +61,7 @@ export class BeneficiaireListeComponent implements OnInit {
   isCodePostalDisabled = false;
   isValidPays = true;
 
-  // Pays (inspiré de Register)
-  countries: { name: string; code: string }[] = [];
-  selectedCountry!: { name: string; code: string };
+  // Pays: toujours Guinée-Conakry pour bénéficiaires
 
   constructor(
     private contactService: ContactService,
@@ -79,51 +77,7 @@ export class BeneficiaireListeComponent implements OnInit {
     this.getAllRoles();
     this.loadBeneficiaires();
 
-    const EU_AF_COUNTRIES: { name: string; code: string }[] = [
-      { name: 'France', code: 'FR' },
-      { name: 'Allemagne', code: 'DE' },
-      { name: 'Autriche', code: 'AT' },
-      { name: 'Belgique', code: 'BE' },
-      { name: 'Bulgarie', code: 'BG' },
-      { name: 'Chypre', code: 'CY' },
-      { name: 'Croatie', code: 'HR' },
-      { name: 'Danemark', code: 'DK' },
-      { name: 'Espagne', code: 'ES' },
-      { name: 'Estonie', code: 'EE' },
-      { name: 'Finlande', code: 'FI' },
-      { name: 'Grèce', code: 'GR' },
-      { name: 'Hongrie', code: 'HU' },
-      { name: 'Irlande', code: 'IE' },
-      { name: 'Italie', code: 'IT' },
-      { name: 'Lettonie', code: 'LV' },
-      { name: 'Lituanie', code: 'LT' },
-      { name: 'Luxembourg', code: 'LU' },
-      { name: 'Malte', code: 'MT' },
-      { name: 'Pays-Bas', code: 'NL' },
-      { name: 'Pologne', code: 'PL' },
-      { name: 'Portugal', code: 'PT' },
-      { name: 'Roumanie', code: 'RO' },
-      { name: 'Royaume-Uni', code: 'GB' },
-      { name: 'Slovaquie', code: 'SK' },
-      { name: 'Suisse', code: 'CH' },
-      { name: 'Suède', code: 'SE' },
-      { name: 'Tchéquie', code: 'CZ' },
-      { name: 'Guinée-Conakry', code: 'GN' },
-
-      // DROM-COM & collectivités
-      { name: 'La Réunion', code: 'RE' },
-      { name: 'Guadeloupe', code: 'GP' },
-      { name: 'Martinique', code: 'MQ' },
-      { name: 'Guyane française', code: 'GF' },
-      { name: 'Saint-Pierre-et-Miquelon', code: 'PM' },
-      { name: 'Wallis-et-Futuna', code: 'WF' },
-      { name: 'Nouvelle-Calédonie', code: 'NC' },
-      { name: 'Polynésie française', code: 'PF' }
-    ].sort((a, b) => a.name.localeCompare(b.name, 'fr'));
-
-    this.countries = EU_AF_COUNTRIES;
-    // Par défaut GN comme dans l’affichage liste
-    this.selectedCountry = this.countries.find(c => c.code === 'GN') || this.countries[0];
+    // Rien à initialiser: pays forcé à GN côté UI et logique
   }
 
   /** Chargement liste paginée */
@@ -245,13 +199,13 @@ export class BeneficiaireListeComponent implements OnInit {
     return;
   }
 
-  // Normaliser téléphone en E.164 selon le pays sélectionné
-  const e164 = toE164(this.beneficiaire.phone || '', this.selectedCountry?.code);
+  // Normaliser téléphone en E.164 pour la Guinée (GN)
+  const e164 = toE164(this.beneficiaire.phone || '', 'GN');
   if (!e164) {
     this.messageService.add({
       severity: 'warn',
       summary: 'Téléphone invalide',
-      detail: `Le numéro n'est pas valide pour ${this.selectedCountry?.name || 'ce pays'}.`,
+      detail: `Le numéro n'est pas valide pour la Guinée-Conakry.`,
       life: 3000
     });
     return;
@@ -293,19 +247,11 @@ export class BeneficiaireListeComponent implements OnInit {
     }
   });
 }
-
-  // ---- Pays & téléphone (UX) ----
-  onCountryChange(c: { name: string; code: string }) {
-    this.selectedCountry = c;
-    if (this.beneficiaire.phone) {
-      this.beneficiaire.phone = formatPhoneOnType(this.beneficiaire.phone, c.code);
-    }
-  }
-
+  // ---- Téléphone (UX) ----
   onPhoneInput(event: Event) {
     const target = event?.target as HTMLInputElement | null;
     const raw = target?.value ?? '';
-    this.beneficiaire.phone = formatPhoneOnType(raw, this.selectedCountry?.code);
+    this.beneficiaire.phone = formatPhoneOnType(raw, 'GN');
   }
 
 /** Ouvrir la modale de suppression multiple */
