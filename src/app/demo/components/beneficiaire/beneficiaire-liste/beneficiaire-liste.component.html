@@ -25,7 +25,7 @@
         class="w-full h-3rem"
         (click)="openNew()">
       </button>
-    </div>
+    </div>  
 
     <!-- Recherche : full en mobile, 50% dès md -->
     <div class="w-full md:flex-1">
@@ -137,8 +137,9 @@
                         >Nom is required.</small
                     >
                 </div>
+
                 <div class="field">
-                    <label for="name">Preom</label>
+                    <label for="name">Prenom</label>
                     <input
                         type="text"
                         pInputText
@@ -157,14 +158,52 @@
                     >
                 </div>
                 <div class="field">
+                    <label for="country">Pays</label>
+                    <p-dropdown
+                        inputId="country"
+                        [options]="countries"
+                        optionLabel="name"
+                        [filter]="true"
+                        filterBy="name,code"
+                        [showClear]="false"
+                        placeholder="Sélectionner un pays"
+                        class="w-full"
+                        [(ngModel)]="selectedCountry"
+                        (onChange)="onCountryChange($event.value)"
+                    >
+                        <ng-template pTemplate="selectedItem" let-country>
+                            <ng-container *ngIf="country">
+                                <div class="flex align-items-center">
+                                    <img
+                                        src="assets/demo/images/flag/flag_placeholder.png"
+                                        [class]="'mr-2 flag flag-' + country.code.toLowerCase()"
+                                        style="width:18px"
+                                    />
+                                    <div>{{ country.name }}</div>
+                                </div>
+                            </ng-container>
+                        </ng-template>
+                        <ng-template pTemplate="item" let-country>
+                            <div class="flex align-items-center">
+                                <img
+                                    src="assets/demo/images/flag/flag_placeholder.png"
+                                    [class]="'mr-2 flag flag-' + country.code.toLowerCase()"
+                                    style="width:18px"
+                                />
+                                <div>{{ country.name }}</div>
+                            </div>
+                        </ng-template>
+                    </p-dropdown>
+                </div>
+                <div class="field">
                     <label for="name">Téléphone</label>
                     <input
                         type="text"
                         pInputText
-                        id="name"
+                        id="phone"
                         [(ngModel)]="beneficiaire.phone"
+                        (input)="onPhoneInput($event)"
                         required
-                        autofocus
                         [ngClass]="{
                             'ng-invalid ng-dirty': submitted && !beneficiaire.phone
                         }"

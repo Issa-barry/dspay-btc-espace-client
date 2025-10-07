@@ -11,6 +11,7 @@ import { Statut } from 'src/app/demo/enums/statut.enum';
 import { Beneficiaire } from 'src/app/demo/models/beneficiaire';
 import { PaginationMeta } from 'src/app/demo/models/PaginationMeta';
 import { BeneficiaireService } from 'src/app/demo/service/beneficiaire/beneficiaire.service';
+import { formatPhoneOnType, toE164 } from 'src/app/shared/utils/phone.util';
 
 @Component({
   selector: 'app-beneficiaire-liste',
@@ -28,7 +29,7 @@ export class BeneficiaireListeComponent implements OnInit {
     current: Beneficiaire = {} as Beneficiaire;
     selectedBeneficiaires: Beneficiaire[] = [];
     page = 1;
-    perPage = 10;
+    perPage = 10; 
     searchTerm = '';
  
    meta: PaginationMeta | null = null;
@@ -60,6 +61,10 @@ export class BeneficiaireListeComponent implements OnInit {
   isCodePostalDisabled = false;
   isValidPays = true;
 
+  // Pays (inspiré de Register)
+  countries: { name: string; code: string }[] = [];
+  selectedCountry!: { name: string; code: string };
+
   constructor(
     private contactService: ContactService,
     private roleService: RoleService,
@@ -73,6 +78,52 @@ export class BeneficiaireListeComponent implements OnInit {
     this.getAllContacts();
     this.getAllRoles();
     this.loadBeneficiaires();
+
+    const EU_AF_COUNTRIES: { name: string; code: string }[] = [
+      { name: 'France', code: 'FR' },
+      { name: 'Allemagne', code: 'DE' },
+      { name: 'Autriche', code: 'AT' },
+      { name: 'Belgique', code: 'BE' },
+      { name: 'Bulgarie', code: 'BG' },
+      { name: 'Chypre', code: 'CY' },
+      { name: 'Croatie', code: 'HR' },
+      { name: 'Danemark', code: 'DK' },
+      { name: 'Espagne', code: 'ES' },
+      { name: 'Estonie', code: 'EE' },
+      { name: 'Finlande', code: 'FI' },
+      { name: 'Grèce', code: 'GR' },
+      { name: 'Hongrie', code: 'HU' },
+      { name: 'Irlande', code: 'IE' },
+      { name: 'Italie', code: 'IT' },
+      { name: 'Lettonie', code: 'LV' },
+      { name: 'Lituanie', code: 'LT' },
+      { name: 'Luxembourg', code: 'LU' },
+      { name: 'Malte', code: 'MT' },
+      { name: 'Pays-Bas', code: 'NL' },
+      { name: 'Pologne', code: 'PL' },
+      { name: 'Portugal', code: 'PT' },
+      { name: 'Roumanie', code: 'RO' },
+      { name: 'Royaume-Uni', code: 'GB' },
+      { name: 'Slovaquie', code: 'SK' },
+      { name: 'Suisse', code: 'CH' },
+      { name: 'Suède', code: 'SE' },
+      { name: 'Tchéquie', code: 'CZ' },
+      { name: 'Guinée-Conakry', code: 'GN' },
+
+      // DROM-COM & collectivités
+      { name: 'La Réunion', code: 'RE' },
+      { name: 'Guadeloupe', code: 'GP' },
+      { name: 'Martinique', code: 'MQ' },
+      { name: 'Guyane française', code: 'GF' },
+      { name: 'Saint-Pierre-et-Miquelon', code: 'PM' },
+      { name: 'Wallis-et-Futuna', code: 'WF' },
+      { name: 'Nouvelle-Calédonie', code: 'NC' },
+      { name: 'Polynésie française', code: 'PF' }
+    ].sort((a, b) => a.name.localeCompare(b.name, 'fr'));
+
+    this.countries = EU_AF_COUNTRIES;
+    // Par défaut GN comme dans l’affichage liste
+    this.selectedCountry = this.countries.find(c => c.code === 'GN') || this.countries[0];
   }
 
   /** Chargement liste paginée */
@@ -181,7 +232,7 @@ export class BeneficiaireListeComponent implements OnInit {
   }
 
   saveBeneficiaire(): void {
-  this.submitted = true;
+    this.submitted = true;
 
   // validation très simple (adapte selon ton modèle)
   if (!this.beneficiaire?.phone || (!this.beneficiaire.nom && !this.beneficiaire.nom_complet)) {
@@ -194,10 +245,22 @@ export class BeneficiaireListeComponent implements OnInit {
     return;
   }
 
+  // Normaliser téléphone en E.164 selon le pays sélectionné
+  const e164 = toE164(this.beneficiaire.phone || '', this.selectedCountry?.code);
+  if (!e164) {
+    this.messageService.add({
+      severity: 'warn',
+      summary: 'Téléphone invalide',
+      detail: `Le numéro n'est pas valide pour ${this.selectedCountry?.name || 'ce pays'}.`,
+      life: 3000
+    });
+    return;
+  }
+
   const payload = {
     nom: this.beneficiaire.nom ?? '',
     prenom: this.beneficiaire.prenom ?? '',
-    phone: this.beneficiaire.phone ?? ''
+    phone: e164
   };
 
   const isUpdate = typeof this.beneficiaire.id === 'number' && this.beneficiaire.id > 0;
@@ -230,6 +293,20 @@ export class BeneficiaireListeComponent implements OnInit {
     }
   });
 }
+
+  // ---- Pays & téléphone (UX) ----
+  onCountryChange(c: { name: string; code: string }) {
+    this.selectedCountry = c;
+    if (this.beneficiaire.phone) {
+      this.beneficiaire.phone = formatPhoneOnType(this.beneficiaire.phone, c.code);
+    }
+  }
+
+  onPhoneInput(event: Event) {
+    const target = event?.target as HTMLInputElement | null;
+    const raw = target?.value ?? '';
+    this.beneficiaire.phone = formatPhoneOnType(raw, this.selectedCountry?.code);
+  }
 
 /** Ouvrir la modale de suppression multiple */
 /** Ouvrir la modale de suppression unitaire */
