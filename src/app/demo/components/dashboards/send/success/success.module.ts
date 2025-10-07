@@ -11,6 +11,7 @@ import { DividerModule } from 'primeng/divider';
 import { FieldsetModule } from 'primeng/fieldset';
 import { ButtonModule } from 'primeng/button';
 import { PipeModule } from 'src/app/demo/pipes/pipe.module';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 
 @NgModule({
@@ -28,6 +29,7 @@ import { PipeModule } from 'src/app/demo/pipes/pipe.module';
     FieldsetModule,
     ButtonModule,
     PipeModule,
+    ProgressSpinnerModule
   ]
 })
 export class SuccessModule { }

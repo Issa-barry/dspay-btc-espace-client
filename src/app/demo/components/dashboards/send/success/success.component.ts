@@ -1,10 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { interval, Subject, switchMap, takeUntil, startWith } from 'rxjs';
 import { CheckoutLookup, PaiementService } from 'src/app/demo/service/paiement/paiement.service';
-
-type Severity = 'success' | 'info' | 'warn' | 'danger';
+import { interval, Subject, switchMap, startWith, takeUntil, timer, merge, map, distinctUntilChanged, finalize } from 'rxjs';
 
 @Component({
   selector: 'app-success',
@@ -15,76 +13,77 @@ type Severity = 'success' | 'info' | 'warn' | 'danger';
 export class SuccessComponent implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
 
+  readonly POLL_MS = 5000;   // 5s pour réduire la charge
+  readonly MAX_MS  = 30000;  // 30s max
+
   sessionId = '';
   loading = true;
   lookup?: CheckoutLookup;
-
-  // polling toutes les 2s pendant 60s
-  readonly POLL_MS = 2000;
-  readonly MAX_MS  = 60000;
-  startedAt = 0;
+  private pollingStarted = false; // anti-double démarrage
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private toast: MessageService,
-    private pay: PaiementService,
+    private pay: PaiementService
   ) {}
 
   ngOnInit(): void {
     this.sessionId = this.route.snapshot.queryParamMap.get('session_id') ?? '';
     if (!this.sessionId) {
       this.loading = false;
-      this.toast.add({ severity: 'warn', summary: 'Session manquante', detail: 'Paramètre session_id absent.' });
+      this.toast.add({ severity: 'warn', summary: 'Session manquante', detail: 'session_id absent.' });
+      this.router.navigate(['/dashboard/send'], { replaceUrl: true });
       return;
     }
 
-    this.toast.add({ severity: 'success', summary: 'Paiement', detail: 'Paiement confirmé' });
+    if (this.pollingStarted) return; // empêche tout double démarrage
+    this.pollingStarted = true;
 
-    this.startedAt = Date.now();
+    const stop$ = merge(this.destroy$, timer(this.MAX_MS));
 
-    // 1er tir immédiat, puis toutes les POLL_MS
     interval(this.POLL_MS)
       .pipe(
-        startWith(0),
+        startWith(0),                  // tir immédiat
+        takeUntil(stop$),              // arrêt auto (leave page / timeout)
         switchMap(() => this.pay.getCheckoutStatus(this.sessionId)),
-        takeUntil(this.destroy$)
+        map(res => res.data),
+        distinctUntilChanged(
+          (a, b) => a?.status === b?.status && a?.transfert_id === b?.transfert_id
+        ),
+        finalize(() => this.loading = false)
       )
       .subscribe({
-        next: (res) => {
-          this.lookup = res.data;
-          this.loading = false;
-     console.log('lookup', this.lookup);
-          const done =
-            !!this.lookup?.transfert_id ||
-            this.lookup?.status === 'succeeded' ||
-            this.lookup?.processed_at != null;
+        next: (lookup) => {
+          this.lookup = lookup;
 
-          const timeout = Date.now() - this.startedAt > this.MAX_MS;
+          const done =
+            !!lookup?.transfert_id ||
+            lookup?.status === 'succeeded' ||
+            lookup?.processed_at != null;
+
+          const failed =
+            lookup?.status === 'canceled' ||
+            lookup?.status === 'requires_payment_method' ||
+            lookup?.status === 'requires_payment';
 
           if (done) {
-            // on arrête le polling une fois terminé
-            this.destroy$.next();
-            this.toast.add({
-              severity: 'success',
-              summary: 'Transfert créé',
-              detail: 'Votre transfert est disponible.',
-              life: 2500,
-            });
-          } else if (timeout) {
-            this.destroy$.next(); // stop polling
-            this.toast.add({
-              severity: 'info',
-              summary: 'Toujours en cours',
-              detail: 'Le traitement prend plus de temps que prévu. Actualisez dans quelques instants.',
-            });
+            this.destroy$.next(); // stop
+            this.toast.add({ severity: 'success', summary: 'Transfert créé', detail: 'Votre transfert est disponible.', life: 2500 });
+            if (lookup?.transfert_id) {
+              this.router.navigate(['/dashboard/transfert/detail', lookup.transfert_id], { replaceUrl: true });
+            }
+          } else if (failed) {
+            this.destroy$.next(); // stop
+            this.toast.add({ severity: 'warn', summary: 'Paiement non finalisé', detail: 'Annulé ou refusé.' });
+            this.router.navigate(['/dashboard/send'], { replaceUrl: true });
           }
         },
         error: (err) => {
-          this.loading = false;
-          const msg = err?.error?.message || err?.message || 'Erreur lors de la récupération.';
+          const msg = err?.error?.message || err?.message || 'Erreur de récupération.';
           this.toast.add({ severity: 'error', summary: 'Erreur', detail: msg });
-          this.destroy$.next(); // stop polling on error
-        },
+          this.destroy$.next(); // stop sur erreur
+        }
       });
   }
 
@@ -92,6 +91,4 @@ export class SuccessComponent implements OnInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
   }
-
-  eurosFromCents(v?: number) { return typeof v === 'number' ? (v / 100) : 0; }
 }
