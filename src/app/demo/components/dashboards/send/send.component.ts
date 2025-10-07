@@ -8,6 +8,7 @@ import { Transfert, TransfertCreateDto } from 'src/app/demo/models/transfert';
 import { BeneficiaireService } from 'src/app/demo/service/beneficiaire/beneficiaire.service';
 import { PaiementService } from 'src/app/demo/service/paiement/paiement.service';
 import { TransfertService } from 'src/app/demo/service/transfert/transfert.service';
+import { formatPhoneOnType, toE164 } from 'src/app/shared/utils/phone.util';
 
 type ModeReception = 'orange_money' | 'ewallet' | 'retrait_cash';
 
@@ -167,7 +168,7 @@ export class SendComponent implements OnInit, OnDestroy {
     })
     .pipe(finalize(() => (this.loading = false)), takeUntil(this.destroy$))
     .subscribe({
-      next: (res: any) => {
+       next: (res: any) => {
         const url = res?.data?.url ?? res?.url;
         if (url) {
           window.location.assign(url);
@@ -328,7 +329,13 @@ export class SendComponent implements OnInit, OnDestroy {
       this.messageService.add({ severity: 'warn', summary: 'Champs requis', detail: 'Veuillez saisir au moins le Nom (ou Nom complet) et le Téléphone.', life: 3000 });
       return;
     }
-    const payload = { nom: this.beneficiaire.nom ?? '', prenom: this.beneficiaire.prenom ?? '', phone: this.beneficiaire.phone ?? '' };
+    // Normaliser le téléphone au format E.164 pour la Guinée (GN)
+    const e164 = toE164(this.beneficiaire.phone || '', 'GN');
+    if (!e164) {
+      this.messageService.add({ severity: 'warn', summary: 'Téléphone invalide', detail: `Le numéro n'est pas valide pour la Guinée-Conakry.`, life: 3000 });
+      return;
+    }
+    const payload = { nom: this.beneficiaire.nom ?? '', prenom: this.beneficiaire.prenom ?? '', phone: e164 };
     const isUpdate = typeof this.beneficiaire.id === 'number' && this.beneficiaire.id > 0;
 
     this.loading = true;
@@ -348,6 +355,21 @@ export class SendComponent implements OnInit, OnDestroy {
         },
         error: (err: any) => this.messageService.add({ severity: 'error', summary: 'Erreur', detail: err?.message || "L'opération a échoué", life: 3000 }),
       });
+  }
+
+  // Saisie téléphone (bénéficiaire): chiffres uniquement + format GN
+  onBenefPhoneInput(event: Event) {
+    const target = event?.target as HTMLInputElement | null;
+    const raw = target?.value ?? '';
+    const digitsOnly = raw.replace(/\D+/g, '');
+    this.beneficiaire.phone = formatPhoneOnType(digitsOnly, 'GN');
+  }
+  onBenefPhoneKeyDown(event: KeyboardEvent) {
+    const allowedCtrl = event.ctrlKey || event.metaKey;
+    const key = event.key;
+    const controlKeys = [ 'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Home', 'End', 'Tab', 'Enter', 'Escape' ];
+    if (controlKeys.includes(key) || (allowedCtrl && ['a','c','v','x'].includes(key.toLowerCase()))) return;
+    if (!/^[0-9]$/.test(key)) event.preventDefault();
   }
 
   // ───────── Simulation Transfert (sans paiement) ─────────

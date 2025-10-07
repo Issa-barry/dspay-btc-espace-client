@@ -1,17 +1,17 @@
 <div class="card">
   <p-toast></p-toast>
 
-  <!-- template de chargement réutilisable -->
+  <!-- template de chargement rÃ©utilisable -->
   <ng-template #loadingTpl>
     <div class="surface-100 border-round-md flex justify-content-center align-items-center py-3">
       <p-progressSpinner styleClass="w-2rem h-2rem"></p-progressSpinner>
     </div>
   </ng-template>
 
-  <!-- Étapes -->
+  <!-- Ã‰tapes -->
   <ng-container [ngSwitch]="activeIndex">
 
-    <!-- Étape 0 : Montants -->
+    <!-- Ã‰tape 0 : Montants -->
     <section *ngSwitchCase="0" class="grid">
       <div class="col-12 md:col-8">
         <div class="grid formgrid p-fluid">
@@ -64,7 +64,7 @@
       </div>
     </section>
 
-    <!-- Étape 1 : Mode de réception -->
+    <!-- Ã‰tape 1 : Mode de rÃ©ception -->
     <section *ngSwitchCase="1" class="grid">
       <div class="col-12 md:col-8">
         <div class="field mb-3">
@@ -119,7 +119,7 @@
       </div>
     </section>
 
-    <!-- Étape 2 : Bénéficiaire -->
+    <!-- Ã‰tape 2 : Bénéficiaire -->
     <section *ngSwitchCase="2" class="grid">
       <div class="col-12 md:col-8">
         <div class="field mb-3">
@@ -189,7 +189,7 @@
       </div>
     </section>
 
-    <!-- Étape 3 : Récapitulatif -->
+    <!-- Ã‰tape 3 : Récapitulatif -->
     <section *ngSwitchCase="3" class="grid">
       <div class="col-12 md:col-8">
         <div class="field mb-4 align-items-center recap-row">
@@ -238,7 +238,7 @@
           <p-divider styleClass="my-3"></p-divider>
 
           <div class="grid align-items-center recap-row mt-2">
-            <div class="col-8 md:col-6 text-900 font-bold">Total à payer</div>
+            <div class="col-8 md:col-6 text-900 font-bold">Total à  payer</div>
             <div class="col-4 md:col-6 text-right text-900 font-bold">
               {{ total_ttc | money:'EUR':'normal' }}
             </div>
@@ -265,9 +265,9 @@
   </ng-container>
 </div>
 
-<!-- ╭────────────────────────────────────────────────────────────╮
-     │ Dialog Paiement (fermé correctement, pas d'imbrication)   │
-     ╰────────────────────────────────────────────────────────────╯ -->
+<!-- â•­â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â•®
+     â”‚ Dialog Paiement (fermÃ© correctement, pas d'imbrication)   â”‚
+     â•°â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â•¯ -->
 <p-dialog
   [(visible)]="payementDialog"
   [modal]="true"
@@ -290,13 +290,11 @@
   </ng-template>
 </p-dialog>
 
-<!-- ╭────────────────────────────────────────────────────────────╮
-     │ Dialog Bénéficiaire (frère du précédent, fonctionne)      │
-     ╰────────────────────────────────────────────────────────────╯ -->
-<p-dialog
+     <!-- Dialog Paiement (fermé correctement, pas d'imbrication) -->
+     <p-dialog
   [(visible)]="beneficiaireDialog"
   [style]="{ width: '450px' }"
-  header="Détails du Bénéficiaire"
+  header="DÃ©tails du Bénéficiaire"
   [modal]="true"
   class="p-fluid"
   [appendTo]="'body'"
@@ -305,27 +303,30 @@
   (onHide)="submitted=false">
 
   <ng-template pTemplate="content">
-    <div class="field">
+    <div class="field w-full">
       <label for="b_nom">Nom</label>
-      <input type="text" pInputText id="b_nom"
+      `<input type="text" pInputText id="b_nom" class="w-full"
              [(ngModel)]="beneficiaire.nom" required
              [ngClass]="{'ng-invalid ng-dirty': submitted && !beneficiaire.nom}" />
       <small class="p-error" *ngIf="submitted && !beneficiaire.nom">Nom requis.</small>
     </div>
 
-    <div class="field">
+    <div class="field w-full">
       <label for="b_prenom">Prénom</label>
-      <input type="text" pInputText id="b_prenom"
+      `<input type="text" pInputText id="b_prenom" class="w-full"
              [(ngModel)]="beneficiaire.prenom" required
              [ngClass]="{'ng-invalid ng-dirty': submitted && !beneficiaire.prenom}" />
       <small class="p-error" *ngIf="submitted && !beneficiaire.prenom">Prénom requis.</small>
     </div>
 
-    <div class="field">
+    <div class="field w-full">
       <label for="b_phone">Téléphone</label>
-      <input type="text" pInputText id="b_phone"
-             [(ngModel)]="beneficiaire.phone" required
-             [ngClass]="{'ng-invalid ng-dirty': submitted && !beneficiaire.phone}" />
+       `<input type="text" pInputText id="b_phone" class="w-full"
+              [(ngModel)]="beneficiaire.phone" required
+              (input)="onBenefPhoneInput($event)"
+              (keydown)="onBenefPhoneKeyDown($event)"
+              inputmode="numeric"
+              [ngClass]="{'ng-invalid ng-dirty': submitted && !beneficiaire.phone}" />
       <small class="p-error" *ngIf="submitted && !beneficiaire.phone">Téléphone requis.</small>
     </div>
   </ng-template>
@@ -334,4 +335,4 @@
     <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
     <button pButton pRipple label="Enregistrer" icon="pi pi-check" class="p-button-text" (click)="saveBeneficiaire()" [loading]="loading"></button>
   </ng-template>
-</p-dialog>
+</p-dialog> 
