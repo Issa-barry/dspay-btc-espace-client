@@ -326,7 +326,8 @@
               (input)="onBenefPhoneInput($event)"
               (keydown)="onBenefPhoneKeyDown($event)"
               inputmode="numeric"
-              [ngClass]="{'ng-invalid ng-dirty': submitted && !beneficiaire.phone}" />
+              [ngClass]="{'ng-invalid ng-dirty': submitted && !beneficiaire.phone}" 
+              placeholder="Ex: 621 02 17 02 06"/>
       <small class="p-error" *ngIf="submitted && !beneficiaire.phone">Téléphone requis.</small>
     </div>
   </ng-template>
