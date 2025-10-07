@@ -101,7 +101,9 @@ export class AuthService {
 
   // -------------------- API public --------------------
 
-  /** Login: stocke token + user (parsing défensif) */
+  // /** Login: stocke token + user (parsing défensif) */
+
+
   login(credentials: { email: string; password: string }): Observable<ApiResponse<{ user: Contact; access_token?: string }>> {
     return this.http
       .post<ApiResponse<{ user: Contact; access_token?: string }>>(`${this.apiUrl}/login`, credentials, httpOption)
@@ -122,9 +124,10 @@ export class AuthService {
             this.currentUserSubject.next(null);
           }
         }),
-        catchError(this.handleError)
+        // catchError(this.handleError)
       );
   }
+
 
   /** Profil utilisateur connecté */
   getMe(): Observable<Contact> {

@@ -25,7 +25,7 @@
         class="w-full h-3rem"
         (click)="openNew()">
       </button>
-    </div>
+    </div>  
 
     <!-- Recherche : full en mobile, 50% dès md -->
     <div class="w-full md:flex-1">
@@ -137,8 +137,9 @@
                         >Nom is required.</small
                     >
                 </div>
+
                 <div class="field">
-                    <label for="name">Preom</label>
+                    <label for="name">Prenom</label>
                     <input
                         type="text"
                         pInputText
@@ -157,14 +158,21 @@
                     >
                 </div>
                 <div class="field">
+                    <label for="country">Pays</label>
+                    <input type="text" pInputText id="country" [value]="'Guinée-Conakry'" disabled />
+                </div>
+                <div class="field">
                     <label for="name">Téléphone</label>
                     <input
                         type="text"
                         pInputText
-                        id="name"
+                        id="phone"
                         [(ngModel)]="beneficiaire.phone"
+                        (input)="onPhoneInput($event)"
+                        (keydown)="onPhoneKeyDown($event)"
+                        inputmode="numeric"
+                        placeholder="Ex: 621 02 17 02 06"
                         required
-                        autofocus
                         [ngClass]="{
                             'ng-invalid ng-dirty': submitted && !beneficiaire.phone
                         }"

@@ -21,7 +21,7 @@ export class NewPasswordComponent implements OnInit {
   errorMessage = '';
 
   constructor(
-    private passwordService: PasswordService,
+    private passwordService: PasswordService, 
     private layoutService: LayoutService,
     private route: ActivatedRoute,
     private messageService: MessageService,
@@ -43,7 +43,7 @@ export class NewPasswordComponent implements OnInit {
 
   resetPassword(): void {
     this.submitted = true;
-    this.clearErrors();
+    // this.clearErrors();
 
     if (!this.isFormValid()) {
       this.errorMessage = 'Tous les champs sont obligatoires.';
@@ -54,7 +54,10 @@ export class NewPasswordComponent implements OnInit {
 
     this.passwordService.resetPassword(this.buildResetData()).subscribe({
       next: (res) => this.showSuccessDialog(res?.message ?? 'Mot de passe réinitialisé.'),
-      error: (err) => this.showValidationErrors(err),
+      error: (err) => {
+          this.loading = false;
+        this.errors = err.error?.data || {};
+      },
     });
   }
 
