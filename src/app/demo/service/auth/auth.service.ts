@@ -129,35 +129,6 @@ export class AuthService {
   }
 
 
-
-
-
-
-
-  // login(credentials: { email: string; password: string }): Observable<ApiResponse<{ user: Contact; access_token?: string }>> {
-  //   return this.http
-  //     .post<ApiResponse<{ user: Contact; access_token?: string }>>(`${this.apiUrl}/login`, credentials, httpOption)
-  //     .pipe(
-  //       tap((res) => {
-  //         const { user, access_token } = this.extractAuthPayload(res);
-
-  //         // token (ignore null/undefined)
-  //         this.tokenService.storeToken(access_token ?? null);
-
-  //         // user (si fourni)
-  //         if (user && typeof user === 'object' && 'id' in user) {
-  //           this.setCurrentUser(user);
-  //         } else {
-  //           // si l’API ne renvoie pas l’utilisateur, on le chargera via /users/me plus tard
-  //           localStorage.removeItem('user_id');
-  //           localStorage.removeItem('current_user');
-  //           this.currentUserSubject.next(null);
-  //         }
-  //       }),
-  //       // catchError(this.handleError)
-  //     );
-  // }
-
   /** Profil utilisateur connecté */
   getMe(): Observable<Contact> {
     return this.http

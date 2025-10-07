@@ -51,16 +51,18 @@ export class PasswordService {
     sendResetPasswordLink(email: string): Observable<any> {
         return this.http
             .post<any>(
-                `${this.apiUrl}/sendResetPasswordLink`,
-                { email },
-                httpOption
-            )
-            .pipe(
-                map((response) => {
-                    return response;
-                })
-            );
+                `${this.apiUrl}/sendResetPasswordLink`,{ email }, httpOption)
+            .pipe(map((response) => {
+                    return response;}));
     }
+
+    //     sendResetPasswordLink(email: string): Observable<any> {
+    //     return this.http
+    //         .post<any>(
+    //             `${this.apiUrl}/sendResetPasswordLink`,{ email }, httpOption)
+    //         .pipe(map((response) => {
+    //                 return response;}));
+    // }
 
     resetPassword(data: {
         email: string;
