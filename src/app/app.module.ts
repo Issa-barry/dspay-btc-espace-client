@@ -8,8 +8,7 @@ import { HTTP_INTERCEPTORS, HttpClientXsrfModule } from '@angular/common/http';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
-import { XsrfInterceptor } from './interceptors/xsrf-interceptor';
-import { CredentialsInterceptor } from './interceptors/credentials.interceptor';
+ import { CredentialsInterceptor } from './interceptors/credentials.interceptor';
  
 @NgModule({
     declarations: [
@@ -31,8 +30,7 @@ import { CredentialsInterceptor } from './interceptors/credentials.interceptor';
         { provide: LocationStrategy, useClass: PathLocationStrategy  },
         // { provide: HTTP_INTERCEPTORS, useClass: CredentialsInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },//avant 
-        //  { provide: HTTP_INTERCEPTORS, useClass: XsrfInterceptor, multi: true },
-        MessageService
+         MessageService
     ],
     bootstrap: [AppComponent]
 })
