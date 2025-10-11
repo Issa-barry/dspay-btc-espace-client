@@ -35,9 +35,21 @@ export class AppProfileSidebarComponent implements OnInit {
         this.layoutService.state.profileSidebarVisible = _val;
     }
 
+//     logout(): void {
+//   if (this.loggingOut) return;
+//   this.loggingOut = true;
+//   this.errorMessage = null;
 
-        // Méthode de déconnexion
- logout(): void {
+//   try {
+//     this.authService.logout();  // déconnexion immédiate
+//     this.visible = false;          // ferme le sidebar
+//   } finally {
+//     this.loggingOut = false;       // stoppe le spinner si tu en as un
+//   }
+// }
+
+
+  logout(): void {
     if (this.loggingOut) return;       // évite les doubles clics
     this.errorMessage = null;
     this.loggingOut = true;
@@ -45,7 +57,7 @@ export class AppProfileSidebarComponent implements OnInit {
     this.authService.logout()
       .pipe(finalize(() => this.loggingOut = false))   // stoppe le spinner
       .subscribe({
-        next: () => {
+        next: () => { 
           this.visible = false;                         // ferme le sidebar
           this.router.navigate(['/auth/login']);
         },
@@ -72,8 +84,7 @@ export class AppProfileSidebarComponent implements OnInit {
 
    lodUserAuth() {
     this.me$ = this.authService.currentUser$;
-    // Si pas encore chargé (page fraîche), on récupère /users/me
-    if (!this.authService.currentUserValue) {
+     if (!this.authService.currentUserValue) {
       this.authService.getMe().subscribe();
     }
   }

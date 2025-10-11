@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/demo/service/auth/auth.service';
 
 @Component({
@@ -8,7 +9,8 @@ import { AuthService } from 'src/app/demo/service/auth/auth.service';
   styleUrls: ['./topbar.component.scss']
 })
 export class TopbarComponent implements OnInit {
-  isLoggedIn = false;
+  // isLoggedIn!: Observable<boolean>; 
+     isLoggedIn: boolean = false; 
   navOpen = false;        // menu desktop (si tu l’utilises encore)
   mobileMenu = false;     // sidebar mobile
 
@@ -18,11 +20,19 @@ export class TopbarComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.isLoggedIn = this.authService.isAuthenticated();
+      this.isLoged()    
   }
 
+    isLoged(){
+        if (this.authService.isAuthenticated()) {
+            this.isLoggedIn = true;
+        } else {
+            this.isLoggedIn = false;
+        }
+    }
+ 
   goToLogin(): void {
-    if (this.authService.isAuthenticated()) {
+    if (this.isLoggedIn) {
       this.router.navigate(['/dashboard']);
     } else {
       this.router.navigate(['/auth/login']);
@@ -51,7 +61,7 @@ export class TopbarComponent implements OnInit {
 
   openMobileMenu(): void {
     this.mobileMenu = true;
-  }
+  } 
 
   closeMobileMenu(): void {
     this.mobileMenu = false;

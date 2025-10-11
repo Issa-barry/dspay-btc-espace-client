@@ -14,12 +14,12 @@ export class AppTopbarComponent {
 
   constructor(
     public layoutService: LayoutService,
-    private auth: AuthService
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
     // 👉 essaie de récupérer depuis ton AuthService
-    const user = this.auth.getUserInfo ? this.auth.getUserInfo() : null;
+    const user = this.authService.getMe ? this.authService.getMe() : null;
 
     // ou si ton user est stocké dans localStorage :
     const userData = user || JSON.parse(localStorage.getItem('user') || '{}');

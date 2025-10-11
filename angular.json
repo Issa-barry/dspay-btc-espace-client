@@ -6,9 +6,7 @@
     "apollo-ng": {
       "projectType": "application",
       "schematics": {
-        "@schematics/angular:component": {
-          "style": "scss"
-        }
+        "@schematics/angular:component": { "style": "scss" }
       },
       "root": "",
       "sourceRoot": "src",
@@ -91,9 +89,14 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "proxyConfig": "proxy.conf.json",
+            "host": "localhost",
+            "port": 4200
+          },
           "configurations": {
             "production": { "buildTarget": "apollo-ng:build:production" },
-            "preprod": { "buildTarget": "apollo-ng:build:preprod" },
+            "preprod":     { "buildTarget": "apollo-ng:build:preprod" },
             "development": { "buildTarget": "apollo-ng:build:development" }
           },
           "defaultConfiguration": "development"
@@ -117,7 +120,7 @@
             "styles": ["src/styles.scss"],
             "scripts": []
           }
-        } 
+        }
       }
     }
   },

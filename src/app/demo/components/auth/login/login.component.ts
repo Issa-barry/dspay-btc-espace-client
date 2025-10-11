@@ -30,30 +30,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Prefill email si rememberMe était activé
-    const savedEmail = localStorage.getItem('remember_email');
-    if (savedEmail) {
-      this.email = savedEmail;
-      this.rememberMe = true;
-    }
-
-    const qp = this.route.snapshot.queryParamMap;
-    const urlAfter =
-      qp.get('redirect') || sessionStorage.getItem('redirectUrl') || '/dashboard';
-
-    // 1) si token => direct
-    if (this.authService.isAuthenticated()) {
-      this.router.navigateByUrl(urlAfter, { replaceUrl: true });
-      return;
-    }
-
-    // 2) sinon, teste la session cookie via /users/me (intercepteur => withCredentials)
-    this.authService.getMe().subscribe({
-      next: () => this.router.navigateByUrl(urlAfter, { replaceUrl: true }),
-      error: () => {
-        // rester sur login
-      },
-    });
+    
   }
 
   login(): void {

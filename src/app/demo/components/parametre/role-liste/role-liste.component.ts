@@ -76,7 +76,7 @@ export class RoleListeComponent implements OnInit {
      *   USERS
      ******************************************************/
     getAutenticatedContact(): void {
-        const id = Number(this.authService.getUserId());
+        const id = Number(this.authService.getMe());
         this.contactService.getContactById(id).subscribe({
             next: (response) => {
                 this.userAuthenticated = response;

@@ -13,9 +13,9 @@
                     <div class="ml-3">
                         <span class="font-semibold">Infos</span>
                         <p class="text-color-secondary mb-2">Reference : {{ contact.reference }}</p>
-                        <p class="text-color-secondary mb-2">{{ (me$ | async)?.nom_complet || ((me$ | async)?.prenom + ' ' + (me$ | async)?.nom) }}</p>
+                         <p class="text-color-secondary mb-2">{{ (me$ | async)?.nom_complet || ((me$ | async)?.prenom + ' ' + (me$ | async)?.nom) }}</p>
                         <p class="text-color-secondary mb-2">  {{ (me$ | async)?.phone | phoneFormat:'FR' }}</p>
-                        <p class="text-color-secondary m-0">{{ (me$ | async)?.email }}</p>
+                        <p class="text-color-secondary m-0">{{ (me$ | async)?.email }}</p> 
 
                     </div>
                 </a>

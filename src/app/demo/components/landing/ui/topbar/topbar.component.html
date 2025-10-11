@@ -20,7 +20,7 @@
         <span>Accueil</span>
       </a>
     </li>
-
+ 
     <li>
       <a (click)="router.navigate(['/landing'], {fragment: 'services'})"
          class="flex px-0 py-3 text-900 font-medium line-height-3 cursor-pointer">
@@ -77,6 +77,8 @@
   <button pButton label="Me connecter" class="w-full btn-pill-outline" (click)="goToLogin(); mobileMenu=false"></button>
 </div>
 
+
+
 <ng-template #mobileDashboardTmpl>
   <div class="px-3 py-4">
     <button
@@ -99,3 +101,4 @@
   </nav>
 </p-sidebar>
 
+ 
