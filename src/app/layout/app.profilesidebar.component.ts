@@ -13,7 +13,7 @@ import { finalize, Observable } from 'rxjs';
     providers: [MessageService],
 })
 export class AppProfileSidebarComponent implements OnInit {
- me$!: Observable<Contact | null>;   // profil connecté (observable)
+   me$!: Observable<Contact | null>;   // profil connecté (observable)
   contacts: Contact[] = [];
   contact: Contact = new Contact();
   errorMessage: string | null = null;
@@ -53,7 +53,7 @@ export class AppProfileSidebarComponent implements OnInit {
     if (this.loggingOut) return;       // évite les doubles clics
     this.errorMessage = null;
     this.loggingOut = true;
-
+  
     this.authService.logout()
       .pipe(finalize(() => this.loggingOut = false))   // stoppe le spinner
       .subscribe({
