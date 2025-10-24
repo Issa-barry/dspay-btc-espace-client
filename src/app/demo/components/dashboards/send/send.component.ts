@@ -5,6 +5,7 @@ import { finalize, Subject, takeUntil } from 'rxjs';
 
 import { Beneficiaire } from 'src/app/demo/models/beneficiaire';
 import { Transfert, TransfertCreateDto } from 'src/app/demo/models/transfert';
+import { AuthService } from 'src/app/demo/service/auth/auth.service';
 import { BeneficiaireService } from 'src/app/demo/service/beneficiaire/beneficiaire.service';
 import { PaiementService } from 'src/app/demo/service/paiement/paiement.service';
 import { TransfertService } from 'src/app/demo/service/transfert/transfert.service';
@@ -19,7 +20,7 @@ interface BeneficiaireOption {
 }
 
 @Component({
-  selector: 'app-send',
+  selector: 'app-send', 
   standalone: false,
   templateUrl: './send.component.html',
   styleUrls: ['./send.component.scss'],
@@ -80,12 +81,18 @@ export class SendComponent implements OnInit, OnDestroy {
     private readonly messageService: MessageService,
     private readonly confirmationService: ConfirmationService,
     private readonly paiementService: PaiementService,
+    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
     this.loadBeneficiaires();
     this.prefillFromQuery();
     this.handleStripeReturn();
+    this.authService.currentUser$.subscribe(u => {
+         this.currentUserEmail = u?.email || null;
+         console.log(this.currentUserEmail);
+         
+     });
   }
 
   ngOnDestroy(): void {

@@ -5,6 +5,7 @@ import { Table } from 'primeng/table';
 import { Agence } from 'src/app/demo/models/agence';
 import { AgenceService } from 'src/app/demo/service/agence/agence.service';
 import { Statut } from 'src/app/demo/enums/statut.enum';
+import { PaginationMeta } from 'src/app/demo/models/PaginationMeta';
 
 @Component({
     selector: 'app-agence-liste',
@@ -16,8 +17,12 @@ export class AgenceListeComponent implements OnInit {
     agences: Agence[] = [];
     selectedAgences: Agence[] = [];
     agence: Agence = new Agence();
-
-  
+    page = 1;
+    perPage = 10; 
+    searchTerm = '';
+ 
+   meta: PaginationMeta | null = null;
+   
 
     agenceDialog = false;
     deleteAgenceDialog = false;
@@ -73,7 +78,30 @@ export class AgenceListeComponent implements OnInit {
         ];
 
         this.selectedWeek = this.weeks[0];
+        this.loadAgences();
     }
+
+
+      loadAgences(): void {
+    this.loading = true;
+
+    this.agenceService
+      .list({ page: this.page, per_page: this.perPage, search: this.searchTerm || undefined })
+      .subscribe({
+        next: ({ items, meta }) => {
+          this.agences = items;
+          this.meta = meta;
+          this.loading = false;
+          console.log(this.agences);
+          
+        },
+        error: (err) => {
+          this.loading = false;
+          this.showMessage('error', 'Erreur', err.message || 'Échec du chargement des bénéficiaires.');
+        }
+      });
+  }
+
 
      onWeekChange() {
         let newBarData = { ...this.barData };
@@ -98,18 +126,21 @@ export class AgenceListeComponent implements OnInit {
 
      //  CRUD
    getAllAgences() {
-    this.loading = true;
-    this.agenceService.getAgences().subscribe({
-        next: (res) => {
-            this.agences = res;
-            this.loading = false;
-        },
-        error: (err) => {
-            console.error('Erreur de chargement :', err);
-            this.loading = false;
-        },
-    });
-} 
+    // this.loading = true;
+    // this.agenceService.getAgences().subscribe({
+    //     next: (res) => {
+    //         this.agences = res;
+    //         this.loading = false;
+
+    //         console.log(this.agences);
+            
+    //     },
+    //     error: (err) => {
+    //         console.error('Erreur de chargement :', err);
+    //         this.loading = false;
+    //     },
+    // });
+}  
     openEditAgence(agence: Agence) {
         this.agence = { ...agence };
         this.agenceDialog = true;
@@ -163,7 +194,7 @@ export class AgenceListeComponent implements OnInit {
 
         this.agenceService.updateStatut(agence.id, statut).subscribe({
             next: (updated) => {
-                this.showMessage(severity, 'Statut modifié', `Agence "${updated.nom_agence}" ${action}.`);
+                this.showMessage(severity, 'Statut modifié', `Agence "${updated.nom}" ${action}.`);
                 this.getAllAgences();
             },
             error: (err) => {
@@ -179,9 +210,9 @@ export class AgenceListeComponent implements OnInit {
     }
 
     validatePays() {
-        this.isValidPays = !!this.agence.adresse?.pays;
-        if (this.agence.adresse?.pays === 'GUINEE-CONAKRY') {
-            this.agence.adresse.code_postal = '00000';
+        this.isValidPays = !!this.agence.pays;
+        if (this.agence.pays === 'GUINEE-CONAKRY') {
+            this.agence.code_postal = '00000';
             this.isCodePostalDisabled = true;
         } else {
             this.isCodePostalDisabled = false;
@@ -189,7 +220,7 @@ export class AgenceListeComponent implements OnInit {
     }
 
     validateCodePostal() {
-        const cp = this.agence.adresse?.code_postal?.toString() || '';
+        const cp = this.agence.code_postal?.toString() || '';
         this.isValidCodePostal = /^\d{5}$/.test(cp);
     }
 
@@ -201,7 +232,7 @@ export class AgenceListeComponent implements OnInit {
 
     isFormInvalid(): boolean {
         const a = this.agence;
-        return !a.nom_agence || !a.phone || !a.email || !a.adresse?.adresse || !a.adresse.code_postal || !a.adresse.ville;
+        return !a.nom|| !a.phone || !a.email || !a.adresse || !a.code_postal || !a.ville;
     }
 
     showMessage(severity: string, summary: string, detail: string) {

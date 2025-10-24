@@ -10,7 +10,7 @@
     <div class="flex align-items-center justify-content-between">
       <div>
         <h2 class="m-0">Paiement confirmé</h2>
-        <p class="m-0 text-600">Session : {{ sessionId }}</p>
+        <!-- <p class="m-0 text-600">Session : {{ sessionId }}</p> -->
       </div>
       <p-tag
         [severity]="lookup?.status === 'succeeded' ? 'success' : 'info'"
@@ -24,11 +24,11 @@
         <div class="text-xl font-bold">
           <!-- {{ eurosFromCents(lookup?.amount) | number:'1.2-2' }} {{ lookup?.currency?.toUpperCase() }} -->
         </div>
-      </div>
-      <div class="col-12 md:col-6">
+       </div>
+      <!--<div class="col-12 md:col-6">
         <div class="text-700">Référence</div>
         <div class="text-xl font-bold">{{ lookup?.metadata?.order_id || '—' }}</div>
-      </div>
+      </div> -->
     </div>
 
     <div class="mt-5 flex gap-2">

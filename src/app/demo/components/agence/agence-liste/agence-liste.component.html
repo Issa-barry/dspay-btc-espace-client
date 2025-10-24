@@ -19,12 +19,11 @@
         dataKey="id"
         [globalFilterFields]="[
           'reference',
-          'nom_agence',
-          'adresse.adresse',
-          'responsable.nom_complet',
+          'nom',
+          'aadresse',
           'phone',
           'statut'
-        ]"
+        ]" 
       >
         <!-- CAPTION -->
   <ng-template pTemplate="caption">
@@ -61,14 +60,17 @@
             <th pSortableColumn="reference">
               Référence <p-sortIcon field="reference"></p-sortIcon>
             </th>
-            <th pSortableColumn="nom_agence">
-              Nom <p-sortIcon field="nom_agence"></p-sortIcon>
+            <th pSortableColumn="nom">
+              Nom <p-sortIcon field="nom"></p-sortIcon>
             </th>
             <th pSortableColumn="phone">
               Téléphone <p-sortIcon field="phone"></p-sortIcon>
             </th>
-            <th pSortableColumn="adresse.adresse">
-              Adresse <p-sortIcon field="adresse.adresse"></p-sortIcon>
+            <th pSortableColumn="adresse">
+              Ville <p-sortIcon field="adresse"></p-sortIcon>
+            </th>
+            <th pSortableColumn="adresse">
+              Quartier <p-sortIcon field="adresse"></p-sortIcon>
             </th>
             <th pSortableColumn="statut">
               Statut <p-sortIcon field="statut"></p-sortIcon>
@@ -91,11 +93,11 @@
 
           <!-- Mode données -->
           <tr *ngIf="!loading">
-            <td><p-tableCheckbox [value]="agence"></p-tableCheckbox></td>
-            <td>{{ agence.reference }}</td>
-            <td>{{ agence.nom_agence }}</td>
+             <td>{{ agence.reference }}</td>
+            <td>{{ agence.nom}}</td>
             <td>{{ agence.phone | phoneFormat:'GN'}}</td>
-            <td>{{ agence.adresse?.adresse }}</td>
+            <td>{{ agence.ville }}</td>
+            <td>{{ agence.quartier }}</td>
             <td>
               <span [ngClass]="'product-badge status-' + (agence.statut || '').toLowerCase()">
                 {{ agence.statut }}
@@ -117,24 +119,16 @@
     >
       <ng-template pTemplate="content">
         <ng-container *ngIf="agence">
-          <p *ngIf="agence.responsable">
-            <strong>Responsable :</strong>
-            <a
-              [routerLink]="['/dashboard/contact/contact-detail', agence.responsable.id]"
-              class="text-primary font-medium underline"
-            >
-              {{ agence.responsable.nom_complet }}
-            </a>
-          </p>
+          
           <p><strong>Référence :</strong> {{ agence.reference }}</p>
-          <p><strong>Nom :</strong> {{ agence.nom_agence }}</p>
+          <p><strong>Nom :</strong> {{ agence.nom }}</p>
           <p><strong>Email :</strong> {{ agence.email }}</p>
           <p><strong>Téléphone :</strong> {{ agence.phone }}</p>
-          <p><strong>Pays :</strong> {{ agence.adresse?.pays }}</p>
-          <p><strong>Ville :</strong> {{ agence.adresse?.ville }}</p>
-          <p><strong>Quartier :</strong> {{ agence.adresse?.quartier }}</p>
-          <p><strong>Adresse :</strong> {{ agence.adresse?.adresse }}</p>
-          <p><strong>Code Postal :</strong> {{ agence.adresse?.code_postal }}</p>
+          <p><strong>Pays :</strong> {{ agence.pays }}</p>
+          <p><strong>Ville :</strong> {{ agence.ville }}</p>
+          <p><strong>Quartier :</strong> {{ agence.quartier }}</p>
+          <p><strong>Adresse :</strong> {{ agence.adresse }}</p>
+          <p><strong>Code Postal :</strong> {{ agence.code_postal }}</p>
         </ng-container>
       </ng-template>
 
@@ -169,7 +163,7 @@
       <div class="flex align-items-center justify-content-center">
         <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
         <span *ngIf="agence">
-          Êtes-vous sûr de vouloir supprimer l'agence : <b>{{ agence.nom_agence }}</b> ?
+          Êtes-vous sûr de vouloir supprimer l'agence : <b>{{ agence.nom}}</b> ?
         </span>
       </div>
       <ng-template pTemplate="footer">

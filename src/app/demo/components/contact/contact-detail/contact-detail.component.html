@@ -107,10 +107,10 @@
     <div class="field col-12">
       <label class="font-medium">Agence du contact :</label>
       <p-skeleton *ngIf="loadingAgenceSection" width="250px" height="1.5rem"></p-skeleton>
-      <a *ngIf="!loadingAgenceSection && contact.agence_id && agence?.nom_agence"
+      <a *ngIf="!loadingAgenceSection && contact.agence_id && agence?.nom"
          class="text-blue-500 font-semibold cursor-pointer hover:underline"
          (click)="openAgenceDetailsDialog()">
-        {{ agence.nom_agence }}
+        {{ agence.nom }}
       </a>
       <span *ngIf="!loadingAgenceSection && !contact.agence_id" class="text-red-500">Aucune agence affectée</span>
     </div>
@@ -133,10 +133,10 @@
     </div>
 
     <div *ngIf="codeRecuperer && agence?.adresse" class="mt-3">
-      <div class="text-sm mb-2"><strong>Nom :</strong> {{ agence.nom_agence }}</div>
+      <div class="text-sm mb-2"><strong>Nom :</strong> {{ agence.nom }}</div>
       <div class="text-sm mb-2"><strong>Téléphone :</strong> {{ agence.phone }}</div>
       <div class="text-sm mb-2"><strong>Email :</strong> {{ agence.email }}</div>
-      <div class="text-sm mb-2"><strong>Adresse :</strong> {{ agence.adresse.adresse }} - {{ agence.adresse.ville }}</div>
+      <div class="text-sm mb-2"><strong>Adresse :</strong> {{ agence.adresse }} - {{ agence.ville }}</div>
     </div>
   </ng-template>
 
@@ -152,13 +152,13 @@
 <p-dialog [(visible)]="dialogAgenceDetails" header="Détails de l'agence" [modal]="true" [style]="{ width: '500px' }">
   <ng-template pTemplate="content">
     <div *ngIf="agence">
-      <div class="mb-2"><strong>Nom :</strong> {{ agence.nom_agence }}</div>
+      <div class="mb-2"><strong>Nom :</strong> {{ agence.nom }}</div>
       <div class="mb-2"><strong>Email :</strong> {{ agence.email }}</div>
       <div class="mb-2"><strong>Téléphone :</strong> {{ agence.phone }}</div>
-      <div class="mb-2"><strong>Pays :</strong> {{ agence.adresse?.pays }}</div>
-      <div class="mb-2"><strong>Adresse :</strong> {{ agence.adresse?.adresse }}</div>
-      <div class="mb-2"><strong>Ville :</strong> {{ agence.adresse?.ville }}</div>
-      <div class="mb-2"><strong>Code Postal :</strong> {{ agence.adresse?.code_postal }}</div>
+      <div class="mb-2"><strong>Pays :</strong> {{ agence?.pays }}</div>
+      <div class="mb-2"><strong>Adresse :</strong> {{ agence?.adresse }}</div>
+      <div class="mb-2"><strong>Ville :</strong> {{ agence?.ville }}</div>
+      <div class="mb-2"><strong>Code Postal :</strong> {{ agence?.code_postal }}</div>
     </div>
   </ng-template>
 
