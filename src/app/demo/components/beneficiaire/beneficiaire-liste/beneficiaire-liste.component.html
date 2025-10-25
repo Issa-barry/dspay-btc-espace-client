@@ -7,7 +7,7 @@
   [paginator]="true" [rows]="10" 
   [rowsPerPageOptions]="[10,20,30]"
   [showCurrentPageReport]="false"
-  currentPageReportTemplate="Liste {first} / {last}"
+ 
   [showFirstLastIcon]="false"
   responsiveLayout="scroll"
   dataKey="id"
@@ -111,9 +111,10 @@
 
 <p-dialog
             [(visible)]="beneficiaireDialog"
-            [style]="{ width: '450px' }"
-            header="Détails du Beneficiaire"
+             header="Détails du Beneficiaire"
             [modal]="true"
+            [style]="{ width: '450px' }"
+           [breakpoints]="{ '960px': '90vw', '640px': '95vw' }"
             class="p-fluid"
         >
             <ng-template pTemplate="content">
@@ -201,12 +202,11 @@
                     label="Enregistrer"
                     icon="pi pi-check"
                     class="p-button-text"
-                    [loading]="loading"
+                    [loading]="loadingSave" [disabled]="loadingSave" [attr.disabled]
                     (click)="saveBeneficiaire()"
                 ></button>
             </ng-template>
         </p-dialog>
-
 
         <!-- Confirmer suppression unitaire -->
 <p-dialog
@@ -218,6 +218,6 @@
   <p>Voulez-vous vraiment supprimer le bénéficiaire <b>{{ current?.nom_complet || (current?.prenom + ' ' + current?.nom) }}</b> ?</p>
   <ng-template pTemplate="footer">
     <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-text"      (click)="deleteBeneficiaireDialog = false"></button>
-    <button pButton pRipple label="Supprimer" icon="pi pi-trash" class="p-button-danger" [loading]="loading" (click)="confirmDeleteBeneficiaire()"></button>
+    <button pButton pRipple label="Supprimer" icon="pi pi-trash" class="p-button-danger" [loading]="loadingSave" [disabled]="loadingSave" [attr.disabled] (click)="confirmDeleteBeneficiaire()"></button>
   </ng-template>
 </p-dialog>

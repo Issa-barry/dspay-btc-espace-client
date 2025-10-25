@@ -97,7 +97,11 @@ export class AgenceListeComponent implements OnInit {
         },
         error: (err) => {
           this.loading = false;
-          this.showMessage('error', 'Erreur', err.message || 'Échec du chargement des bénéficiaires.');
+            this.messageService.add({
+                    severity: 'error',
+                    summary: 'Erreur',
+                    detail: err.message || 'Une erreur est survenue',
+                });
         }
       });
   }

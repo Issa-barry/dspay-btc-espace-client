@@ -14,7 +14,7 @@
         <p class="line-height-3 mt-0 mb-5 text-700 text-xl font-medium">Bienvenue {{ user?.nom_complet }}</p>
 
         <!-- <p class="line-height-3 mt-0 mb-5 text-700 text-xl font-medium">Bienvenue {{ user?.nom_complet }} ({{ user?.email }})</p> -->
-        <p-button [routerLink]="['/auth/login']" styleClass="p-button-success font-medium p-button-raised">Me connecter</p-button>
+        <p-button (click)="goTologin()" styleClass="p-button-success font-medium p-button-raised">Me connecter</p-button>
     </div>
 </div>
 

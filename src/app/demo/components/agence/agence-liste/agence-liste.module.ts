@@ -20,6 +20,7 @@ import { DialogModule } from 'primeng/dialog';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { SkeletonModule } from 'primeng/skeleton';
 import { PipeModule } from 'src/app/demo/pipes/pipe.module';
+import { PaginatorModule } from 'primeng/paginator';
 
 @NgModule({
     declarations: [AgenceListeComponent],
@@ -43,7 +44,8 @@ import { PipeModule } from 'src/app/demo/pipes/pipe.module';
         ProgressBarModule,
         SkeletonModule,
         DropdownModule,
-        PipeModule
+        PipeModule,
+        PaginatorModule
      ],
 })
 export class AgenceListeModule {}
