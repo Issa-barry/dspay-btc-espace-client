@@ -55,24 +55,24 @@ export class AgenceNewComponent implements OnInit {
 
         if (selectedCountry && selectedCountry === 'GUINEE-CONAKRY') {
             this.isGuineeSelected = true;
-            this.agence.adresse.adresse = 'GUINEE-CONAKRY';
-            this.agence.adresse.code_postal = '00224';
+            this.agence.adresse = 'GUINEE-CONAKRY';
+            this.agence.code_postal = '00224';
         } else {
             this.isGuineeSelected = false;
-            this.agence.adresse.ville = '';
-            this.agence.adresse.quartier = '';
+            this.agence.ville = '';
+            this.agence.quartier = '';
         }
     }
 
     isFormInvalid(): boolean {
         return (
-            !this.agence.nom_agence ||
+            !this.agence.nom ||
             !this.agence.phone ||
             !this.agence.email ||
+            !this.agence ||
             !this.agence.adresse ||
-            !this.agence.adresse.adresse ||
-            !this.agence.adresse.code_postal ||
-            !this.agence.adresse.ville
+            !this.agence.code_postal ||
+            !this.agence.ville
         );
     }
  
@@ -92,10 +92,10 @@ export class AgenceNewComponent implements OnInit {
 
     validateCodePostal() {
         if (
-            this.agence.adresse &&
-            this.agence.adresse.code_postal !== undefined
+            this.agence &&
+            this.agence.code_postal !== undefined
         ) {
-            const codePostalStr = String(this.agence.adresse.code_postal);
+            const codePostalStr = String(this.agence.code_postal);
             this.isValidCodePostal = /^\d{5}$/.test(codePostalStr);
         } else {
             this.isValidCodePostal = false;
@@ -105,10 +105,10 @@ export class AgenceNewComponent implements OnInit {
     isCodePostalDisabled: boolean = false;
 
     validatePays() {
-        this.isValidPays = !!this.agence.adresse.pays;
+        this.isValidPays = !!this.agence.pays;
         // Si le pays sélectionné est "Guinée-Conakry", fixer le code postal à "00000" et le rendre non modifiable
-        if (this.agence.adresse.pays === 'GUINEE-CONAKRY') {
-            this.agence.adresse.code_postal = '00000';
+        if (this.agence.pays === 'GUINEE-CONAKRY') {
+            this.agence.code_postal = '00000';
             this.isCodePostalDisabled = true;
         } else {
             this.isCodePostalDisabled = false;
@@ -121,18 +121,18 @@ export class AgenceNewComponent implements OnInit {
         // this.validatePays();
         // this.validateCodePostal();
         // this.validatePhone();
-        const codePostalStr = String(this.agence.adresse.code_postal);
+        const codePostalStr = String(this.agence.code_postal);
 
         if (!this.isValidCodePostal) { return; }
-         if (this.agence.adresse && this.agence.adresse.code_postal !== undefined ) {
-            this.agence.adresse.code_postal = String( this.agence.adresse.code_postal );
+         if (this.agence && this.agence.code_postal !== undefined ) {
+            this.agence.code_postal = String( this.agence.code_postal );
         }
          if (
             this.agence.responsable_reference &&
-            this.agence.nom_agence &&
+            this.agence.nom &&
             this.agence.phone &&
             this.agence.email &&
-            this.agence.adresse.ville
+            this.agence.ville
         ) {
             this.agenceService.createAgence(this.agence).subscribe({
                 next: (res) => {

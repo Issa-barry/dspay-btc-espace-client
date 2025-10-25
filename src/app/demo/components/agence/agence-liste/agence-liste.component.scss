@@ -1,0 +1,12 @@
+.ymo-item{
+  display:flex;align-items:center;gap:.75rem;
+  padding:.75rem;border:1px solid var(--surface-200);
+  border-radius:.75rem;background:var(--surface-card);
+  margin-bottom:.5rem;
+}
+.ymo-avatar{
+  width:2.5rem;height:2.5rem;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:600;color:#fff;background:var(--primary-color);
+  flex:0 0 2.5rem;
+}

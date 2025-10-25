@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from 'src/app/demo/service/auth/auth.service';
 
 @Component({
   selector: 'app-validation-register',
@@ -14,9 +15,10 @@ export class ValidationRegisterComponent implements OnInit {
   user: any = null;
 
   constructor(
-    private route: ActivatedRoute,
+    private route: ActivatedRoute, 
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
@@ -45,6 +47,11 @@ export class ValidationRegisterComponent implements OnInit {
 
   goToDashboard() {
     this.router.navigate(['/dashboard']);
+  }
+
+  goTologin() {
+    this.authService.clearAuthData();
+    this.router.navigate(['/auth/login']);
   }
 }
  

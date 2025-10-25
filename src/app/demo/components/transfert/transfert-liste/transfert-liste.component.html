@@ -5,23 +5,22 @@
             <p-toast></p-toast>
             <p-confirmDialog></p-confirmDialog>
             <p-table
-  #dt
-  [value]="loading ? skeletonRows : transferts"
-  [paginator]="true"
-  [rows]="10"
-  [rowsPerPageOptions]="[10, 20, 30]"
-  [showCurrentPageReport]="false"
-  currentPageReportTemplate=" {first} / {last}"
-  [showFirstLastIcon]="false"
-  responsiveLayout="scroll"
-  dataKey="id"
-  [globalFilterFields]="[
-    'code',
-    'beneficiaire.nom_complet',
-    'beneficiaire.phone',
-    'mode_reception',
-    'statut'
-  ]"
+            #dt
+            [value]="loading ? skeletonRows : transferts"
+            [paginator]="true"
+            [rows]="10"
+            [showCurrentPageReport]="false"
+            currentPageReportTemplate=" {first} / {last}"
+            [showFirstLastIcon]="false"
+            responsiveLayout="scroll"
+            dataKey="id"
+            [globalFilterFields]="[
+              'code',
+              'beneficiaire.nom_complet',
+              'beneficiaire.phone', 
+              'mode_reception',
+              'statut'
+            ]"
 >
   <!-- CAPTION -->
   <ng-template pTemplate="caption">
@@ -53,8 +52,7 @@
       <td><p-skeleton width="12rem" /></td>
       <td><p-skeleton width="10rem" /></td>
       <td><p-skeleton width="8rem" /></td>
-      <td><p-skeleton width="6rem" /></td>
-      <td class="text-center">
+       <td class="text-center">
         <p-skeleton width="2.25rem" height="2.25rem" borderRadius="50%" />
       </td>
     </tr>

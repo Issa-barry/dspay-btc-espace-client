@@ -57,6 +57,8 @@ export class NewPasswordComponent implements OnInit {
       error: (err) => {
           this.loading = false;
         this.errors = err.error?.data || {};
+        console.log(this.errors);
+        
       },
     });
   }

@@ -51,7 +51,7 @@ export class ForgotPasswordComponent {
             error: (err) => {
                  this.loading = false;
                 console.log(err);
-                this.errorMessage = err.error.data.email || "Erreur lors de l'envoi du lien.";
+                this.errorMessage =err.error.data.email || "Erreur lors de l'envoi du lien.";
                    
             },
         });

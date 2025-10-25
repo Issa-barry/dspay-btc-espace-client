@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { Agence } from '../../models/agence';
 import { environment } from 'src/environements/environment.dev';
+import { PaginationMeta } from '../../models/PaginationMeta';
 
 const httpOption = {
   headers: new HttpHeaders({
@@ -22,7 +23,7 @@ export class AgenceService {
   constructor(private http: HttpClient) {}
 
   private log(log: string) {
-    console.info(log);
+    console.info(log); 
   }
 
   /**
@@ -61,12 +62,42 @@ export class AgenceService {
     return throwError(() => ({ message, validationErrors }));
   }
 
-  getAgences(): Observable<Agence[]> {
-    return this.http.get<{ data: Agence[] }>(`${this.apiUrl}/all`).pipe(
-      map((res) => res.data),
-      catchError(this.handleError)
-    );
-  }
+    /** Liste paginée (items + meta) */
+    list(opts: { search?: string; page?: number; per_page?: number } = {})
+      : Observable<{ items: Agence[]; meta: PaginationMeta }> {
+  
+      let params = new HttpParams();
+      if (opts.search) params = params.set('search', opts.search);
+      if (opts.page) params = params.set('page', String(opts.page));
+      if (opts.per_page) params = params.set('per_page', String(opts.per_page));
+  
+      return this.http
+        .get<{ success: boolean; data: { items: Agence[]; meta: PaginationMeta } }>(
+          `${this.apiUrl}/all`,
+          { params }
+        )
+        .pipe(
+          map((res) => res.data),
+          catchError(this.handleError) 
+        );
+    }
+  
+
+ // agence.service.ts
+getAgences(): Observable<Agence[]> {
+  return this.http.get<any>(`${this.apiUrl}/all`).pipe(
+    map((res) => {
+      // Si c’est une pagination Laravel → prendre res.data
+      if (res && Array.isArray(res.data)) return res.data;
+      // Si le backend renvoie déjà un tableau
+      if (Array.isArray(res)) return res;
+      // Sinon, renvoyer un tableau vide
+      return [];
+    }),
+    catchError(this.handleError)
+  );
+}
+
 
   getAgenceById(id: number): Observable<Agence> {
     return this.http
@@ -74,7 +105,7 @@ export class AgenceService {
       .pipe(
         map((res) => res.data),
         catchError(this.handleError)
-      );
+      ); 
   }
 
   // agence.service.ts

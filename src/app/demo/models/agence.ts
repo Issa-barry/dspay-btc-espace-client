@@ -5,21 +5,26 @@ import { Contact } from "./contact";
  export class Agence {
     id?: number;
     reference?:string;
-    nom_agence: string;
+    nom: string;
     phone: string;
     email:string;
-    adresse: Adresse;
-   responsable: Contact;  
+    pays: string;
+    ville: string;  
+    quartier:string;
+    adresse : string;
+    code_postal:string;
     statut:string;
 responsable_reference?: string;
     constructor()
     {
-        this.nom_agence = "";
+        this.nom = "";
         this.phone = "";
         this.email = "";
-         this.statut="attente";
-        this.adresse = new Adresse();
-         this.responsable = new Contact();
-
+        this.pays = "";
+        this.ville = "";
+        this.quartier = "";
+        this.statut="attente";
+        this.adresse = "";
+        this.code_postal="";
     }
 }  

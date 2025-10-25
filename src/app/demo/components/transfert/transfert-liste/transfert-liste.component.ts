@@ -12,7 +12,7 @@ import { TransfertService } from 'src/app/demo/service/transfert/transfert.servi
   providers: [MessageService, ConfirmationService]
 })
 export class TransfertListeComponent implements OnInit {
-  
+   
   transferts: Transfert[] = [];
   selectedTransferts: Transfert[] = [];
   transfertDialog: boolean = false;

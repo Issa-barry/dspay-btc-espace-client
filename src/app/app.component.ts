@@ -7,7 +7,10 @@ import { ConfirmationService, MessageService, PrimeNGConfig } from 'primeng/api'
     providers: [MessageService, ConfirmationService]
 })
 export class AppComponent implements OnInit {
-    constructor(private primengConfig: PrimeNGConfig) {}
+    constructor(
+        private primengConfig: PrimeNGConfig, 
+
+    ) {}
 
     ngOnInit(): void {
         this.primengConfig.ripple = true;

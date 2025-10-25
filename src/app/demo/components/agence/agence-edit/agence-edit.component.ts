@@ -43,8 +43,7 @@ export class AgenceEditComponent implements OnInit {
         this.agenceService.getAgenceById(id).subscribe({
             next: (data) => {
                 this.agence = data;
-                this.agence.responsable_reference = data.responsable?.reference || '';
-                this.isGuineeSelected = data.adresse.pays === 'GUINEE-CONAKRY';
+                this.isGuineeSelected = data.pays === 'GUINEE-CONAKRY';
             },
             error: () => {
                 this.messageService.add({
@@ -60,9 +59,9 @@ export class AgenceEditComponent implements OnInit {
         const selectedCountry = event.value;
         this.isGuineeSelected = selectedCountry === 'GUINEE-CONAKRY';
         if (this.isGuineeSelected) {
-            this.agence.adresse.code_postal = '00000';
+            this.agence.code_postal = '00000';
         } else {
-            this.agence.adresse.quartier = '';
+            this.agence.quartier = '';
         }
     }
 
