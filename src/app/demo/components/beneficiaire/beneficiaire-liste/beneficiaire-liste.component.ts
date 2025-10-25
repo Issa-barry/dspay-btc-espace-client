@@ -52,7 +52,7 @@ export class BeneficiaireListeComponent implements OnInit {
 
   loading = false;
   loadingSave = false;
-  skeletonRows = Array.from({ length: 5 }, () => ({}));
+  skeletonRows = Array.from({ length: 3 }, () => ({}));
   rowsPerPageOptions = [5, 10, 20];
 
   selectedContacts: Contact[] = [];
