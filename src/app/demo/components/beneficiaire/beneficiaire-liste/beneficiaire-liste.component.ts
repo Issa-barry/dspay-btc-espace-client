@@ -92,8 +92,6 @@ export class BeneficiaireListeComponent implements OnInit {
           this.beneficiaires = items;
           this.meta = meta;
           this.loading = false;
-          console.log(this.beneficiaires);
-          
         },
         error: (err) => {
           this.loading = false;

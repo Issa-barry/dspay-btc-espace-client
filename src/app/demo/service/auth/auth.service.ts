@@ -143,11 +143,16 @@ export class AuthService {
   }
 
   /** Récupère l'utilisateur connecté */
-  getMe(): Observable<Contact> {
-    return this.http.get<ApiResponse<Contact>>(`${this.apiUrl}/users/me`).pipe(
+/** Récupère l'utilisateur connecté */
+getMe(): Observable<Contact> {
+  return this.http
+    .get<ApiResponse<{ user: Contact }>>(`${this.apiUrl}/users/me`, {
+      headers: { Accept: 'application/json' }
+    })
+    .pipe(
       map(res => {
-        if (!res.data) throw new Error('Utilisateur non trouvé');
-        return res.data;
+        if (!res.data?.user) throw new Error('Utilisateur non trouvé');
+        return res.data.user;
       }),
       tap(user => {
         this.currentUserSubject.next(user);
@@ -156,7 +161,8 @@ export class AuthService {
       }),
       catchError(this.handleError)
     );
-  }
+}
+
 
   /** INSCRIPTION */
   register(payload: Contact): Observable<LoginResponse> {
