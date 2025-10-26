@@ -1,6 +1,5 @@
 <div class="grid">
   <div class="col-12">
-    <!-- Card avec padding conditionnel : padding sur desktop, aucun padding sur mobile -->
     <div class="card beneficiaires-card">
       <p-toast></p-toast>
  
@@ -19,7 +18,15 @@
         <!-- CAPTION -->
         <ng-template pTemplate="caption">
           <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center table-caption">
-            <h5 class="m-0 mb-3 md:mb-0">Bénéficiaires</h5>
+            <button 
+              pButton 
+              pRipple 
+              label="Nouveau bénéficiaire"
+              icon="pi pi-user-plus" 
+              class="p-button-primary" 
+              (click)="openNew()"
+            ></button>
+            <br/>
             <span class="block p-input-icon-left search-input-wrapper">
               <i class="pi pi-search"></i>
               <input
@@ -80,7 +87,6 @@
                     <div class="text-600 mobile-phone">{{ b.phone | phoneFormat:'GN' }}</div>
                   </div>
                 </div>
-                <!-- Seul le bouton éditer est visible sur mobile -->
                 <button pButton pRipple icon="pi pi-pencil"
                         class="p-button-rounded p-button-text p-button-success mobile-edit-btn"
                         (click)="editBeneficiaire(b)"></button>
@@ -130,14 +136,11 @@
             [(ngModel)]="beneficiaire.nom"
             required
             autofocus
-            [ngClass]="{
-              'ng-invalid ng-dirty': submitted && !beneficiaire.nom
-            }"
+            [ngClass]="{ 'ng-invalid ng-dirty': submitted && !beneficiaire.nom }"
           />
-          <small
-            class="ng-dirty ng-invalid"
-            *ngIf="submitted && !beneficiaire.nom"
-          >Nom is required.</small>
+          <small class="ng-dirty ng-invalid" *ngIf="submitted && !beneficiaire.nom">
+            Nom is required.
+          </small>
         </div>
 
         <div class="field">
@@ -148,14 +151,11 @@
             id="prenom"
             [(ngModel)]="beneficiaire.prenom"
             required
-            [ngClass]="{
-              'ng-invalid ng-dirty': submitted && !beneficiaire.prenom
-            }"
+            [ngClass]="{ 'ng-invalid ng-dirty': submitted && !beneficiaire.prenom }"
           />
-          <small
-            class="ng-dirty ng-invalid"
-            *ngIf="submitted && !beneficiaire.prenom"
-          >Prenom is required.</small>
+          <small class="ng-dirty ng-invalid" *ngIf="submitted && !beneficiaire.prenom">
+            Prenom is required.
+          </small>
         </div>
 
         <div class="field">
@@ -175,14 +175,11 @@
             inputmode="numeric"
             placeholder="Ex: 621 02 17 02 06"
             required
-            [ngClass]="{
-              'ng-invalid ng-dirty': submitted && !beneficiaire.phone
-            }"
+            [ngClass]="{ 'ng-invalid ng-dirty': submitted && !beneficiaire.phone }"
           />
-          <small
-            class="ng-dirty ng-invalid"
-            *ngIf="submitted && !beneficiaire.phone"
-          >Téléphone is required.</small>
+          <small class="ng-dirty ng-invalid" *ngIf="submitted && !beneficiaire.phone">
+            Téléphone is required.
+          </small>
         </div>
       </ng-template>
 
@@ -208,7 +205,7 @@
       </ng-template>
     </p-dialog>
 
-    <!-- Confirmer suppression unitaire -->
+    <!-- Confirmer suppression -->
     <p-dialog
       [(visible)]="deleteBeneficiaireDialog"
       [style]="{ width: '400px' }"
@@ -216,7 +213,10 @@
       header="Confirmer la suppression"
       [modal]="true"
     >
-      <p>Voulez-vous vraiment supprimer le bénéficiaire <b>{{ current?.nom_complet || (current?.prenom + ' ' + current?.nom) }}</b> ?</p>
+      <p>
+        Voulez-vous vraiment supprimer le bénéficiaire 
+        <b>{{ current?.nom_complet || (current?.prenom + ' ' + current?.nom) }}</b> ?
+      </p>
       <ng-template pTemplate="footer">
         <button 
           pButton 
