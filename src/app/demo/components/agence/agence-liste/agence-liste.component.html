@@ -15,43 +15,43 @@
           </p-dropdown>
         </div> -->
 
-        <span class="p-input-icon-left w-full md:w-20rem">
-          <i class="pi pi-search"></i>
-          <input
-            pInputText
-            type="text"
-            (input)="onGlobalFilter(dt, $event)"
-            placeholder="Rechercher une agence..."
-            class="w-full" />
-        </span>
-      </div>
+    <!-- Recherche : plein écran sur mobile, largeur contrôlée en desktop -->
+    <span class="p-input-icon-left w-full md:w-20rem">
+      <i class="pi pi-search"></i>
+      <input
+        pInputText
+        type="text"
+        (input)="onGlobalFilter(dt, $event)"
+        placeholder="Rechercher..."
+        class="w-full" />
+    </span>
+  </div>
+</ng-template>
 
-      <!-- ========= DESKTOP : TABLE ========= -->
-      <div class="hidden md:block">
-        <p-table
-          #dt
-          [value]="loading ? skeletonRows : agences"
-          responsiveLayout="scroll"
-          [rows]="10"
-         [paginator]="true"
-           
-          [showCurrentPageReport]="false"
-          [showFirstLastIcon]="false"
-          [rowHover]="true"
-          dataKey="id"
-          [globalFilterFields]="['reference','nom','phone','ville','quartier','statut']"
-          >
 
-          <ng-template pTemplate="header">
-            <tr>
-              <th pSortableColumn="reference">Référence <p-sortIcon field="reference"></p-sortIcon></th>
-              <th pSortableColumn="nom">Nom <p-sortIcon field="nom"></p-sortIcon></th>
-              <th pSortableColumn="phone">Téléphone <p-sortIcon field="phone"></p-sortIcon></th>
-              <th pSortableColumn="ville">Ville <p-sortIcon field="ville"></p-sortIcon></th>
-              <th pSortableColumn="quartier">Quartier <p-sortIcon field="quartier"></p-sortIcon></th>
-              <th pSortableColumn="statut">Statut <p-sortIcon field="statut"></p-sortIcon></th>
-            </tr>
-          </ng-template>
+        <!-- HEADER -->
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="reference">
+              Référence <p-sortIcon field="reference"></p-sortIcon>
+            </th>
+            <th pSortableColumn="nom">
+              Nom <p-sortIcon field="nom"></p-sortIcon>
+            </th>
+            <th pSortableColumn="phone">
+              Téléphone <p-sortIcon field="phone"></p-sortIcon>
+            </th>
+            <th pSortableColumn="adresse">
+              Ville <p-sortIcon field="adresse"></p-sortIcon>
+            </th>
+            <th pSortableColumn="adresse">
+              Quartier <p-sortIcon field="adresse"></p-sortIcon>
+            </th>
+            <th pSortableColumn="statut">
+              Statut <p-sortIcon field="statut"></p-sortIcon>
+            </th>
+           </tr>
+        </ng-template>
 
           <ng-template pTemplate="body" let-agence>
             <!-- Skeleton -->
