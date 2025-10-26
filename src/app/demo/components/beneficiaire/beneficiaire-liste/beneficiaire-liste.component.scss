@@ -1,60 +1,293 @@
-/* Affichage conditionnel */
-.show-desktop { display: none; }
-.show-mobile  { display: table-row; }
+/* ========================================
+   MOBILE FIRST - Bénéficiaires (Spacing Optimisé)
+   ======================================== */
 
-@media (min-width: 768px) { /* >= md */
-  .show-desktop { display: table-row; }
-  .show-mobile  { display: none; }
+/* Par défaut (Mobile) - Masquer le tableau desktop */
+.show-desktop {
+  display: none !important;
 }
 
-/* Variable locale pour la taille d’avatar (un peu plus petit en desktop) */
-:host { --avatar-size: 2.25rem; }           /* mobile par défaut */
-@media (min-width: 768px) {
-  :host { --avatar-size: 2rem; }            /* desktop */
+.show-mobile {
+  display: table-row !important;
 }
 
-/* Carte mobile */
-.mobile-card {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: .75rem;
-  padding: .9rem 1rem;
-  border-bottom: 1px solid var(--surface-border);
+/* Card sans padding sur mobile */
+.beneficiaires-card {
+  padding: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  margin: 0 !important;
 }
 
-/* Avatar initiales (mobile + desktop) */
-.avatar-initials {
-  width: var(--avatar-size);
-  height: var(--avatar-size);
-  border-radius: 9999px;
-  background: var(--primary-500);
-  color: #fff;
+/* Caption avec padding réduit sur mobile */
+.beneficiaires-table .table-caption {
+  padding: 1rem 1.25rem 0.875rem 1.25rem;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.beneficiaires-table .table-caption h5 {
+  font-size: 1.125rem;
   font-weight: 600;
-  font-size: calc(var(--avatar-size) * 0.44);
-  display: inline-flex;
+  color: #1f2937;
+  margin-bottom: 0.75rem !important;
+}
+
+/* Search wrapper sans marge supplémentaire */
+.search-input-wrapper {
+  width: 100%;
+  margin-top: 0 !important;
+}
+
+.search-input-wrapper input {
+  width: 100% !important;
+  border-radius: 0.5rem;
+  padding: 0.625rem 0.75rem 0.625rem 2.5rem;
+  font-size: 0.9375rem;
+}
+
+/* PrimeNG overrides - Supprimer les marges internes */
+.beneficiaires-table ::ng-deep .p-datatable {
+  margin-top: 0 !important;
+}
+
+.beneficiaires-table ::ng-deep .p-datatable-header {
+  padding: 0 !important;
+  border: none !important;
+}
+
+/* Table mobile - retirer les bordures et padding */
+.beneficiaires-table ::ng-deep .p-datatable-wrapper {
+  border: none !important;
+  margin-top: 0 !important;
+}
+
+.beneficiaires-table ::ng-deep .p-datatable-thead {
+  display: none;
+}
+
+.beneficiaires-table ::ng-deep .p-datatable-tbody > tr > td {
+  border: none !important;
+  padding: 0 !important;
+}
+
+/* Carte mobile PLEINE LARGEUR */
+.mobile-card-full {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  gap: 1rem;
+  background-color: #ffffff;
+  border-bottom: 1px solid #f3f4f6;
+  transition: background-color 0.2s ease;
+}
+
+.mobile-card-full:active {
+  background-color: #f9fafb;
+}
+
+/* Avatar mobile */
+.avatar-initials-mobile {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+  color: white;
+  display: flex;
   align-items: center;
   justify-content: center;
+  font-weight: 700;
+  font-size: 1.125rem;
+  flex-shrink: 0;
   text-transform: uppercase;
-  flex: 0 0 var(--avatar-size);
 }
 
-/* Table: align milieu et couper proprement les noms longs */
-:host ::ng-deep .p-datatable .p-datatable-tbody > tr > td {
-  vertical-align: middle;
+/* Texte mobile */
+.mobile-name {
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  color: #111827;
+  margin-bottom: 0.25rem;
 }
 
-/* Colonne Nom en desktop: ellipsis si trop long */
-.show-desktop td:first-child span {
-  max-width: 28rem;
-  display: inline-block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-@media (max-width: 991px) {
-  .show-desktop td:first-child span { max-width: 16rem; }
+.mobile-phone {
+  font-size: 0.875rem;
+  line-height: 1.3;
+  color: #6b7280;
 }
 
-/* Paginator un peu plus compact */
-:host ::ng-deep .p-paginator { padding: .5rem; }
+/* Bouton éditer mobile */
+.mobile-edit-btn {
+  flex-shrink: 0;
+  width: 2.75rem !important;
+  height: 2.75rem !important;
+}
+
+.mobile-edit-btn .pi {
+  font-size: 1.125rem;
+}
+
+/* Pagination mobile */
+.beneficiaires-table ::ng-deep .p-paginator {
+  background-color: #ffffff;
+  border-top: 1px solid #e5e7eb;
+  padding: 0.75rem 1rem;
+  margin: 0 !important;
+}
+
+.beneficiaires-table ::ng-deep .p-paginator .p-paginator-pages .p-paginator-page {
+  min-width: 2.5rem;
+  height: 2.5rem;
+}
+
+/* Empty state mobile */
+.beneficiaires-table ::ng-deep .p-datatable-emptymessage td {
+  padding: 3rem 1.25rem !important;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 0.9375rem;
+}
+
+/* ========================================
+   TABLET (min-width: 768px)
+   ======================================== */
+@media (min-width: 768px) {
+  /* Afficher le tableau desktop, cacher les cartes mobiles */
+  .show-desktop {
+    display: table-row !important;
+  }
+  
+  .show-mobile {
+    display: none !important;
+  }
+
+  /* Restaurer le padding de la card sur tablet */
+  .beneficiaires-card {
+    padding: 1.5rem !important;
+    margin: 1.5rem !important;
+    border-radius: 0.5rem !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
+  }
+
+  /* Caption desktop - espacement optimisé */
+  .beneficiaires-table .table-caption {
+    padding: 0 0 1.25rem 0;
+    border-bottom: none;
+  }
+
+  .beneficiaires-table .table-caption h5 {
+    font-size: 1.25rem;
+    margin-bottom: 0 !important;
+  }
+
+  .search-input-wrapper {
+    width: auto;
+    margin-top: 0 !important;
+  }
+
+  .search-input-wrapper input {
+    width: auto !important;
+  }
+
+  /* Avatar desktop */
+  .avatar-initials {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+  }
+
+  /* Table desktop normale */
+  .beneficiaires-table ::ng-deep .p-datatable-wrapper {
+    border: 1px solid #e5e7eb !important;
+    border-radius: 0.5rem !important;
+    overflow: hidden;
+    margin-top: 0 !important;
+  }
+
+  .beneficiaires-table ::ng-deep .p-datatable-thead {
+    display: table-header-group !important;
+  }
+
+  .beneficiaires-table ::ng-deep .p-datatable-thead > tr > th {
+    background-color: #f9fafb;
+    padding: 1rem;
+    font-weight: 600;
+    color: #374151;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .beneficiaires-table ::ng-deep .p-datatable-tbody > tr > td {
+    padding: 1rem !important;
+    border-bottom: 1px solid #f3f4f6 !important;
+  }
+
+  .beneficiaires-table ::ng-deep .p-datatable-tbody > tr:hover {
+    background-color: #f9fafb;
+  }
+
+  /* Pagination desktop */
+  .beneficiaires-table ::ng-deep .p-paginator {
+    padding: 1rem;
+    border-top: 1px solid #e5e7eb;
+  }
+}
+
+/* ========================================
+   DESKTOP (min-width: 1024px)
+   ======================================== */
+@media (min-width: 1024px) {
+  .beneficiaires-card {
+    padding: 2rem !important;
+    margin: 2rem !important;
+  }
+
+  .beneficiaires-table .table-caption {
+    padding: 0 0 1.5rem 0;
+  }
+
+  .beneficiaires-table .table-caption h5 {
+    font-size: 1.5rem;
+  }
+}
+
+/* ========================================
+   UTILITAIRES
+   ======================================== */
+
+/* Améliorer l'apparence des boutons sur mobile */
+@media (max-width: 767px) {
+  .p-button-rounded {
+    transition: transform 0.2s ease, background-color 0.2s ease;
+  }
+
+  .p-button-rounded:active {
+    transform: scale(0.95);
+  }
+}
+
+/* Skeleton mobile */
+@media (max-width: 767px) {
+  .beneficiaires-table ::ng-deep .p-skeleton {
+    background-color: #f3f4f6;
+  }
+}
+
+/* Fix pour PrimeNG - Supprimer tous les espacements inutiles */
+@media (max-width: 767px) {
+  .beneficiaires-table ::ng-deep .p-datatable .p-datatable-header {
+    background: transparent;
+  }
+
+  .beneficiaires-table ::ng-deep .p-component {
+    margin: 0 !important;
+  }
+}
