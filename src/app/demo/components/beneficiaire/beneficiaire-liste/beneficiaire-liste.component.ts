@@ -15,7 +15,7 @@ import { formatPhoneOnType, toE164 } from 'src/app/shared/utils/phone.util';
 
 @Component({
   selector: 'app-beneficiaire-liste',
-  templateUrl: './beneficiaire-liste.component.html',
+  templateUrl: './beneficiaire-liste.component.html', 
   styleUrl: './beneficiaire-liste.component.scss',
   providers: [MessageService, ConfirmationService]
 
@@ -24,8 +24,8 @@ export class BeneficiaireListeComponent implements OnInit {
 
     beneficiaires: Beneficiaire[] = [];
     beneficiaire: Beneficiaire = new Beneficiaire();
-   beneficiaireDialog = false;
-   deleteBeneficiaireDialog = false;
+    beneficiaireDialog = false;
+    deleteBeneficiaireDialog = false;
     current: Beneficiaire = {} as Beneficiaire;
     selectedBeneficiaires: Beneficiaire[] = [];
     page = 1;
@@ -51,7 +51,8 @@ export class BeneficiaireListeComponent implements OnInit {
   submitted = false;
 
   loading = false;
-  skeletonRows = Array.from({ length: 5 }, () => ({}));
+  loadingSave = false;
+  skeletonRows = Array.from({ length: 3 }, () => ({}));
   rowsPerPageOptions = [5, 10, 20];
 
   selectedContacts: Contact[] = [];
@@ -91,8 +92,6 @@ export class BeneficiaireListeComponent implements OnInit {
           this.beneficiaires = items;
           this.meta = meta;
           this.loading = false;
-          console.log(this.beneficiaires);
-          
         },
         error: (err) => {
           this.loading = false;
@@ -150,6 +149,7 @@ export class BeneficiaireListeComponent implements OnInit {
 
   saveContact(): void {
     this.submitted = true;
+    this.loadingSave = true;
     this.validatePays();
     this.validateCodePostal();
     this.validatePhone();
@@ -163,6 +163,9 @@ export class BeneficiaireListeComponent implements OnInit {
 
     serviceCall.subscribe({
       next: () => {
+        
+        this.loadingSave = false;
+        this.submitted = false;
         this.getAllContacts();
         this.messageService.add({
           severity: 'success',
@@ -172,6 +175,8 @@ export class BeneficiaireListeComponent implements OnInit {
         });
       },
       error: (err) => {
+        this.loadingSave = false;
+        this.submitted = false;
         console.error('Erreur:', err);
         this.messageService.add({
           severity: 'error',

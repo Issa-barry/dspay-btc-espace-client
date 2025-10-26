@@ -21,6 +21,7 @@ export class BeneficiaireNewComponent implements OnInit {
     errors: { [key: string]: string } = {};
     isGuineeSelected: boolean = false;
     loading = false;  
+    loadingSave = false;  
    
     constructor(
         private router: Router,
@@ -55,27 +56,7 @@ export class BeneficiaireNewComponent implements OnInit {
         label: civ,
         value: civ,
     }));
-
-    // Vérifier si le pays Guinée est sélectionné
-    // onCountryChange() {
-
-    //     console.log('this.contact.adresse.pays:', this.contact.adresse.pays);
-        
-    //     if (this.contact.adresse.pays && typeof this.contact.adresse.pays === 'object') {
-    //         this.isGuineeSelected = this.contact.adresse.pays === 'GUINEE-CONAKRY';
-
-            
-    //         console.log('isGuineeSelected:', this.isGuineeSelected);
-            
-    //         // Réinitialiser les champs en fonction du pays
-    //         if (this.isGuineeSelected) {
-    //             this.contact.adresse.code_postal = 'null';
-    //             this.contact.adresse.quartier = '';
-    //         } else {
-    //             this.contact.adresse.quartier = 'null';
-    //         }
-    //     }
-    // }
+ 
 
     onCountryChange(event: any) {
         const selectedCountry = event.value;
@@ -95,6 +76,7 @@ export class BeneficiaireNewComponent implements OnInit {
     
 
     saveContact() {
+        this.loadingSave = true;
         this.submitted = true;
         this.errors = {};
 
@@ -140,6 +122,7 @@ export class BeneficiaireNewComponent implements OnInit {
                 });
 
                 this.contact = new Contact();
+                this.loading = false;
                 this.submitted = false;
                 this.errors = {};
                  
@@ -151,7 +134,8 @@ export class BeneficiaireNewComponent implements OnInit {
                 if (err.error && err.error.errors) {
                     this.errors = err.error.errors;
                 }
-
+                 this.loading = false;
+                this.submitted = false;
                 this.messageService.add({
                     severity: 'error',
                     summary: 'Erreur',

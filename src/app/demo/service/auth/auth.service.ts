@@ -7,10 +7,10 @@ import { Router } from '@angular/router';
 import { Contact } from '../../models/contact';
 import { TokenService } from '../token/token.service';
 
-export interface ApiResponse<T = any> { 
-  success: boolean; 
-  message: string; 
-  data?: T | null; 
+export interface ApiResponse<T = any> {
+  success: boolean;
+  message: string;
+  data?: T | null;
 }
 
 export interface LoginResponse {
@@ -24,238 +24,209 @@ export interface LoginResponse {
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private apiUrl = environment.apiUrl;
+  private readonly STORAGE_USER = 'current_user';
+  private readonly STORAGE_USER_ID = 'user_id';
+  private readonly LEGACY_KEYS = ['user', 'auth_user', 'auth', 'token', 'access_token'];
 
-  private currentUserSubject = new BehaviorSubject<Contact | null>(
-    JSON.parse(localStorage.getItem('current_user') || 'null')
-  );
+  // On n'hydrate pas ici pour éviter JSON.parse au démarrage
+  private currentUserSubject = new BehaviorSubject<Contact | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
   constructor(
-    private http: HttpClient, 
+    private http: HttpClient,
     private router: Router,
     private tokenService: TokenService
-  ) {
-    // Vérifie si le token est encore valide au démarrage
+  ) {}
+
+  /** A appeler au bootstrap (via APP_INITIALIZER) */
+  initOnStartup(): void {
+    this.hydrateFromStorageSafely();
     this.checkTokenValidity();
+  }
+
+  /** Essaie de charger l'utilisateur depuis localStorage en gérant "undefined"/JSON cassé */
+  private hydrateFromStorageSafely(): void {
+    const raw = localStorage.getItem(this.STORAGE_USER);
+
+    if (!raw || raw === 'undefined' || raw === 'null') {
+      this.clearAuthData(true);
+      return;
+    }
+
+    try {
+      const user: Contact = JSON.parse(raw);
+      if (user && typeof user === 'object') {
+        this.currentUserSubject.next(user);
+      } else {
+        this.clearAuthData(true);
+      }
+    } catch {
+      this.clearAuthData(true);
+    }
   }
 
   public get currentUserValue(): Contact | null {
     return this.currentUserSubject.value;
   }
 
-  /**
-   * Vérifie la validité du token au démarrage
-   */
+  /** Vérifie la validité du token au démarrage */
   private checkTokenValidity(): void {
     if (this.tokenService.isTokenExpired()) {
-      this.clearAuthData();
+      this.clearAuthData(true);
     }
   }
 
-  /**
-   * Stocke les données d'authentification
-   */
+  /** Stocke les données d'authentification */
   private setAuthData(token: string, user: Contact, expiresIn: number): void {
-    // Utilise TokenService pour gérer le token
     this.tokenService.storeToken(token, expiresIn);
-    
-    // Stocke l'utilisateur
     this.currentUserSubject.next(user);
-    localStorage.setItem('current_user', JSON.stringify(user));
-    localStorage.setItem('user_id', String(user.id));
+    localStorage.setItem(this.STORAGE_USER, JSON.stringify(user));
+    localStorage.setItem(this.STORAGE_USER_ID, String(user.id));
   }
 
-  /**
-   * Nettoie toutes les données d'authentification
-   */
-  private clearAuthData(): void {
-    this.tokenService.clearToken();
-    this.currentUserSubject.next(null);
+  /** Nettoie toutes les données d'authentification */
+  clearAuthData(keepRoute = false): void {
+    try {
+      this.tokenService.clearToken();
+    } finally {
+      localStorage.removeItem(this.STORAGE_USER);
+      localStorage.removeItem(this.STORAGE_USER_ID);
+      // Nettoyage des anciennes clés si elles ont été utilisées par le passé
+      this.LEGACY_KEYS.forEach(k => localStorage.removeItem(k));
+      this.currentUserSubject.next(null);
+    }
+    if (!keepRoute) {
+      this.router.navigate(['/auth/login']);
+    }
   }
 
-  /**
-   * Gestion des erreurs HTTP
-   */
+  /** Gestion des erreurs HTTP */
   private handleError = (error: HttpErrorResponse) => {
     console.error('HTTP Error:', error);
-    
-    let msg = 'Une erreur inconnue est survenue';
-    
-    if (error.status === 422) {
-      const e = error.error;
-      if (e?.data && typeof e.data === 'object') {
-        msg = Object.values(e.data).flat().join(' ');
-      } else if (e?.errors) {
-        msg = Object.values(e.errors).flat().join(' ');
-      } else if (e?.message) {
-        msg = e.message;
-      }
-    } else if (error.status === 401) {
-      msg = 'Identifiants incorrects';
-      this.clearAuthData();
-    } else if (error.status === 403) {
-      msg = error.error?.message || 'Accès refusé';
-    } else if (error.status === 419) {
-      msg = 'Session expirée';
-    } else if (error.status === 0) {
-      msg = 'Serveur injoignable';
-    } else if (error.error?.message) {
-      msg = error.error.message;
-    }
-    
-    return throwError(() => error);
-  }
 
-  /**
-   * LOGIN STATELESS
-   * Envoie credentials et reçoit un token Bearer
-   */
+    // Messages (si tu les utilises ailleurs, expose-les depuis ici)
+    // let msg = 'Une erreur inconnue est survenue';
+
+    if (error.status === 401) {
+      this.clearAuthData();
+    } else if (error.status === 419) {
+      this.clearAuthData();
+    }
+
+    return throwError(() => error);
+  };
+
+  /** LOGIN STATELESS */
   login(credentials: { email: string; password: string }): Observable<LoginResponse> {
     return this.http
       .post<ApiResponse<LoginResponse>>(`${this.apiUrl}/login-stateless`, credentials)
       .pipe(
-        map(response => {
-          if (!response.data) {
-            throw new Error('Réponse invalide du serveur');
-          }
-          return response.data;
+        map(res => {
+          if (!res.data) throw new Error('Réponse invalide du serveur');
+          return res.data;
         }),
-        tap(data => {
-          this.setAuthData(data.access_token, data.user, data.expires_in);
-        }),
+        tap(data => this.setAuthData(data.access_token, data.user, data.expires_in)),
         catchError(this.handleError)
       );
   }
 
-  /**
-   * LOGOUT
-   * Révoque le token côté serveur et nettoie les données locales
-   */
+  /** LOGOUT */
   logout(): Observable<any> {
-    return this.http
-      .post<ApiResponse>(`${this.apiUrl}/logout`, {})
-      .pipe(
-        tap(() => {
-          this.clearAuthData();
-          this.router.navigate(['/auth/login']);
-        }),
-        catchError(error => {
-          // Même en cas d'erreur serveur, nettoie localement
-          this.clearAuthData();
-          this.router.navigate(['/auth/login']);
-          return throwError(() => error);
-        })
-      );
+    return this.http.post<ApiResponse>(`${this.apiUrl}/logout`, {}).pipe(
+      tap(() => this.clearAuthData()),
+      catchError(err => {
+        // Même en cas d'erreur serveur, on nettoie localement
+        this.clearAuthData();
+        return throwError(() => err);
+      })
+    );
   }
 
-  /**
-   * Récupère les informations de l'utilisateur connecté
-   */
-  getMe(): Observable<Contact> {
-    return this.http
-      .get<ApiResponse<Contact>>(`${this.apiUrl}/users/me`)
-      .pipe(
-        map(response => {
-          if (!response.data) {
-            throw new Error('Utilisateur non trouvé');
-          }
-          return response.data;
-        }),
-        tap(user => {
-          this.currentUserSubject.next(user);
-          localStorage.setItem('current_user', JSON.stringify(user));
-        }),
-        catchError(this.handleError)
-      );
-  }
+  /** Récupère l'utilisateur connecté */
+/** Récupère l'utilisateur connecté */
+getMe(): Observable<Contact> {
+  return this.http
+    .get<ApiResponse<{ user: Contact }>>(`${this.apiUrl}/users/me`, {
+      headers: { Accept: 'application/json' }
+    })
+    .pipe(
+      map(res => {
+        if (!res.data?.user) throw new Error('Utilisateur non trouvé');
+        return res.data.user;
+      }),
+      tap(user => {
+        this.currentUserSubject.next(user);
+        localStorage.setItem(this.STORAGE_USER, JSON.stringify(user));
+        localStorage.setItem(this.STORAGE_USER_ID, String(user.id));
+      }),
+      catchError(this.handleError)
+    );
+}
 
-  /**
-   * INSCRIPTION (Register)
-   */
+
+  /** INSCRIPTION */
   register(payload: Contact): Observable<LoginResponse> {
     return this.http
       .post<ApiResponse<LoginResponse>>(`${this.apiUrl}/users/clients/create`, payload)
       .pipe(
-        map(response => {
-          if (!response.data) {
-            throw new Error('Erreur lors de la création du compte');
-          }
-          return response.data;
+        map(res => {
+          if (!res.data) throw new Error('Erreur lors de la création du compte');
+          return res.data;
         }),
         tap(data => {
-          // Si l'API retourne un token après inscription
           if (data.access_token) {
             this.setAuthData(data.access_token, data.user, data.expires_in);
           } else {
-            // Sinon, juste stocker l'utilisateur
             this.currentUserSubject.next(data.user);
-            localStorage.setItem('current_user', JSON.stringify(data.user));
+            localStorage.setItem(this.STORAGE_USER, JSON.stringify(data.user));
+            localStorage.setItem(this.STORAGE_USER_ID, String(data.user.id));
           }
         }),
         catchError(this.handleError)
       );
   }
 
-  /**
-   * Vérifie si l'utilisateur est authentifié
-   */
+  /** L'utilisateur est-il authentifié ? */
   isAuthenticated(): boolean {
     const hasToken = this.tokenService.hasToken();
     const hasUser = !!this.currentUserValue;
-    
-    if (!hasToken || !hasUser) {
-      return false;
-    }
-    
-    // Vérifie l'expiration via TokenService
+    if (!hasToken || !hasUser) return false;
+
     if (this.tokenService.isTokenExpired()) {
-      this.clearAuthData();
+      this.clearAuthData(true);
       return false;
     }
-    
     return true;
   }
 
-  /**
-   * Récupère l'ID de l'utilisateur
-   */
+  /** ID utilisateur */
   getUserId(): number | null {
-    const id = this.currentUserValue?.id ?? Number(localStorage.getItem('user_id'));
+    const id = this.currentUserValue?.id ?? Number(localStorage.getItem(this.STORAGE_USER_ID));
     return Number.isFinite(id) ? Number(id) : null;
   }
 
-  /**
-   * Récupère le token d'authentification
-   */
+  /** Token */
   getToken(): string | null {
     return this.tokenService.getToken();
   }
 
-  /**
-   * Vérifie si le token est expiré
-   */
+  /** Token expiré ? */
   isTokenExpired(): boolean {
     return this.tokenService.isTokenExpired();
   }
 
-  /**
-   * Retourne le temps restant avant expiration (en secondes)
-   */
+  /** Temps restant avant expiration (s) */
   getTokenTimeRemaining(): number {
     return this.tokenService.getTokenTimeRemaining();
   }
 
-  /**
-   * Vérifie le token côté serveur
-   */
+  /** Vérifie le token côté serveur */
   verifyToken(): Observable<boolean> {
     return this.tokenService.verifyToken();
   }
 
-  /**
-   * Retourne les informations complètes sur le token (debug)
-   */
+  /** Infos token (debug) */
   getTokenInfo() {
     return this.tokenService.getTokenInfo();
   }
-} 
+}

@@ -1,216 +1,119 @@
 <div class="grid">
   <div class="col-12">
-    <div class="card px-6 py-6">
-      <p-toast></p-toast> 
+    <div class="card px-5 py-5">
+      <p-toast></p-toast>
 
-      <p-table
-        #dt
-        [value]="loading ? skeletonRows : agences"
-         responsiveLayout="scroll"
-        [rows]="10"
-        [paginator]="true"
-        [rowsPerPageOptions]="[10, 20, 30]"
-        currentPageReportTemplate="{first}/{last} "
-        [showCurrentPageReport]="false"
-         [showFirstLastIcon]="false"
-        [(selection)]="selectedAgences"
-        selectionMode="multiple"
-        [rowHover]="true"
-        dataKey="id"
-        [globalFilterFields]="[
-          'reference',
-          'nom',
-          'aadresse',
-          'phone',
-          'statut'
-        ]" 
-      >
-        <!-- CAPTION -->
-  <ng-template pTemplate="caption">
-  <div class="flex flex-column gap-2 md:flex-row md:justify-content-between md:align-items-center w-full">
-    
-    <!-- Filtre statut : plein écran sur mobile -->
-    <div class="w-full md:w-auto">
-      <p-dropdown
-        [options]="weeks"
-        [(ngModel)]="selectedWeek"
-        optionLabel="label"
-        (onChange)="onWeekChange()" 
-        styleClass="w-full md:w-14rem">
-      </p-dropdown>
-    </div>
+      <!-- FILTRES / RECHERCHE -->
+      <div class="flex flex-column gap-3 md:flex-row md:justify-content-between md:align-items-center mb-4">
+        <!-- <div class="w-full md:w-auto">
+          <p-dropdown
+            [options]="weeks"
+            [(ngModel)]="selectedWeek"
+            optionLabel="label"
+            (onChange)="onWeekChange()"
+            styleClass="w-full md:w-14rem">
+          </p-dropdown>
+        </div> -->
 
-    <!-- Recherche : plein écran sur mobile, largeur contrôlée en desktop -->
-    <span class="p-input-icon-left w-full md:w-20rem">
-      <i class="pi pi-search"></i>
-      <input
-        pInputText
-        type="text"
-        (input)="onGlobalFilter(dt, $event)"
-        placeholder="Rechercher..."
-        class="w-full" />
-    </span>
-  </div>
-</ng-template>
-
-
-        <!-- HEADER -->
-        <ng-template pTemplate="header">
-          <tr>
-            <th pSortableColumn="reference">
-              Référence <p-sortIcon field="reference"></p-sortIcon>
-            </th>
-            <th pSortableColumn="nom">
-              Nom <p-sortIcon field="nom"></p-sortIcon>
-            </th>
-            <th pSortableColumn="phone">
-              Téléphone <p-sortIcon field="phone"></p-sortIcon>
-            </th>
-            <th pSortableColumn="adresse">
-              Ville <p-sortIcon field="adresse"></p-sortIcon>
-            </th>
-            <th pSortableColumn="adresse">
-              Quartier <p-sortIcon field="adresse"></p-sortIcon>
-            </th>
-            <th pSortableColumn="statut">
-              Statut <p-sortIcon field="statut"></p-sortIcon>
-            </th>
-           </tr>
-        </ng-template>
-
-        <!-- BODY -->
-        <ng-template pTemplate="body" let-agence>
-          <!-- Mode skeleton -->
-          <tr *ngIf="loading">
-            <td><p-skeleton width="6rem"></p-skeleton></td>
-            <td><p-skeleton width="10rem"></p-skeleton></td>
-            <td><p-skeleton width="8rem"></p-skeleton></td>
-            <td><p-skeleton width="12rem"></p-skeleton></td>
-            <td><p-skeleton width="10rem"></p-skeleton></td>
-            <td><p-skeleton width="6rem"></p-skeleton></td>
-            <td><p-skeleton width="5rem" height="2rem" borderRadius="1rem"></p-skeleton></td>
-          </tr>
-
-          <!-- Mode données -->
-          <tr *ngIf="!loading">
-             <td>{{ agence.reference }}</td>
-            <td>{{ agence.nom}}</td>
-            <td>{{ agence.phone | phoneFormat:'GN'}}</td>
-            <td>{{ agence.ville }}</td>
-            <td>{{ agence.quartier }}</td>
-            <td>
-              <span [ngClass]="'product-badge status-' + (agence.statut || '').toLowerCase()">
-                {{ agence.statut }}
-              </span>
-            </td>
-             
-          </tr>
-        </ng-template>
-      </p-table>
-    </div>
-
-    <!-- DIALOGUE DÉTAIL -->
-    <p-dialog
-      [(visible)]="agenceDialog"
-      header="Détails de l'agence"
-      [modal]="true"
-      [style]="{ width: '450px' }"
-      class="p-fluid"
-    >
-      <ng-template pTemplate="content">
-        <ng-container *ngIf="agence">
-          
-          <p><strong>Référence :</strong> {{ agence.reference }}</p>
-          <p><strong>Nom :</strong> {{ agence.nom }}</p>
-          <p><strong>Email :</strong> {{ agence.email }}</p>
-          <p><strong>Téléphone :</strong> {{ agence.phone }}</p>
-          <p><strong>Pays :</strong> {{ agence.pays }}</p>
-          <p><strong>Ville :</strong> {{ agence.ville }}</p>
-          <p><strong>Quartier :</strong> {{ agence.quartier }}</p>
-          <p><strong>Adresse :</strong> {{ agence.adresse }}</p>
-          <p><strong>Code Postal :</strong> {{ agence.code_postal }}</p>
-        </ng-container>
-      </ng-template>
-
-      <ng-template pTemplate="footer">
-        <div class="flex justify-content-between w-full">
-          <button
-            pButton
-            icon="pi pi-trash"
-            class="p-button-text p-button-danger"
-            label="Supprimer"
-            (click)="openDeleteAgence(agence)"
-          ></button>
-
-          <button
-            pButton
-            icon="pi pi-pencil"
-            label="Modifier"
-            class="p-button-text"
-            (click)="onGotToEditAgence(agence)"
-          ></button>
-        </div>
-      </ng-template>
-    </p-dialog>
-
-    <!-- CONFIRMATION DIALOG – Suppression 1 -->
-    <p-dialog
-      [(visible)]="deleteAgenceDialog"
-      header="Confirmation"
-      [modal]="true"
-      [style]="{ width: '450px' }"
-    >
-      <div class="flex align-items-center justify-content-center">
-        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-        <span *ngIf="agence">
-          Êtes-vous sûr de vouloir supprimer l'agence : <b>{{ agence.nom}}</b> ?
+        <span class="p-input-icon-left w-full md:w-20rem">
+          <i class="pi pi-search"></i>
+          <input
+            pInputText
+            type="text"
+            (input)="onGlobalFilter(dt, $event)"
+            placeholder="Rechercher une agence..."
+            class="w-full" />
         </span>
       </div>
-      <ng-template pTemplate="footer">
-        <button
-          pButton
-          icon="pi pi-times"
-          class="p-button-text"
-          label="Non"
-          (click)="deleteAgenceDialog = false"
-        ></button>
-        <button
-          pButton
-          icon="pi pi-check"
-          class="p-button-text"
-          label="Oui"
-          (click)="confirmDelete()"
-        ></button>
-      </ng-template>
-    </p-dialog>
 
-    <!-- CONFIRMATION DIALOG – Suppression multiple -->
-    <p-dialog
-      [(visible)]="deleteAgencesDialog"
-      header="Confirmation"
-      [modal]="true"
-      [style]="{ width: '450px' }"
-    >
-      <div class="flex align-items-center justify-content-center">
-        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-        <span>Voulez-vous supprimer les agences sélectionnées ?</span>
+      <!-- ========= DESKTOP : TABLE ========= -->
+      <div class="hidden md:block">
+        <p-table
+          #dt
+          [value]="loading ? skeletonRows : agences"
+          responsiveLayout="scroll"
+          [rows]="10"
+         [paginator]="true"
+           
+          [showCurrentPageReport]="false"
+          [showFirstLastIcon]="false"
+          [rowHover]="true"
+          dataKey="id"
+          [globalFilterFields]="['reference','nom','phone','ville','quartier','statut']"
+          >
+
+          <ng-template pTemplate="header">
+            <tr>
+              <th pSortableColumn="reference">Référence <p-sortIcon field="reference"></p-sortIcon></th>
+              <th pSortableColumn="nom">Nom <p-sortIcon field="nom"></p-sortIcon></th>
+              <th pSortableColumn="phone">Téléphone <p-sortIcon field="phone"></p-sortIcon></th>
+              <th pSortableColumn="ville">Ville <p-sortIcon field="ville"></p-sortIcon></th>
+              <th pSortableColumn="quartier">Quartier <p-sortIcon field="quartier"></p-sortIcon></th>
+              <th pSortableColumn="statut">Statut <p-sortIcon field="statut"></p-sortIcon></th>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="body" let-agence>
+            <!-- Skeleton -->
+            <tr *ngIf="loading">
+              <td><p-skeleton width="6rem"></p-skeleton></td>
+              <td><p-skeleton width="10rem"></p-skeleton></td>
+              <td><p-skeleton width="8rem"></p-skeleton></td>
+              <td><p-skeleton width="12rem"></p-skeleton></td>
+              <td><p-skeleton width="10rem"></p-skeleton></td>
+              <td><p-skeleton width="6rem"></p-skeleton></td>
+            </tr>
+
+            <!-- Données -->
+            <tr *ngIf="!loading">
+              <td>{{ agence.reference }}</td>
+              <td>{{ agence.nom }}</td>
+              <td>{{ agence.phone | phoneFormat:'GN' }}</td>
+              <td>{{ agence.ville }}</td>
+              <td>{{ agence.quartier }}</td>
+              <td>
+                <span [ngClass]="'product-badge status-' + (agence.statut || '').toLowerCase()">
+                  {{ agence.statut }}
+                </span>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
       </div>
-      <ng-template pTemplate="footer">
-        <button
-          pButton
-          icon="pi pi-times"
-          class="p-button-text"
-          label="Non"
-          (click)="deleteAgencesDialog = false"
-        ></button>
-        <button
-          pButton
-          icon="pi pi-check"
-          class="p-button-text"
-          label="Oui"
-          (click)="confirmDeleteSelected()"
-        ></button>
-      </ng-template>
-    </p-dialog>
+
+      <!-- ========= MOBILE : LISTE TYPE YMO (lecture seule) ========= -->
+      <div class="block md:hidden mt-3">
+        <!-- Skeleton -->
+        <div *ngIf="loading">
+          <div class="ymo-item" *ngFor="let _ of [1,2,3,4,5]">
+            <p-skeleton shape="circle" size="2.5rem" class="mr-3"></p-skeleton>
+            <div class="flex-1">
+              <p-skeleton width="10rem"></p-skeleton>
+              <p-skeleton width="7rem" styleClass="mt-2"></p-skeleton>
+            </div>
+          </div>
+        </div>
+
+        <!-- Données -->
+        <div *ngIf="!loading">
+          <div class="ymo-item" *ngFor="let a of agences">
+            <div class="ymo-avatar">{{ (a.nom || '?').slice(0,2) | uppercase }}</div>
+            <div class="flex-1 min-w-0">
+              <div class="text-900 font-medium white-space-nowrap overflow-hidden text-overflow-ellipsis">
+                {{ a.nom }}
+              </div>
+              <div class="text-600 text-sm">{{ a.phone | phoneFormat:'GN' }}</div>
+              <div class="text-600 text-xs">{{ a.ville }} • {{ a.quartier }}</div>
+            </div>
+          </div>
+
+          <p-paginator
+            [rows]="10"
+            [totalRecords]="agences?.length || 0"
+            styleClass="mt-3 border-none shadow-none">
+          </p-paginator>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
