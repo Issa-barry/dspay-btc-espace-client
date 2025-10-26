@@ -19,8 +19,6 @@ export class AppSidebarComponent {
                 this.timeout = null;
             }
             this.layoutService.state.sidebarActive = true;
-           
-    
         }
     }
 

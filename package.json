@@ -3,22 +3,18 @@
   "version": "17.0.0",
   "scripts": {
     "ng": "ng",
-
     "start": "ng serve --configuration development",
     "watch": "ng build --watch --configuration development",
-
-
     "start:preprod": "ng serve --configuration preprod",
     "build:preprod": "ng build --configuration preprod && npm run postbuild:preprod",
-
     "build": "ng build --configuration production && npm run postbuild",
-    
+    "postbuild": "node scripts/generate-sitemap.mjs https://dspay.fr && node scripts/generate-sitemap-index.mjs https://dspay.fr",
+    "generate:sitemap": "node scripts/generate-sitemap.mjs https://dspay.fr",
+    "generate:sitemap:index": "node scripts/generate-sitemap-index.mjs https://dspay.fr",
     "test": "ng test",
-
-    "postbuild": "node scripts/generate-sitemap.mjs https://ibarry.fr && node scripts/generate-sitemap-index.mjs https://ibarry.fr",
-
-    "generate:sitemap": "node scripts/generate-sitemap.mjs https://ibarry.fr",
-    "generate:sitemap:index": "node scripts/generate-sitemap-index.mjs https://ibarry.fr"
+     "test:ci": "ng test --watch=false --browsers=ChromeHeadless",
+     "e2e": "cypress run",
+     "e2e:open": "cypress open"
   },
   "private": true,
   "dependencies": {
@@ -36,6 +32,7 @@
     "@fullcalendar/daygrid": "^6.0.3",
     "@fullcalendar/interaction": "^6.0.3",
     "@fullcalendar/timegrid": "^6.0.3",
+    "@stripe/stripe-js": "^7.9.0",
     "chart.js": "^3.3.2",
     "libphonenumber-js": "^1.12.22",
     "primeflex": "^3.3.1",
@@ -52,7 +49,9 @@
     "@angular/compiler-cli": "^17.0.5",
     "@ngtools/webpack": "^17.3.12",
     "@types/jasmine": "~4.3.1",
+    "@types/node": "^24.6.2",
     "css-loader": "^6.11.0",
+    "cypress": "^15.3.0",
     "jasmine-core": "~4.6.0",
     "karma": "~6.4.2",
     "karma-chrome-launcher": "~3.2.0",

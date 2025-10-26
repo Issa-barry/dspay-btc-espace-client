@@ -1,0 +1,7 @@
+.placeholder-asterisk::placeholder {
+    color: #6b7280; /* gris pour le texte */
+}
+
+.placeholder-asterisk::placeholder {
+    /* hack : on colore tout en gris puis on surligne * en rouge via attr() impossible */
+}

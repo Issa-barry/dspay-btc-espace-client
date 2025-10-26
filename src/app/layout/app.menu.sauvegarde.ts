@@ -40,7 +40,7 @@ export class AppMenuComponent implements OnInit {
      * Récupérer les informations de l'utilisateur authentifié
      */
     getAuthenticatedContact(): void {
-        const userId = Number(this.authService.getUserId());
+        const userId = Number(this.authService.getMe());
         if (!userId) {
             this.buildMenu();
             return;

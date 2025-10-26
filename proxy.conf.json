@@ -1,0 +1,19 @@
+{
+  "/api": {
+    "target": "http://localhost:8000",
+    "changeOrigin": true,
+    "secure": false,
+    "logLevel": "debug"
+  },
+  "/web": {
+    "target": "http://localhost:8000",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/sanctum": {
+    "target": "http://localhost:8000",
+    "changeOrigin": true,
+    "secure": false
+  },
+  "/sanctum/csrf-cookie": { "target": "http://localhost:8000", "changeOrigin": true, "secure": false, "logLevel": "debug" }
+}

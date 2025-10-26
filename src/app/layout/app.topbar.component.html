@@ -7,7 +7,7 @@
         <app-breadcrumb class="topbar-breadcrumb"></app-breadcrumb>
     </div>
 
-    <div class="topbar-end">
+    <div class="topbar-end"> 
         <ul class="topbar-menu"> 
             <li class="topbar-search">
                 <span class="p-input-icon-left">
@@ -18,11 +18,14 @@
             <li class="ml-3">
                 <button pButton type="button" icon="pi pi-bell" class="p-button-text p-button-secondary p-button-rounded flex-shrink-0" (click)="onConfigButtonClick()"></button>
             </li>
-            <li class="topbar-profile">
-                <button type="button" class="p-link" (click)="onProfileButtonClick()">
-                    <img src="assets/demo/images/avatar/circle/utilisateur (2).png" alt="Profile" />
-                </button>
+            <li class="topbar-profile ml-2 sm:ml-0 sm:mr-4">
+            <button type="button" class="p-link" (click)="onProfileButtonClick()">
+                <div class="profile-circle flex align-items-center justify-content-center">
+                {{ initialesProfil }}
+                </div>
+            </button>
             </li>
+
         </ul>
     </div>
 </div> 

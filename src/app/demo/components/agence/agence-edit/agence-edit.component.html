@@ -7,29 +7,18 @@
     <div class="grid" *ngIf="!loading">
         <div class="col-12 lg:col-10">
             <div class="grid formgrid p-fluid">
+ 
 
                 <div class="field mb-4 col-12 md:col-12">
-                    <label for="agence.responsable_reference" class="font-medium text-900">Référence du Responsable</label>
-                    <input id="agence.responsable_reference" type="text" pInputText [(ngModel)]="agence.responsable_reference"
+                    <label for="nom" class="font-medium text-900">Nom de l'agence</label>
+                    <input id="nom" type="text" pInputText [(ngModel)]="agence.nom"
                         [ngClass]="{
                             'ng-invalid ng-dirty':
-                                (submitted && !agence.responsable_reference) ||
-                                apiErrors['agence.responsable_reference']
+                                (submitted && !agence.nom) ||
+                                apiErrors['nom']
                         }"
                     />
-                    <small *ngIf="apiErrors['agence.responsable_reference']">{{ apiErrors['agence.responsable_reference'] }}</small>
-                </div>
-
-                <div class="field mb-4 col-12 md:col-12">
-                    <label for="nom_agence" class="font-medium text-900">Nom de l'agence</label>
-                    <input id="nom_agence" type="text" pInputText [(ngModel)]="agence.nom_agence"
-                        [ngClass]="{
-                            'ng-invalid ng-dirty':
-                                (submitted && !agence.nom_agence) ||
-                                apiErrors['nom_agence']
-                        }"
-                    />
-                    <small *ngIf="apiErrors['nom_agence']">{{ apiErrors['nom_agence'] }}</small>
+                    <small *ngIf="apiErrors['nom']">{{ apiErrors['nom'] }}</small>
                 </div>
 
                 <div class="field mb-4 col-12 md:col-6">
@@ -59,7 +48,7 @@
                 <div class="field mb-4 col-12 md:col-12">
                     <label for="country" class="font-medium text-900">Pays</label>
                     <p-dropdown
-                        [(ngModel)]="agence.adresse.pays"
+                        [(ngModel)]="agence.pays"
                         inputId="country"
                         [options]="countries"
                         optionLabel="name"
@@ -71,7 +60,7 @@
                         (onChange)="onCountryChange($event)"
                         [ngClass]="{
                             'ng-invalid ng-dirty':
-                                (submitted && !agence.adresse.pays) ||
+                                (submitted && !agence.pays) ||
                                 apiErrors['adresse.pays']
                         }"
                     >
@@ -83,15 +72,15 @@
                             </div>
                         </ng-template>
                     </p-dropdown>
-                    <small *ngIf="apiErrors['adresse.pays']">{{ apiErrors['adresse.pays'] }}</small>
+                    <small *ngIf="apiErrors['adresse.pays']">{{ apiErrors['pays'] }}</small>
                 </div>
 
                 <div *ngIf="!isGuineeSelected" class="field mb-4 col-12 md:col-12">
                     <label for="adresse" class="font-medium text-900">Adresse</label>
-                    <input id="adresse" type="text" [(ngModel)]="agence.adresse.adresse" pInputText
+                    <input id="adresse" type="text" [(ngModel)]="agence.adresse" pInputText
                         [ngClass]="{
                             'ng-invalid ng-dirty':
-                                (submitted && !agence.adresse.adresse) ||
+                                (submitted && !agence.adresse) ||
                                 apiErrors['adresse.adresse']
                         }"
                     />
@@ -100,10 +89,10 @@
 
                 <div *ngIf="!isGuineeSelected" class="field mb-4 col-12 md:col-6">
                     <label for="code_postal" class="font-medium text-900">Code Postal</label>
-                    <input id="code_postal" type="text" pInputText [(ngModel)]="agence.adresse.code_postal"
+                    <input id="code_postal" type="text" pInputText [(ngModel)]="agence.code_postal"
                         [ngClass]="{
                             'ng-invalid ng-dirty':
-                                (submitted && !agence.adresse.code_postal) ||
+                                (submitted && !agence.code_postal) ||
                                 apiErrors['adresse.code_postal']
                         }"
                     />
@@ -112,10 +101,10 @@
 
                 <div *ngIf="isGuineeSelected" class="field mb-4 col-12 md:col-6">
                     <label for="quartier" class="font-medium text-900">Quartier</label>
-                    <input id="quartier" type="text" pInputText [(ngModel)]="agence.adresse.quartier"
+                    <input id="quartier" type="text" pInputText [(ngModel)]="agence.quartier"
                         [ngClass]="{
                             'ng-invalid ng-dirty':
-                                (submitted && !agence.adresse.quartier) ||
+                                (submitted && !agence.quartier) ||
                                 apiErrors['adresse.quartier']
                         }"
                     />
@@ -124,10 +113,10 @@
 
                 <div class="field mb-4 col-12 md:col-6">
                     <label for="ville" class="font-medium text-900">Ville</label>
-                    <input id="ville" type="text" [(ngModel)]="agence.adresse.ville" pInputText
+                    <input id="ville" type="text" [(ngModel)]="agence.ville" pInputText
                         [ngClass]="{
                             'ng-invalid ng-dirty':
-                                (submitted && !agence.adresse.ville) ||
+                                (submitted && !agence.ville) ||
                                 apiErrors['adresse.ville']
                         }"
                     />

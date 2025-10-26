@@ -11,10 +11,11 @@ import { Statut } from 'src/app/demo/enums/statut.enum';
 import { Beneficiaire } from 'src/app/demo/models/beneficiaire';
 import { PaginationMeta } from 'src/app/demo/models/PaginationMeta';
 import { BeneficiaireService } from 'src/app/demo/service/beneficiaire/beneficiaire.service';
+import { formatPhoneOnType, toE164 } from 'src/app/shared/utils/phone.util';
 
 @Component({
   selector: 'app-beneficiaire-liste',
-  templateUrl: './beneficiaire-liste.component.html',
+  templateUrl: './beneficiaire-liste.component.html', 
   styleUrl: './beneficiaire-liste.component.scss',
   providers: [MessageService, ConfirmationService]
 
@@ -23,12 +24,12 @@ export class BeneficiaireListeComponent implements OnInit {
 
     beneficiaires: Beneficiaire[] = [];
     beneficiaire: Beneficiaire = new Beneficiaire();
-   beneficiaireDialog = false;
-   deleteBeneficiaireDialog = false;
+    beneficiaireDialog = false;
+    deleteBeneficiaireDialog = false;
     current: Beneficiaire = {} as Beneficiaire;
     selectedBeneficiaires: Beneficiaire[] = [];
     page = 1;
-    perPage = 10;
+    perPage = 10; 
     searchTerm = '';
  
    meta: PaginationMeta | null = null;
@@ -50,7 +51,8 @@ export class BeneficiaireListeComponent implements OnInit {
   submitted = false;
 
   loading = false;
-  skeletonRows = Array.from({ length: 5 }, () => ({}));
+  loadingSave = false;
+  skeletonRows = Array.from({ length: 3 }, () => ({}));
   rowsPerPageOptions = [5, 10, 20];
 
   selectedContacts: Contact[] = [];
@@ -59,6 +61,8 @@ export class BeneficiaireListeComponent implements OnInit {
   isValidCodePostal = true;
   isCodePostalDisabled = false;
   isValidPays = true;
+
+  // Pays: toujours Guinée-Conakry pour bénéficiaires
 
   constructor(
     private contactService: ContactService,
@@ -73,6 +77,8 @@ export class BeneficiaireListeComponent implements OnInit {
     this.getAllContacts();
     this.getAllRoles();
     this.loadBeneficiaires();
+
+    // Rien à initialiser: pays forcé à GN côté UI et logique
   }
 
   /** Chargement liste paginée */
@@ -86,8 +92,6 @@ export class BeneficiaireListeComponent implements OnInit {
           this.beneficiaires = items;
           this.meta = meta;
           this.loading = false;
-          console.log(this.beneficiaires);
-          
         },
         error: (err) => {
           this.loading = false;
@@ -145,6 +149,7 @@ export class BeneficiaireListeComponent implements OnInit {
 
   saveContact(): void {
     this.submitted = true;
+    this.loadingSave = true;
     this.validatePays();
     this.validateCodePostal();
     this.validatePhone();
@@ -158,6 +163,9 @@ export class BeneficiaireListeComponent implements OnInit {
 
     serviceCall.subscribe({
       next: () => {
+        
+        this.loadingSave = false;
+        this.submitted = false;
         this.getAllContacts();
         this.messageService.add({
           severity: 'success',
@@ -167,6 +175,8 @@ export class BeneficiaireListeComponent implements OnInit {
         });
       },
       error: (err) => {
+        this.loadingSave = false;
+        this.submitted = false;
         console.error('Erreur:', err);
         this.messageService.add({
           severity: 'error',
@@ -181,7 +191,7 @@ export class BeneficiaireListeComponent implements OnInit {
   }
 
   saveBeneficiaire(): void {
-  this.submitted = true;
+    this.submitted = true;
 
   // validation très simple (adapte selon ton modèle)
   if (!this.beneficiaire?.phone || (!this.beneficiaire.nom && !this.beneficiaire.nom_complet)) {
@@ -194,10 +204,22 @@ export class BeneficiaireListeComponent implements OnInit {
     return;
   }
 
+  // Normaliser téléphone en E.164 pour la Guinée (GN)
+  const e164 = toE164(this.beneficiaire.phone || '', 'GN');
+  if (!e164) {
+    this.messageService.add({
+      severity: 'warn',
+      summary: 'Téléphone invalide',
+      detail: `Le numéro n'est pas valide pour la Guinée-Conakry.`,
+      life: 3000
+    });
+    return;
+  }
+
   const payload = {
     nom: this.beneficiaire.nom ?? '',
     prenom: this.beneficiaire.prenom ?? '',
-    phone: this.beneficiaire.phone ?? ''
+    phone: e164
   };
 
   const isUpdate = typeof this.beneficiaire.id === 'number' && this.beneficiaire.id > 0;
@@ -230,6 +252,30 @@ export class BeneficiaireListeComponent implements OnInit {
     }
   });
 }
+  // ---- Téléphone (UX) ----
+  onPhoneInput(event: Event) {
+    const target = event?.target as HTMLInputElement | null;
+    const raw = target?.value ?? '';
+    // Retire toute lettre/symbole saisi; ne garde que les chiffres
+    const digitsOnly = raw.replace(/\D+/g, '');
+    this.beneficiaire.phone = formatPhoneOnType(digitsOnly, 'GN');
+  }
+
+  onPhoneKeyDown(event: KeyboardEvent) {
+    const allowedCtrl = event.ctrlKey || event.metaKey;
+    const key = event.key;
+    // Autoriser touches de contrôle, navigation et raccourcis
+    const controlKeys = [
+      'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Home', 'End', 'Tab', 'Enter', 'Escape'
+    ];
+    if (controlKeys.includes(key) || (allowedCtrl && ['a','c','v','x'].includes(key.toLowerCase()))) {
+      return; // autoriser
+    }
+    // Autoriser uniquement les chiffres
+    if (!/^[0-9]$/.test(key)) {
+      event.preventDefault();
+    }
+  }
 
 /** Ouvrir la modale de suppression multiple */
 /** Ouvrir la modale de suppression unitaire */
@@ -353,6 +399,13 @@ confirmDeleteBeneficiaire(): void {
   onGlobalFilter(table: Table, event: Event): void {
     table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
   }
+ 
+getInitials(fullName: string): string {
+  if (!fullName) return '?';
+  const p = fullName.trim().split(/\s+/);
+  return (p[0][0] + (p[p.length - 1]?.[0] || '')).toUpperCase();
+}
+
 
    onGotToNewBeneficiaire(): void {
     this.router.navigate(['/dashboard/beneficiaire/beneficiaire-new']);

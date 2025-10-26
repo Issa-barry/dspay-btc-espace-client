@@ -13,7 +13,7 @@ import { finalize, Observable } from 'rxjs';
     providers: [MessageService],
 })
 export class AppProfileSidebarComponent implements OnInit {
- me$!: Observable<Contact | null>;   // profil connecté (observable)
+   me$!: Observable<Contact | null>;   // profil connecté (observable)
   contacts: Contact[] = [];
   contact: Contact = new Contact();
   errorMessage: string | null = null;
@@ -35,17 +35,29 @@ export class AppProfileSidebarComponent implements OnInit {
         this.layoutService.state.profileSidebarVisible = _val;
     }
 
+//     logout(): void {
+//   if (this.loggingOut) return;
+//   this.loggingOut = true;
+//   this.errorMessage = null;
 
-        // Méthode de déconnexion
- logout(): void {
+//   try {
+//     this.authService.logout();  // déconnexion immédiate
+//     this.visible = false;          // ferme le sidebar
+//   } finally {
+//     this.loggingOut = false;       // stoppe le spinner si tu en as un
+//   }
+// }
+
+
+  logout(): void {
     if (this.loggingOut) return;       // évite les doubles clics
     this.errorMessage = null;
     this.loggingOut = true;
-
+  
     this.authService.logout()
       .pipe(finalize(() => this.loggingOut = false))   // stoppe le spinner
       .subscribe({
-        next: () => {
+        next: () => { 
           this.visible = false;                         // ferme le sidebar
           this.router.navigate(['/auth/login']);
         },
@@ -56,9 +68,11 @@ export class AppProfileSidebarComponent implements OnInit {
       });
   }
   getContactById(){
+    console.log("recuperation du contact", this.me$);
     this.contactService.getContactById(1).subscribe({
       next:(res) => {
         this.contact = res
+
       },
       error:(err) => {console.error("Erreur lor de la recuperation du contact", err)}
     })
@@ -72,8 +86,7 @@ export class AppProfileSidebarComponent implements OnInit {
 
    lodUserAuth() {
     this.me$ = this.authService.currentUser$;
-    // Si pas encore chargé (page fraîche), on récupère /users/me
-    if (!this.authService.currentUserValue) {
+     if (!this.authService.currentUserValue) {
       this.authService.getMe().subscribe();
     }
   }

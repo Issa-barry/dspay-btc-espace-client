@@ -1,4 +1,4 @@
-<div class="flex flex-column md:flex-row justify-content-between gap-3 mt-2">
+<div class="flex flex-column-reverse md:flex-row justify-content-between gap-3 mt-2">
   <!-- Précédent -->
   <button *ngIf="showPrev"
           type="button"
@@ -9,7 +9,7 @@
           [iconPos]="prevIconPos"
           [disabled]="prevDisabled"
           (click)="prev.emit()">
-  </button>
+  </button> 
 
   <!-- ICI on projette un bouton custom (sélecteur d’attribut [right]) -->
   <ng-content select="[right]"></ng-content>

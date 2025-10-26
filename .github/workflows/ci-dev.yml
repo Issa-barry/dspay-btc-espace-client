@@ -1,0 +1,54 @@
+name: CI Dev
+
+on:
+  push:
+    branches: [ dev ]
+  pull_request:
+    branches: [ preprod, main ]   # contrôle avant merge vers préprod/prod
+  workflow_dispatch:
+
+concurrency:
+  group: ci-dev-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build (compile check)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Placeholder build
+        run: |
+          echo "✅ Placeholder BUILD: ici tu mettras:"
+          echo "  npm ci"
+          echo "  npx ng build --configuration development --output-path=dist/apollo-ng"
+          echo "  (upload d'artifact si besoin)"
+
+  unit-tests:
+    name: Unit tests (Karma)
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Placeholder unit tests
+        run: |
+          echo "✅ Placeholder TESTS UNITAIRES (Karma): ici tu mettras:"
+          echo "  npm ci"
+          echo "  npx ng test --watch=false --browsers=ChromeHeadless"
+          echo "  (upload de coverage si besoin)"
+
+  e2e:
+    name: E2E (Cypress)
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Placeholder E2E
+        run: |
+          echo "✅ Placeholder E2E (Cypress): ici tu mettras:"
+          echo "  npm ci"
+          echo "  cypress run --browser electron"
+          echo "  (screenshots/videos en artifact si besoin)"

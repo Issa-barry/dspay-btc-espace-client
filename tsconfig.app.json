@@ -6,7 +6,8 @@
     "types": []
   },
   "files": [
-    "src/main.ts"
+    "src/main.ts",
+    "src/app/demo/guards/permission/permission.guard.ts"
   ],
   "include": [
     "src/**/*.d.ts"

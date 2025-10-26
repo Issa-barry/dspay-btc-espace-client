@@ -32,7 +32,7 @@ jobs:
           username: ${{ secrets.PREPROD_FTP_USERNAME }}
           password: ${{ secrets.PREPROD_FTP_PASSWORD }}
           port: ${{ secrets.PREPROD_FTP_PORT }}
-          protocol: ftps           # mets "ftp" si FTPS n'est pas dispo
+          protocol: ftp          # mets "ftp" si FTPS n'est pas dispo
           local-dir: dist/apollo-ng/
           server-dir: ${{ secrets.PREPROD_FTP_DIR }}
           dangerous-clean-slate: false
