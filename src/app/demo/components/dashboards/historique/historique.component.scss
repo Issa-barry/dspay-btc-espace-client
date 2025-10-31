@@ -1,0 +1,87 @@
+.card {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.transfert-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.transfert-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #f8f9fa;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+    border-radius: 8px;
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.transfert-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: white;
+}
+
+.transfert-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.beneficiaire-name {
+  font-weight: 500;
+  font-size: 1rem;
+  color: #333;
+}
+
+.phone-number {
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.transfert-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.montant {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #333;
+  text-align: right;
+}
+
+.pi-chevron-right {
+  color: #999;
+  font-size: 0.875rem;
+}

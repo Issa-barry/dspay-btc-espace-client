@@ -8,6 +8,7 @@ import { RouterModule } from '@angular/router';
         // { path: '', data: {breadcrumb: 'Dashboard'}, loadChildren: () => import('./ecommerce/ecommerce.dashboard.module').then(m => m.EcommerceDashboardModule) },
         { path: 'dashboard', data: {breadcrumb: 'Dashboard'}, loadChildren: () => import('./ecommerce/ecommerce.dashboard.module').then(m => m.EcommerceDashboardModule) },
         { path: 'dashboard-banking', data: {breadcrumb: 'Banking Dashboard'}, loadChildren: () => import('./banking/banking.dashboard.module').then(m => m.BankingDashboardModule) },
+        { path: 'historique', loadChildren: () => import('./historique/historique.module').then(m => m.HistoriqueModule) },
     ])],
     exports: [RouterModule]
 })

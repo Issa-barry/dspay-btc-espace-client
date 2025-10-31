@@ -25,15 +25,15 @@ export class AppMenuComponent implements OnInit {
                         icon: 'pi pi-fw pi-users',
                         routerLink: ['/dashboard/beneficiaire']
                     },
-                    {
-                        label: "Point de retrait",
-                        icon: 'pi pi-fw pi-map-marker',
-                        routerLink: ['/dashboard/agence']
-                    },
+                    // {
+                    //     label: "Point de retrait",
+                    //     icon: 'pi pi-fw pi-map-marker',
+                    //     routerLink: ['/dashboard/agence']
+                    // },
                     {
                         label: "Historique",
                         icon: 'pi pi-fw pi-history',
-                        routerLink: ['/dashboard/transfert/liste']
+                        routerLink: ['/dashboard/historique']
                     }
                 ]
             },
