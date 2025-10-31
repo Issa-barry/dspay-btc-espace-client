@@ -1,0 +1,21 @@
+<div class="card">
+  <h2 class="mb-4">Historique des transferts</h2>
+  
+  <div class="transfert-list">
+    <div class="transfert-item" *ngFor="let transfert of transferts">
+      <div class="transfert-left">
+        <div class="avatar" [style.background-color]="getAvatarColor(transfert.beneficiaire)">
+          {{ getInitials(transfert.beneficiaire) }}
+        </div>
+        <div class="transfert-info">
+          <div class="beneficiaire-name">{{ transfert.beneficiaire }}</div>
+          <div class="phone-number">{{ transfert.phone }}</div>
+        </div>
+      </div>
+      <div class="transfert-right">
+        <div class="montant">{{ transfert.montant_recu | number: '1.0-0' }} GNF</div>
+        <i class="pi pi-chevron-right"></i>
+      </div>
+    </div>
+  </div>
+</div>

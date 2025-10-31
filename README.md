@@ -90,3 +90,4 @@ Génération manuelle sitemap
 
 npm run generate:sitemap
 
+ng generate module demo/components/dashboards/historique --route historique --module dashboards
