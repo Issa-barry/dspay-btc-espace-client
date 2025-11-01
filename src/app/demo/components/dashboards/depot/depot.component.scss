@@ -1,4 +1,4 @@
-// Variables
+// ==================== Variables ====================
 $primary: #00D4AA;
 $primary-dark: #00B894;
 $text: #1A1D29;
@@ -7,13 +7,14 @@ $border: #E5E7EB;
 $bg-light: #F9FAFB;
 $white: #FFFFFF;
 
+// ==================== Container ====================
 .depot-container {
   min-height: 100vh;
   background: $bg-light;
   display: flex;
-  align-items: center;
+  align-items: flex-start; // <-- ancré en haut
   justify-content: center;
-  padding: 20px;
+  padding: 10px 18px 20px; // espace supérieur augmenté
 }
 
 .depot-card {
@@ -23,6 +24,7 @@ $white: #FFFFFF;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   overflow: hidden;
+  margin-top: 0;
 }
 
 // ==================== Header ====================
@@ -43,7 +45,7 @@ $white: #FFFFFF;
     color: $text-light;
     text-decoration: none;
     font-size: 18px;
-    
+
     &:hover {
       color: $primary;
     }
@@ -178,7 +180,6 @@ $white: #FFFFFF;
         color: transparent !important;
       }
 
-      // Remove spinner
       &::-webkit-inner-spin-button,
       &::-webkit-outer-spin-button {
         -webkit-appearance: none;
@@ -244,8 +245,8 @@ $white: #FFFFFF;
       border-top: 2px solid $border;
       border-bottom: none;
       margin-top: 8px;
-       display: flex;
-    justify-content: space-between;
+      display: flex;
+      justify-content: space-between;
 
       span {
         font-weight: 700;
@@ -392,11 +393,11 @@ $white: #FFFFFF;
       background: rgba($primary, 0.05);
     }
 
-    .avatar-mini {
+    .avatar-mini { 
       width: 32px;
       height: 32px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #5F6FFF, $primary);
+      background: $primary;
       color: white;
       display: flex;
       align-items: center;
@@ -600,13 +601,13 @@ $white: #FFFFFF;
 // ==================== Responsive ====================
 @media (max-width: 480px) {
   .depot-container {
-    padding: 0;
-    align-items: stretch;
+    padding: 16px 12px 12px;
+    align-items: flex-start;
   }
 
   .depot-card {
-    border-radius: 0;
-    min-height: 100vh;
+    border-radius: 10px;
+    min-height: auto;
   }
 
   .amount-box .big-input-group {
