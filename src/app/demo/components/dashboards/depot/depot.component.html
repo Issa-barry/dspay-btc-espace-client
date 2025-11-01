@@ -53,9 +53,6 @@
           />
         </div>
         <div class="input-hint">Cliquez pour saisir le montant</div>
-        <div class="conversion-rate" *ngIf="amount > 0">
-          = {{ selectedCurrency === 'EUR' ? ((amount * 10700) | number:'1.0-0') + ' GNF' : ((amount / 10700) | number:'1.2-2') + ' EUR' }}
-        </div>
       </div>
 
       <!-- Info Summary -->
