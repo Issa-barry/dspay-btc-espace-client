@@ -2,8 +2,8 @@
   <h2 class="mb-4">Historique des transferts</h2>
   
   <div class="transfert-list">
-    <div class="transfert-item" *ngFor="let transfert of transferts">
-      <div class="transfert-left">
+    <div class="transfert-item" *ngFor="let transfert of transferts" (click)="goToTransfertDetail(transfert)">
+      <div class="transfert-left" >
         <div class="avatar" [style.background-color]="getAvatarColor(transfert.beneficiaire.nom + ' ' + transfert.beneficiaire.prenom)">
           {{ getInitials(transfert.beneficiaire.nom + ' ' + transfert.beneficiaire.prenom) }} 
         </div>

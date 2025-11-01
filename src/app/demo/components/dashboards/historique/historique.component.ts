@@ -80,4 +80,10 @@ export class HistoriqueComponent implements OnInit {
     /**couleur unique avatar */
     //  return '#00BCD4';
   }
+
+
+    goToTransfertDetail(transfert: Transfert) {    
+    this.router.navigate(['/dashboard/transfert/detail', transfert.id]);  
+  }
+
 }
