@@ -244,6 +244,8 @@ $white: #FFFFFF;
       border-top: 2px solid $border;
       border-bottom: none;
       margin-top: 8px;
+       display: flex;
+    justify-content: space-between;
 
       span {
         font-weight: 700;
