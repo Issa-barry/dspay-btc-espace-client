@@ -27,11 +27,11 @@ export class DepotComponent implements OnInit {
   // Step 2: Wallet
   selectedWallet: string = '';
   wallets = [
-    { id: 'orange-money', name: 'Orange Money', icon: 'pi-mobile', desc: 'Instantané', colorClass: 'orange' },
-    { id: 'momo', name: 'MTN MoMo', icon: 'pi-mobile', desc: 'Instantané', colorClass: 'yellow' },
-    { id: 'KS-PAY', name: 'KS-PAY', icon: 'pi-wallet', desc: 'Wallet digital', colorClass: 'blue' },
-    { id: 'soutrat-money', name: 'Soutrat Money', icon: 'pi-mobile', desc: 'Instantané', colorClass: 'green' },
-    { id: 'payCard', name: 'PayCard', icon: 'pi-credit-card', desc: 'Carte', colorClass: 'purple' }
+    { id: 'orange-money', name: 'Orange Money', icon: 'pi-mobile', desc: 'eWallet', colorClass: 'orange' },
+    { id: 'momo', name: 'MTN MoMo', icon: 'pi-mobile', desc: 'eWallet', colorClass: 'yellow' },
+    { id: 'KS-PAY', name: 'KS-PAY', icon: 'pi-wallet', desc: 'eWallet', colorClass: 'blue' },
+    { id: 'soutrat-money', name: 'Soutrat Money', icon: 'pi-mobile', desc: 'eWallet', colorClass: 'green' },
+    { id: 'payCard', name: 'PayCard', icon: 'pi-credit-card', desc: 'eWallet', colorClass: 'purple' }
   ];
 
   // Step 3: Bénéficiaire
@@ -43,8 +43,7 @@ export class DepotComponent implements OnInit {
   customerPhone: string = '';
 
   // Step 4: Confirmation
-  acceptedTerms: boolean = false;
-  isProcessing: boolean = false;
+   isProcessing: boolean = false;
 
   ngOnInit(): void {
     this.loadBeneficiaires();
@@ -149,7 +148,7 @@ export class DepotComponent implements OnInit {
 
   // ==================== Step 4: Paiement ====================
   processPayment(): void {
-    if (!this.acceptedTerms || this.isProcessing) {
+    if (this.isProcessing) {
       return;
     }
 

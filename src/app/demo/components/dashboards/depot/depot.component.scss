@@ -34,9 +34,9 @@ $white: #FFFFFF;
   border-bottom: 1px solid $border;
 
   .logo {
-    font-size: 20px;
-    font-weight: 700;
-    color: $primary;
+    font-size: 14px;
+    font-weight: 600;
+    color: $text;
   }
 
   .help-link {
@@ -118,7 +118,7 @@ $white: #FFFFFF;
   }
 }
 
-// ==================== BIG AMOUNT INPUT (COMPACT) ====================
+// ==================== BIG AMOUNT INPUT ====================
 .amount-box {
   text-align: center;
   padding: 20px 0;
@@ -136,14 +136,14 @@ $white: #FFFFFF;
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 12px;
     padding: 18px 20px;
     background: $white;
     border: 2px solid $primary;
     border-radius: 12px;
     transition: all 0.3s ease;
     cursor: text;
-    max-width: 100%;
-    margin: 0 auto;
+    position: relative;
 
     &:hover {
       border-color: darken($primary, 5%);
@@ -163,7 +163,7 @@ $white: #FFFFFF;
       outline: none;
       text-align: center;
       color: $text;
-      width: 100%;
+      flex: 1;
       background: transparent;
       padding: 0;
       margin: 0;
@@ -174,7 +174,8 @@ $white: #FFFFFF;
       }
 
       &:focus::placeholder {
-        opacity: 0.8;
+        opacity: 0 !important;
+        color: transparent !important;
       }
 
       // Remove spinner
@@ -184,6 +185,14 @@ $white: #FFFFFF;
         margin: 0;
       }
       -moz-appearance: textfield;
+    }
+
+    .currency-prefix {
+      font-size: 18px;
+      font-weight: 700;
+      color: $text-light;
+      position: absolute;
+      right: 20px;
     }
   }
 
@@ -205,7 +214,7 @@ $white: #FFFFFF;
 
 // ==================== Info Summary ====================
 .info-summary {
-  background: $bg-light;
+  background: $white;
   border-radius: 10px;
   padding: 16px;
   margin-bottom: 20px;
@@ -227,23 +236,24 @@ $white: #FFFFFF;
     }
 
     &:not(:last-child) {
-      border-bottom: 1px solid darken($bg-light, 3%);
+      border-bottom: 1px solid $border;
     }
 
     &.total-line {
       padding-top: 14px;
-      border-top: 2px solid darken($bg-light, 5%);
+      border-top: 2px solid $border;
       border-bottom: none;
       margin-top: 8px;
 
       span {
-        font-weight: 600;
+        font-weight: 700;
         color: $text;
       }
 
       .total-amount {
         font-size: 18px;
         color: $primary;
+        font-weight: 700;
       }
     }
   }
@@ -518,32 +528,6 @@ $white: #FFFFFF;
   }
 }
 
-// ==================== Checkbox ====================
-.checkbox-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 20px;
-  font-size: 12px;
-  color: $text-light;
-  cursor: pointer;
-
-  input[type="checkbox"] {
-    cursor: pointer;
-    accent-color: $primary;
-  }
-
-  a {
-    color: $primary;
-    text-decoration: none;
-    font-weight: 600;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-}
-
 // ==================== Buttons ====================
 .btn-next,
 .btn-pay {
@@ -628,6 +612,11 @@ $white: #FFFFFF;
 
     .big-amount-input {
       font-size: 40px;
+    }
+
+    .currency-prefix {
+      font-size: 16px;
+      right: 18px;
     }
   }
 }

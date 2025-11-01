@@ -3,10 +3,11 @@
     
     <!-- Header -->
     <div class="depot-header">
-      <div class="logo">DSPAY</div>
-      <a href="#" class="help-link">
+      <div class="logo">1 € = 10 700 GNF</div>
+              <i class="pi pi-question-circle"></i>
+      <!-- <a href="#" class="help-link">
         <i class="pi pi-question-circle"></i>
-      </a>
+      </a> -->
     </div>
 
     <!-- Progress bar -->
@@ -57,10 +58,10 @@
 
       <!-- Info Summary -->
       <div class="info-summary" *ngIf="amount > 0">
-        <div class="info-line">
+        <!-- <div class="info-line">
           <span>Taux de change</span>
           <strong>1 EUR = 10,700 GNF</strong>
-        </div>
+        </div> -->
         <div class="info-line">
           <span>Montant reçu</span>
           <strong>{{ selectedCurrency === 'EUR' ? ((amount * 10700) | number:'1.0-0') + ' GNF' : ((amount / 10700) | number:'1.2-2') + ' EUR' }}</strong>
@@ -284,11 +285,7 @@
           <strong class="total-amount">{{ (amount + 2) | number:'1.2-2' }} EUR</strong>
         </div>
       </div>
-
-      <label class="checkbox-wrapper">
-        <input type="checkbox" [(ngModel)]="acceptedTerms" />
-        <span>J'accepte les <a href="#">conditions générales</a></span>
-      </label>
+ 
 
       <div class="button-row">
         <button class="btn-back" (click)="previousStep()">
@@ -297,7 +294,7 @@
         <button 
           class="btn-pay" 
           (click)="processPayment()" 
-          [disabled]="!acceptedTerms || isProcessing">
+          [disabled]="isProcessing">
           <i class="pi pi-lock" *ngIf="!isProcessing"></i>
           <i class="pi pi-spin pi-spinner" *ngIf="isProcessing"></i>
           {{ isProcessing ? 'Traitement...' : 'Payer' }}
