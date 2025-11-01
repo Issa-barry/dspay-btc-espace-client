@@ -42,7 +42,6 @@
       <div class="amount-box">
         <label class="input-label">Montant</label>
         <div class="big-input-group">
-          <!-- <span class="currency-prefix">{{ selectedCurrency }}</span> -->
           <input 
             type="number" 
             class="big-amount-input"
@@ -50,7 +49,8 @@
             placeholder="0"
             min="1"
             autofocus
-          />
+          />          <span class="currency-prefix">{{ selectedCurrency }}</span>
+
         </div>
         <div class="input-hint">Cliquez pour saisir le montant</div>
       </div>
@@ -60,6 +60,10 @@
         <div class="info-line">
           <span>Taux de change</span>
           <strong>1 EUR = 10,700 GNF</strong>
+        </div>
+        <div class="info-line">
+          <span>Montant reçu</span>
+          <strong>{{ selectedCurrency === 'EUR' ? ((amount * 10700) | number:'1.0-0') + ' GNF' : ((amount / 10700) | number:'1.2-2') + ' EUR' }}</strong>
         </div>
         <div class="info-line">
           <span>Frais de service</span>
