@@ -1,7 +1,7 @@
 <div class="depot-container">
   <div class="depot-card">
     
-    <!-- Header compact -->
+    <!-- Header -->
     <div class="depot-header">
       <div class="logo">DSPAY</div>
       <a href="#" class="help-link">
@@ -9,7 +9,7 @@
       </a>
     </div>
 
-    <!-- Progress minimal -->
+    <!-- Progress bar -->
     <div class="progress-bar">
       <div class="progress-fill" [style.width.%]="(currentStep / 4) * 100"></div>
     </div>
@@ -42,15 +42,17 @@
       <div class="amount-box">
         <label class="input-label">Montant</label>
         <div class="big-input-group">
-          <span class="currency-prefix">{{ selectedCurrency }}</span>
+          <!-- <span class="currency-prefix">{{ selectedCurrency }}</span> -->
           <input 
             type="number" 
             class="big-amount-input"
             [(ngModel)]="amount"
-            placeholder="100"
+            placeholder="0"
             min="1"
+            autofocus
           />
         </div>
+        <div class="input-hint">Cliquez pour saisir le montant</div>
         <div class="conversion-rate" *ngIf="amount > 0">
           = {{ selectedCurrency === 'EUR' ? ((amount * 10700) | number:'1.0-0') + ' GNF' : ((amount / 10700) | number:'1.2-2') + ' EUR' }}
         </div>
@@ -87,17 +89,68 @@
 
       <div class="wallet-options">
         <div class="wallet-item" 
-             *ngFor="let wallet of wallets"
-             [class.selected]="selectedWallet === wallet.id"
-             (click)="selectWallet(wallet.id)">
-          <div class="wallet-icon-mini" [ngClass]="wallet.colorClass">
-            <i [class]="'pi ' + wallet.icon"></i>
+             [class.selected]="selectedWallet === 'orange-money'"
+             (click)="selectWallet('orange-money')">
+          <div class="wallet-icon-mini orange">
+            <i class="pi pi-mobile"></i>
           </div>
           <div class="wallet-label">
-            <div class="wallet-name">{{ wallet.name }}</div>
-            <div class="wallet-tag">{{ wallet.desc }}</div>
+            <div class="wallet-name">Orange Money</div>
+            <div class="wallet-tag">Instantané</div>
           </div>
-          <i class="pi pi-check check-icon" *ngIf="selectedWallet === wallet.id"></i>
+          <i class="pi pi-check check-icon" *ngIf="selectedWallet === 'orange-money'"></i>
+        </div>
+
+        <div class="wallet-item" 
+             [class.selected]="selectedWallet === 'momo'"
+             (click)="selectWallet('momo')">
+          <div class="wallet-icon-mini yellow">
+            <i class="pi pi-mobile"></i>
+          </div>
+          <div class="wallet-label">
+            <div class="wallet-name">MTN MoMo</div>
+            <div class="wallet-tag">Instantané</div>
+          </div>
+          <i class="pi pi-check check-icon" *ngIf="selectedWallet === 'momo'"></i>
+        </div>
+
+        <div class="wallet-item" 
+             [class.selected]="selectedWallet === 'KS-PAY'"
+             (click)="selectWallet('KS-PAY')">
+          <div class="wallet-icon-mini blue">
+            <i class="pi pi-wallet"></i>
+          </div>
+          <div class="wallet-label">
+            <div class="wallet-name">KS-PAY</div>
+            <div class="wallet-tag">Wallet digital</div>
+          </div>
+          <i class="pi pi-check check-icon" *ngIf="selectedWallet === 'KS-PAY'"></i>
+        </div>
+
+        <div class="wallet-item" 
+             [class.selected]="selectedWallet === 'soutrat-money'"
+             (click)="selectWallet('soutrat-money')">
+          <div class="wallet-icon-mini green">
+            <i class="pi pi-mobile"></i>
+          </div>
+          <div class="wallet-label">
+            <div class="wallet-name">Soutrat Money</div>
+            <div class="wallet-tag">Instantané</div>
+          </div>
+          <i class="pi pi-check check-icon" *ngIf="selectedWallet === 'soutrat-money'"></i>
+        </div>
+
+        <div class="wallet-item" 
+             [class.selected]="selectedWallet === 'payCard'"
+             (click)="selectWallet('payCard')">
+          <div class="wallet-icon-mini purple">
+            <i class="pi pi-credit-card"></i>
+          </div>
+          <div class="wallet-label">
+            <div class="wallet-name">PayCard</div>
+            <div class="wallet-tag">Carte</div>
+          </div>
+          <i class="pi pi-check check-icon" *ngIf="selectedWallet === 'payCard'"></i>
         </div>
       </div>
 
@@ -143,6 +196,12 @@
           </div>
           <i class="pi pi-check check-icon" *ngIf="selectedBeneficiaire?.id === beneficiaire.id"></i>
         </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" *ngIf="filteredBeneficiaires.length === 0">
+          <i class="pi pi-user-plus"></i>
+          <p>Aucun destinataire trouvé</p>
+        </div>
       </div>
 
       <button class="btn-add-beneficiaire" (click)="openAddBeneficiaire()">
@@ -150,7 +209,7 @@
         Ajouter un destinataire
       </button>
 
-      <!-- Account info pour KS-PAY/payCard -->
+      <!-- Account info -->
       <div class="extra-fields" *ngIf="selectedBeneficiaire && (selectedWallet === 'KS-PAY' || selectedWallet === 'payCard')">
         <input 
           type="text" 
@@ -227,7 +286,7 @@
 
       <label class="checkbox-wrapper">
         <input type="checkbox" [(ngModel)]="acceptedTerms" />
-        <span>J'accepte les <a href="#">CGU</a></span>
+        <span>J'accepte les <a href="#">conditions générales</a></span>
       </label>
 
       <div class="button-row">
