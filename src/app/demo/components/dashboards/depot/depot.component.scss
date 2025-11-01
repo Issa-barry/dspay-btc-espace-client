@@ -1,0 +1,579 @@
+// Variables
+$primary: #00D4AA;
+$primary-dark: #00B894;
+$text: #1A1D29;
+$text-light: #6B7280;
+$border: #E5E7EB;
+$bg-light: #F9FAFB;
+$white: #FFFFFF;
+
+.depot-container {
+  min-height: 100vh;
+  background: $bg-light;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.depot-card {
+  width: 100%;
+  max-width: 480px;
+  background: $white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+// ==================== Header ====================
+.depot-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid $border;
+
+  .logo {
+    font-size: 20px;
+    font-weight: 700;
+    color: $primary;
+  }
+
+  .help-link {
+    color: $text-light;
+    text-decoration: none;
+    font-size: 18px;
+    
+    &:hover {
+      color: $primary;
+    }
+  }
+}
+
+// ==================== Progress Bar ====================
+.progress-bar {
+  height: 3px;
+  background: $border;
+  position: relative;
+
+  .progress-fill {
+    height: 100%;
+    background: $primary;
+    transition: width 0.3s ease;
+  }
+}
+
+// ==================== Step Content ====================
+.step-content {
+  padding: 24px 20px;
+}
+
+.step-header {
+  text-align: center;
+  margin-bottom: 24px;
+
+  .step-label {
+    font-size: 12px;
+    color: $text-light;
+    font-weight: 500;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .step-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: $text;
+    margin: 0;
+  }
+}
+
+// ==================== Currency Pills ====================
+.currency-pills {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+
+  .pill {
+    flex: 1;
+    padding: 10px;
+    border: 1.5px solid $border;
+    border-radius: 20px;
+    background: $white;
+    color: $text-light;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      border-color: $primary;
+    }
+
+    &.active {
+      background: $primary;
+      border-color: $primary;
+      color: $white;
+    }
+  }
+}
+
+// ==================== BIG AMOUNT INPUT ====================
+.amount-box {
+  text-align: center;
+  padding: 32px 0;
+  margin-bottom: 24px;
+
+  .input-label {
+    font-size: 13px;
+    color: $text-light;
+    display: block;
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  .big-input-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    .currency-prefix {
+      font-size: 32px;
+      font-weight: 700;
+      color: $text-light;
+    }
+
+    .big-amount-input {
+      font-size: 72px;
+      font-weight: 800;
+      border: none;
+      outline: none;
+      text-align: center;
+      color: $text;
+      width: auto;
+      min-width: 120px;
+      max-width: 280px;
+      background: transparent;
+      padding: 0;
+      margin: 0;
+
+      &::placeholder {
+        color: lighten($border, 5%);
+      }
+
+      // Remove spinner
+      &::-webkit-inner-spin-button,
+      &::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      -moz-appearance: textfield;
+    }
+  }
+
+  .conversion-rate {
+    font-size: 16px;
+    color: $text-light;
+    margin-top: 16px;
+    font-weight: 500;
+  }
+}
+
+// ==================== Info Summary ====================
+.info-summary {
+  background: $bg-light;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 20px;
+
+  .info-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    font-size: 14px;
+
+    span {
+      color: $text-light;
+    }
+
+    strong {
+      color: $text;
+      font-weight: 600;
+    }
+
+    &:not(:last-child) {
+      border-bottom: 1px solid darken($bg-light, 3%);
+    }
+
+    &.total-line {
+      padding-top: 14px;
+      border-top: 2px solid darken($bg-light, 5%);
+      border-bottom: none;
+      margin-top: 8px;
+
+      span {
+        font-weight: 600;
+        color: $text;
+      }
+
+      .total-amount {
+        font-size: 18px;
+        color: $primary;
+      }
+    }
+  }
+}
+
+// ==================== Wallet Options ====================
+.wallet-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+
+  .wallet-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border: 1.5px solid $border;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: $white;
+
+    &:hover {
+      border-color: $primary;
+    }
+
+    &.selected {
+      border-color: $primary;
+      background: rgba($primary, 0.05);
+    }
+
+    .wallet-icon-mini {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      color: white;
+      font-size: 18px;
+
+      &.orange { background: linear-gradient(135deg, #FF9500, #FF7A00); }
+      &.yellow { background: linear-gradient(135deg, #FFCC00, #FFB800); }
+      &.blue { background: linear-gradient(135deg, #007AFF, #0051D5); }
+      &.green { background: linear-gradient(135deg, #34C759, #30B350); }
+      &.purple { background: linear-gradient(135deg, #AF52DE, #9742C7); }
+    }
+
+    .wallet-label {
+      flex: 1;
+
+      .wallet-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: $text;
+        margin-bottom: 2px;
+      }
+
+      .wallet-tag {
+        font-size: 11px;
+        color: $text-light;
+      }
+    }
+
+    .check-icon {
+      color: $primary;
+      font-size: 18px;
+    }
+  }
+}
+
+// ==================== Search Box ====================
+.search-box {
+  position: relative;
+  margin-bottom: 16px;
+
+  i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $text-light;
+    font-size: 14px;
+  }
+
+  input {
+    width: 100%;
+    padding: 10px 12px 10px 36px;
+    border: 1.5px solid $border;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+
+    &:focus {
+      border-color: $primary;
+    }
+  }
+}
+
+// ==================== Beneficiaire Compact List ====================
+.beneficiaire-compact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+  max-height: 280px;
+  overflow-y: auto;
+
+  .beneficiaire-compact-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border: 1.5px solid $border;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      border-color: $primary;
+    }
+
+    &.selected {
+      border-color: $primary;
+      background: rgba($primary, 0.05);
+    }
+
+    .avatar-mini {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #5F6FFF, $primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 12px;
+      margin-right: 10px;
+    }
+
+    .beneficiaire-info-mini {
+      flex: 1;
+
+      .name-mini {
+        font-size: 13px;
+        font-weight: 600;
+        color: $text;
+        margin-bottom: 2px;
+      }
+
+      .phone-mini {
+        font-size: 11px;
+        color: $text-light;
+      }
+    }
+
+    .check-icon {
+      color: $primary;
+      font-size: 16px;
+    }
+  }
+}
+
+// ==================== Add Button ====================
+.btn-add-beneficiaire {
+  width: 100%;
+  padding: 10px;
+  border: 1.5px dashed $border;
+  border-radius: 8px;
+  background: transparent;
+  color: $primary;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 16px;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: $primary;
+    background: rgba($primary, 0.05);
+  }
+}
+
+// ==================== Extra Fields ====================
+.extra-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+
+  .compact-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid $border;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+
+    &:focus {
+      border-color: $primary;
+    }
+  }
+}
+
+// ==================== Recap Box ====================
+.recap-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+
+  .recap-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    background: $bg-light;
+    border-radius: 8px;
+    gap: 12px;
+
+    i {
+      font-size: 18px;
+      color: $primary;
+    }
+
+    .recap-content {
+      flex: 1;
+
+      .recap-label {
+        font-size: 11px;
+        color: $text-light;
+        margin-bottom: 2px;
+      }
+
+      .recap-value {
+        font-size: 14px;
+        font-weight: 600;
+        color: $text;
+      }
+    }
+  }
+}
+
+// ==================== Checkbox ====================
+.checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  font-size: 12px;
+  color: $text-light;
+  cursor: pointer;
+
+  input[type="checkbox"] {
+    cursor: pointer;
+    accent-color: $primary;
+  }
+
+  a {
+    color: $primary;
+    text-decoration: none;
+    font-weight: 600;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// ==================== Buttons ====================
+.btn-next,
+.btn-pay {
+  width: 100%;
+  padding: 14px;
+  border-radius: 8px;
+  border: none;
+  background: $primary;
+  color: white;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+
+  &:hover:not(:disabled) {
+    background: $primary-dark;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba($primary, 0.3);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  i {
+    font-size: 16px;
+  }
+}
+
+.button-row {
+  display: flex;
+  gap: 10px;
+
+  .btn-back {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    border: 1.5px solid $border;
+    background: white;
+    color: $text;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+
+    &:hover {
+      border-color: $text-light;
+      background: $bg-light;
+    }
+
+    i {
+      font-size: 16px;
+    }
+  }
+
+  .btn-next,
+  .btn-pay {
+    flex: 1;
+  }
+}
+
+// ==================== Responsive ====================
+@media (max-width: 480px) {
+  .depot-container {
+    padding: 0;
+    align-items: stretch;
+  }
+
+  .depot-card {
+    border-radius: 0;
+    min-height: 100vh;
+  }
+
+  .amount-box .big-input-group .big-amount-input {
+    font-size: 56px;
+  }
+}

@@ -1,0 +1,249 @@
+<div class="depot-container">
+  <div class="depot-card">
+    
+    <!-- Header compact -->
+    <div class="depot-header">
+      <div class="logo">DSPAY</div>
+      <a href="#" class="help-link">
+        <i class="pi pi-question-circle"></i>
+      </a>
+    </div>
+
+    <!-- Progress minimal -->
+    <div class="progress-bar">
+      <div class="progress-fill" [style.width.%]="(currentStep / 4) * 100"></div>
+    </div>
+
+    <!-- Step 1: Montant -->
+    <div class="step-content" *ngIf="currentStep === 1">
+      
+      <div class="step-header">
+        <span class="step-label">Étape {{ currentStep }} sur 4</span>
+        <h2 class="step-title">Montant à envoyer</h2>
+      </div>
+
+      <!-- Currency Pills -->
+      <div class="currency-pills">
+        <button 
+          class="pill" 
+          [class.active]="selectedCurrency === 'EUR'"
+          (click)="selectCurrency('EUR')">
+          EUR (€)
+        </button>
+        <button 
+          class="pill" 
+          [class.active]="selectedCurrency === 'GNF'"
+          (click)="selectCurrency('GNF')">
+          GNF
+        </button>
+      </div>
+
+      <!-- Big Amount Input -->
+      <div class="amount-box">
+        <label class="input-label">Montant</label>
+        <div class="big-input-group">
+          <span class="currency-prefix">{{ selectedCurrency }}</span>
+          <input 
+            type="number" 
+            class="big-amount-input"
+            [(ngModel)]="amount"
+            placeholder="100"
+            min="1"
+          />
+        </div>
+        <div class="conversion-rate" *ngIf="amount > 0">
+          = {{ selectedCurrency === 'EUR' ? ((amount * 10700) | number:'1.0-0') + ' GNF' : ((amount / 10700) | number:'1.2-2') + ' EUR' }}
+        </div>
+      </div>
+
+      <!-- Info Summary -->
+      <div class="info-summary" *ngIf="amount > 0">
+        <div class="info-line">
+          <span>Taux de change</span>
+          <strong>1 EUR = 10,700 GNF</strong>
+        </div>
+        <div class="info-line">
+          <span>Frais de service</span>
+          <strong>2.00 EUR</strong>
+        </div>
+        <div class="info-line total-line">
+          <span>Total</span>
+          <strong class="total-amount">{{ (amount + 2) | number:'1.2-2' }} EUR</strong>
+        </div>
+      </div>
+
+      <button class="btn-next" (click)="nextStep()" [disabled]="!amount || amount <= 0">
+        Continuer
+      </button>
+    </div>
+
+    <!-- Step 2: Wallet -->
+    <div class="step-content" *ngIf="currentStep === 2">
+      
+      <div class="step-header">
+        <span class="step-label">Étape {{ currentStep }} sur 4</span>
+        <h2 class="step-title">Choisissez un wallet</h2>
+      </div>
+
+      <div class="wallet-options">
+        <div class="wallet-item" 
+             *ngFor="let wallet of wallets"
+             [class.selected]="selectedWallet === wallet.id"
+             (click)="selectWallet(wallet.id)">
+          <div class="wallet-icon-mini" [ngClass]="wallet.colorClass">
+            <i [class]="'pi ' + wallet.icon"></i>
+          </div>
+          <div class="wallet-label">
+            <div class="wallet-name">{{ wallet.name }}</div>
+            <div class="wallet-tag">{{ wallet.desc }}</div>
+          </div>
+          <i class="pi pi-check check-icon" *ngIf="selectedWallet === wallet.id"></i>
+        </div>
+      </div>
+
+      <div class="button-row">
+        <button class="btn-back" (click)="previousStep()">
+          <i class="pi pi-arrow-left"></i>
+        </button>
+        <button class="btn-next" (click)="nextStep()" [disabled]="!selectedWallet">
+          Continuer
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 3: Bénéficiaire -->
+    <div class="step-content" *ngIf="currentStep === 3">
+      
+      <div class="step-header">
+        <span class="step-label">Étape {{ currentStep }} sur 4</span>
+        <h2 class="step-title">Destinataire</h2>
+      </div>
+
+      <div class="search-box">
+        <i class="pi pi-search"></i>
+        <input 
+          type="text" 
+          placeholder="Rechercher..."
+          [(ngModel)]="searchBeneficiaire"
+          (ngModelChange)="filterBeneficiaires()"
+        />
+      </div>
+
+      <div class="beneficiaire-compact-list">
+        <div class="beneficiaire-compact-item"
+             *ngFor="let beneficiaire of filteredBeneficiaires"
+             [class.selected]="selectedBeneficiaire?.id === beneficiaire.id"
+             (click)="selectBeneficiaire(beneficiaire)">
+          <div class="avatar-mini">
+            {{ getInitials(beneficiaire.nom, beneficiaire.prenom) }}
+          </div>
+          <div class="beneficiaire-info-mini">
+            <div class="name-mini">{{ beneficiaire.nom }} {{ beneficiaire.prenom }}</div>
+            <div class="phone-mini">{{ beneficiaire.phone }}</div>
+          </div>
+          <i class="pi pi-check check-icon" *ngIf="selectedBeneficiaire?.id === beneficiaire.id"></i>
+        </div>
+      </div>
+
+      <button class="btn-add-beneficiaire" (click)="openAddBeneficiaire()">
+        <i class="pi pi-plus"></i>
+        Ajouter un destinataire
+      </button>
+
+      <!-- Account info pour KS-PAY/payCard -->
+      <div class="extra-fields" *ngIf="selectedBeneficiaire && (selectedWallet === 'KS-PAY' || selectedWallet === 'payCard')">
+        <input 
+          type="text" 
+          class="compact-input"
+          [(ngModel)]="accountId"
+          placeholder="Numéro de compte"
+        />
+        <input 
+          type="tel" 
+          class="compact-input"
+          [(ngModel)]="customerPhone"
+          placeholder="Téléphone"
+        />
+      </div>
+
+      <div class="button-row">
+        <button class="btn-back" (click)="previousStep()">
+          <i class="pi pi-arrow-left"></i>
+        </button>
+        <button class="btn-next" (click)="nextStep()" [disabled]="!selectedBeneficiaire">
+          Continuer
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 4: Confirmation -->
+    <div class="step-content" *ngIf="currentStep === 4">
+      
+      <div class="step-header">
+        <span class="step-label">Étape {{ currentStep }} sur 4</span>
+        <h2 class="step-title">Confirmer</h2>
+      </div>
+
+      <div class="recap-box">
+        <div class="recap-item">
+          <i class="pi pi-money-bill"></i>
+          <div class="recap-content">
+            <div class="recap-label">Montant</div>
+            <div class="recap-value">{{ amount | number:'1.2-2' }} {{ selectedCurrency }}</div>
+          </div>
+        </div>
+
+        <div class="recap-item">
+          <i class="pi pi-wallet"></i>
+          <div class="recap-content">
+            <div class="recap-label">Wallet</div>
+            <div class="recap-value">{{ getWalletName(selectedWallet) }}</div>
+          </div>
+        </div>
+
+        <div class="recap-item">
+          <i class="pi pi-user"></i>
+          <div class="recap-content">
+            <div class="recap-label">Destinataire</div>
+            <div class="recap-value">{{ selectedBeneficiaire?.nom }} {{ selectedBeneficiaire?.prenom }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-summary">
+        <div class="info-line">
+          <span>Montant reçu</span>
+          <strong>{{ (amount * 10700) | number:'1.0-0' }} GNF</strong>
+        </div>
+        <div class="info-line">
+          <span>Frais</span>
+          <strong>2.00 EUR</strong>
+        </div>
+        <div class="info-line total-line">
+          <span>Total à payer</span>
+          <strong class="total-amount">{{ (amount + 2) | number:'1.2-2' }} EUR</strong>
+        </div>
+      </div>
+
+      <label class="checkbox-wrapper">
+        <input type="checkbox" [(ngModel)]="acceptedTerms" />
+        <span>J'accepte les <a href="#">CGU</a></span>
+      </label>
+
+      <div class="button-row">
+        <button class="btn-back" (click)="previousStep()">
+          <i class="pi pi-arrow-left"></i>
+        </button>
+        <button 
+          class="btn-pay" 
+          (click)="processPayment()" 
+          [disabled]="!acceptedTerms || isProcessing">
+          <i class="pi pi-lock" *ngIf="!isProcessing"></i>
+          <i class="pi pi-spin pi-spinner" *ngIf="isProcessing"></i>
+          {{ isProcessing ? 'Traitement...' : 'Payer' }}
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>

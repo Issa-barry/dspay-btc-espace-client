@@ -20,7 +20,7 @@
 
     <div class="mt-4 grid">
       <div class="col-12 md:col-6">
-        <div class="text-700">Montant</div>
+        <!-- <div class="text-700">Montant</div> -->
         <div class="text-xl font-bold">
           <!-- {{ eurosFromCents(lookup?.amount) | number:'1.2-2' }} {{ lookup?.currency?.toUpperCase() }} -->
         </div>
@@ -31,12 +31,12 @@
       </div> -->
     </div>
 
-    <div class="mt-5 flex gap-2">
-      <button pButton label="Voir le transfert"
+    <div class="mt-5 flex gap-1">
+      <!-- <button pButton label="Voir le transfert"
               icon="pi pi-eye"
               [disabled]="!lookup?.transfert_id"
               [routerLink]="['/dashboard/transfert/detail', lookup?.transfert_id]">
-      </button>
+      </button> -->
 
       <button pButton label="Retour au transfert"
               class="p-button-text"
