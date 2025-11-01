@@ -118,17 +118,17 @@ $white: #FFFFFF;
   }
 }
 
-// ==================== BIG AMOUNT INPUT ====================
+// ==================== BIG AMOUNT INPUT (COMPACT) ====================
 .amount-box {
   text-align: center;
-  padding: 32px 0;
-  margin-bottom: 24px;
+  padding: 20px 0;
+  margin-bottom: 20px;
 
   .input-label {
     font-size: 13px;
     color: $text-light;
     display: block;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     font-weight: 500;
   }
 
@@ -136,52 +136,45 @@ $white: #FFFFFF;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 16px 16px;
-    background: $bg-light;
-    border: 2px solid $border;
+    padding: 18px 20px;
+    background: $white;
+    border: 2px solid $primary;
     border-radius: 12px;
     transition: all 0.3s ease;
     cursor: text;
+    max-width: 100%;
+    margin: 0 auto;
 
     &:hover {
-      border-color: lighten($primary, 10%);
-      background: lighten($bg-light, 2%);
+      border-color: darken($primary, 5%);
+      box-shadow: 0 2px 8px rgba($primary, 0.15);
     }
 
     &:focus-within {
       border-color: $primary;
       background: $white;
-      box-shadow: 0 0 0 3px rgba($primary, 0.1);
-    }
-
-    .currency-prefix {
-      font-size: 32px;
-      font-weight: 700;
-      color: $text-light;
+      box-shadow: 0 0 0 3px rgba($primary, 0.15);
     }
 
     .big-amount-input {
-      font-size: 72px;
+      font-size: 48px;
       font-weight: 800;
       border: none;
       outline: none;
       text-align: center;
       color: $text;
-      width: auto;
-      min-width: 120px;
-      max-width: 280px;
+      width: 100%;
       background: transparent;
       padding: 0;
       margin: 0;
 
       &::placeholder {
-        color: lighten($border, 8%);
-        opacity: 0.5;
+        color: lighten($text-light, 15%);
+        opacity: 0.6;
       }
 
       &:focus::placeholder {
-        opacity: 0.7;
+        opacity: 0.8;
       }
 
       // Remove spinner
@@ -195,17 +188,17 @@ $white: #FFFFFF;
   }
 
   .input-hint {
-    font-size: 12px;
+    font-size: 13px;
     color: $text-light;
-    margin-top: 8px;
+    margin-top: 10px;
     opacity: 0.6;
     font-style: italic;
   }
 
   .conversion-rate {
-    font-size: 16px;
+    font-size: 15px;
     color: $text-light;
-    margin-top: 16px;
+    margin-top: 14px;
     font-weight: 500;
   }
 }
@@ -630,7 +623,11 @@ $white: #FFFFFF;
     min-height: 100vh;
   }
 
-  .amount-box .big-input-group .big-amount-input {
-    font-size: 56px;
+  .amount-box .big-input-group {
+    padding: 16px 18px;
+
+    .big-amount-input {
+      font-size: 40px;
+    }
   }
 }
