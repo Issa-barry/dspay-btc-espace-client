@@ -82,24 +82,25 @@ export class DepotComponent implements OnInit {
         this.messageService.add({ severity, summary, detail, life: 3000 });
     }
 
-    
-  loadBeneficiaires(): void {
-    this.loading = true;
 
-    this.beneficiaireService
-      .list({ page: this.page, per_page: this.perPage, search: this.searchTerm || undefined })
-      .subscribe({
-        next: ({ items, meta }) => {
-          this.beneficiaires = items;
-          this.meta = meta;
-          this.loading = false;
-        },
-        error: (err) => {
-          this.loading = false;
-          this.showMessage('error', 'Erreur', err.message || 'Échec du chargement des bénéficiaires.');
-        }
-      });
-  }
+loadBeneficiaires(): void {
+  this.loading = true;
+
+  this.beneficiaireService
+    .list({ page: this.page, per_page: this.perPage, search: this.searchTerm || undefined })
+    .subscribe({
+      next: ({ items, meta }) => {
+        this.beneficiaires = items;
+        this.filteredBeneficiaires = [...items]; // ✅ important
+        this.meta = meta;
+        this.loading = false;
+      },
+      error: (err) => {
+        this.loading = false;
+        this.showMessage('error', 'Erreur', err.message || 'Échec du chargement des bénéficiaires.');
+      }
+    });
+}
 
 
   // ==================== Navigation Steps ====================
