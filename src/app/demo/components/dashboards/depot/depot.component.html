@@ -103,6 +103,19 @@
           <i class="pi pi-check check-icon" *ngIf="selectedWallet === 'orange-money'"></i>
         </div>
 
+          <div class="wallet-item" 
+             [class.selected]="selectedWallet === 'KS-PAY'"
+             (click)="selectWallet('KS-PAY')">
+          <div class="wallet-icon-mini blue">
+            <i class="pi pi-wallet"></i>
+          </div>
+          <div class="wallet-label">
+            <div class="wallet-name">KS-PAY</div>
+            <div class="wallet-tag">eWallet</div>
+          </div>
+          <i class="pi pi-check check-icon" *ngIf="selectedWallet === 'KS-PAY'"></i>
+        </div>
+        
         <div class="wallet-item" 
              [class.selected]="selectedWallet === 'momo'"
              (click)="selectWallet('momo')">
@@ -116,18 +129,6 @@
           <i class="pi pi-check check-icon" *ngIf="selectedWallet === 'momo'"></i>
         </div>
 
-        <div class="wallet-item" 
-             [class.selected]="selectedWallet === 'KS-PAY'"
-             (click)="selectWallet('KS-PAY')">
-          <div class="wallet-icon-mini blue">
-            <i class="pi pi-wallet"></i>
-          </div>
-          <div class="wallet-label">
-            <div class="wallet-name">KS-PAY</div>
-            <div class="wallet-tag">eWallet</div>
-          </div>
-          <i class="pi pi-check check-icon" *ngIf="selectedWallet === 'KS-PAY'"></i>
-        </div>
 
         <div class="wallet-item" 
              [class.selected]="selectedWallet === 'soutrat-money'"
@@ -184,9 +185,9 @@
         />
       </div>
 
-      <div class="beneficiaire-compact-list">
+      <div class="beneficiaire-compact-list" >
         <div class="beneficiaire-compact-item"
-             *ngFor="let beneficiaire of filteredBeneficiaires"
+             *ngFor="let beneficiaire of beneficiaires"
              [class.selected]="selectedBeneficiaire?.id === beneficiaire.id"
              (click)="selectBeneficiaire(beneficiaire)">
           <div class="avatar-mini">

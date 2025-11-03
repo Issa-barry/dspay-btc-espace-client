@@ -1,11 +1,17 @@
 import { Component, OnInit } from '@angular/core';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { finalize, Subject, takeUntil } from 'rxjs';
+import { Beneficiaire } from 'src/app/demo/models/beneficiaire';
+import { PaginationMeta } from 'src/app/demo/models/PaginationMeta';
+import { BeneficiaireService } from 'src/app/demo/service/beneficiaire/beneficiaire.service';
+import { DepotService } from 'src/app/demo/service/depots/depots.service';
 // Pas besoin d'importer FormsModule ici si le composant n'est pas standalone
 // FormsModule doit être importé dans le module parent (dashboard.module.ts)
 
-interface Beneficiaire {
+ 
+interface BeneficiaireOption {
   id: number;
-  nom: string;
-  prenom: string;
+  label: string;
   phone: string;
 }
 
@@ -16,6 +22,20 @@ interface Beneficiaire {
   styleUrl: './depot.component.scss'
 })
 export class DepotComponent implements OnInit {
+
+   page = 1;
+    perPage = 10; 
+    searchTerm = '';
+     meta: PaginationMeta | null = null;
+  // 
+
+  beneficiairesOptions: BeneficiaireOption[] = [];
+  selectedBeneficiaireId: number | null = null;
+  loading = false;
+  submitted = false;
+    private readonly destroy$ = new Subject<void>();
+
+  // fin
   // Étape courante
   currentStep: number = 1;
 
@@ -45,9 +65,42 @@ export class DepotComponent implements OnInit {
   // Step 4: Confirmation
    isProcessing: boolean = false;
 
+   constructor( 
+        private depotService : DepotService,
+        private readonly beneficiaireService: BeneficiaireService,
+        private readonly messageService: MessageService,
+        private readonly confirmationService: ConfirmationService,
+     
+   ){}
+
   ngOnInit(): void {
     this.loadBeneficiaires();
   }
+
+  
+    showMessage(severity: string, summary: string, detail: string) {
+        this.messageService.add({ severity, summary, detail, life: 3000 });
+    }
+
+    
+  loadBeneficiaires(): void {
+    this.loading = true;
+
+    this.beneficiaireService
+      .list({ page: this.page, per_page: this.perPage, search: this.searchTerm || undefined })
+      .subscribe({
+        next: ({ items, meta }) => {
+          this.beneficiaires = items;
+          this.meta = meta;
+          this.loading = false;
+        },
+        error: (err) => {
+          this.loading = false;
+          this.showMessage('error', 'Erreur', err.message || 'Échec du chargement des bénéficiaires.');
+        }
+      });
+  }
+
 
   // ==================== Navigation Steps ====================
   nextStep(): void {
@@ -95,19 +148,8 @@ export class DepotComponent implements OnInit {
     const wallet = this.wallets.find(w => w.id === walletId);
     return wallet ? wallet.name : walletId;
   }
+ 
 
-  // ==================== Step 3: Bénéficiaire ====================
-  loadBeneficiaires(): void {
-    // Simuler le chargement depuis l'API
-    // À remplacer par un vrai appel API
-    this.beneficiaires = [
-      { id: 1, nom: 'Diallo', prenom: 'Mamadou', phone: '+224 666 14 58 75' },
-      { id: 2, nom: 'Bah', prenom: 'Aissatou', phone: '+224 622 33 44 55' },
-      { id: 3, nom: 'Sylla', prenom: 'Ibrahim', phone: '+224 655 66 77 88' },
-      { id: 4, nom: 'Camara', prenom: 'Fatoumata', phone: '+224 611 22 33 44' },
-    ];
-    this.filteredBeneficiaires = [...this.beneficiaires];
-  }
 
   selectBeneficiaire(beneficiaire: Beneficiaire): void {
     this.selectedBeneficiaire = beneficiaire;
