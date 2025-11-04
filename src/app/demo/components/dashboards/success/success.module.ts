@@ -29,7 +29,8 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     FieldsetModule,
     ButtonModule,
     PipeModule,
-    ProgressSpinnerModule
+    ProgressSpinnerModule,
+    
   ]
 })
 export class SuccessModule { }
