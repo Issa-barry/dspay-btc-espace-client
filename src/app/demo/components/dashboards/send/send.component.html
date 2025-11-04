@@ -22,7 +22,7 @@
                 inputId="amountEur"
                 [(ngModel)]="montantEuro"
                 mode="currency"
-                currency="EUR"
+                currency="EUR" 
                 locale="fr-FR"
                 [minFractionDigits]="0"
                 [maxFractionDigits]="2" 
@@ -68,47 +68,31 @@
     <section *ngSwitchCase="1" class="grid">
       <div class="col-12 md:col-8">
         <div class="field mb-3">
-          <label for="modeReception" class="font-medium text-900">Mode réception</label>
+          <label class="font-medium text-900 mb-3 block">Mode réception</label>
 
-          <p-dropdown
-            inputId="modeReception"
-            [options]="modesReception"
-            optionLabel="label"
-            optionValue="value"
-            [(ngModel)]="selectedModeReception"
-            [showClear]="false"
-            placeholder="Choisir un mode"
-            [appendTo]="'body'"
-            [autoZIndex]="true"
-            [baseZIndex]="11000"
-            styleClass="w-full">
-
-            <ng-template pTemplate="item" let-opt>
-              <div class="flex align-items-center gap-2">
+          <div class="mode-reception-cards">
+            <div
+              *ngFor="let mode of modesReception"
+              class="mode-card"
+              [class.selected]="selectedModeReception === mode.value"
+              (click)="selectedModeReception = mode.value">
+              
+              <div class="mode-card-icon">
                 <i class="pi"
                    [ngClass]="{
-                     'pi-wallet': opt.value === 'ewallet',
-                     'pi-mobile': opt.value === 'orange_money',
-                     'pi-money-bill': opt.value === 'retrait_cash'
+                     'pi-wallet': mode.value === 'ewallet',
+                     'pi-mobile': mode.value === 'orange_money',
+                     'pi-money-bill': mode.value === 'retrait_cash'
                    }">
                 </i>
-                <span>{{ opt.label }}</span>
               </div>
-            </ng-template>
-
-            <ng-template pTemplate="selectedItem" let-opt>
-              <div class="flex align-items-center gap-2">
-                <i class="pi"
-                   [ngClass]="{
-                     'pi-wallet': opt?.value === 'ewallet',
-                     'pi-mobile': opt?.value === 'orange_money',
-                     'pi-money-bill': opt?.value === 'retrait_cash'
-                   }">
-                </i>
-                <span>{{ opt?.label || 'Choisir un mode' }}</span>
+              
+              <div class="mode-card-content">
+                <span class="mode-card-title">{{ mode.label }}</span>
+                <span class="mode-card-subtitle">eWallet</span>
               </div>
-            </ng-template>
-          </p-dropdown>
+            </div>
+          </div>
 
           <small class="p-error" *ngIf="errors['mode_reception']">
             {{ errors['mode_reception'] }}
@@ -238,7 +222,7 @@
           <p-divider styleClass="my-3"></p-divider>
 
           <div class="grid align-items-center recap-row mt-2">
-            <div class="col-8 md:col-6 text-900 font-bold">Total à  payer</div>
+            <div class="col-8 md:col-6 text-900 font-bold">Total à  payer</div>
             <div class="col-4 md:col-6 text-right text-900 font-bold">
               {{ total_ttc | money:'EUR':'normal' }}
             </div>
@@ -333,4 +317,4 @@
     <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
     <button pButton pRipple label="Enregistrer" icon="pi pi-check" class="p-button-text" (click)="saveBeneficiaire()" [loading]="loading"></button>
   </ng-template>
-</p-dialog> 
+</p-dialog>

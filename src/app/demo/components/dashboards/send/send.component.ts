@@ -260,7 +260,7 @@ export class SendComponent implements OnInit, OnDestroy {
             detail: err?.message || 'Impossible de charger les bénéficiaires',
           });
         },
-      });
+      }); 
   }
 
   // ───────── Getters validation ─────────

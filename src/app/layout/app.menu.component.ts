@@ -15,10 +15,15 @@ export class AppMenuComponent implements OnInit {
                 label: 'MENU',
                 icon: 'pi pi-home',
                 items: [
+                      {
+                        label: 'Depot',
+                        icon: 'pi pi-fw pi-sort-alt-slash',
+                        routerLink: ['/dashboard']
+                    },
                     {
                         label: 'Transfert',
                         icon: 'pi pi-fw pi-sort-alt-slash',
-                        routerLink: ['/dashboard']
+                        routerLink: ['/dashboard/send']
                     },
                     {
                         label: "Bénéficiaires",
