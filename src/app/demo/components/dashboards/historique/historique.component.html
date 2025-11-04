@@ -2,18 +2,18 @@
   <h2 class="mb-4">Historique des transferts</h2>
   
   <div class="transfert-list">
-    <div class="transfert-item" *ngFor="let transfert of transferts">
-      <div class="transfert-left">
-        <div class="avatar" [style.background-color]="getAvatarColor(transfert.beneficiaire)">
-          {{ getInitials(transfert.beneficiaire) }}
+    <div class="transfert-item" *ngFor="let transfert of transferts" (click)="goToTransfertDetail(transfert)">
+      <div class="transfert-left" >
+        <div class="avatar" [style.background-color]="getAvatarColor(transfert.beneficiaire.nom + ' ' + transfert.beneficiaire.prenom)">
+          {{ getInitials(transfert.beneficiaire.nom + ' ' + transfert.beneficiaire.prenom) }} 
         </div>
         <div class="transfert-info">
-          <div class="beneficiaire-name">{{ transfert.beneficiaire }}</div>
-          <div class="phone-number">{{ transfert.phone }}</div>
+          <div class="beneficiaire-name">{{ transfert.beneficiaire.nom }} {{ transfert.beneficiaire.prenom }}</div>
+          <div class="phone-number">{{ transfert.beneficiaire.phone }}</div>
         </div>
       </div>
       <div class="transfert-right">
-        <div class="montant">{{ transfert.montant_recu | number: '1.0-0' }} GNF</div>
+        <div class="montant">{{ transfert.total_ttc | money:"EUR":"normal" }} </div>
         <i class="pi pi-chevron-right"></i>
       </div>
     </div>

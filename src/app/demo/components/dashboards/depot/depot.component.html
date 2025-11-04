@@ -1,0 +1,278 @@
+<div class="depot-container">
+  <div class="depot-card">
+    
+    <!-- Header -->
+    <div class="depot-header">
+      <div class="logo">1 € = 10 700 GNF</div>
+      <i class="pi pi-question-circle"></i>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="progress-bar">
+      <div class="progress-fill" [style.width.%]="(currentStep / 4) * 100"></div>
+    </div>
+
+    <!-- ==================== ÉTAPE 1 : MONTANT ==================== -->
+    <div class="step-content" *ngIf="currentStep === 1">
+      <div class="step-header">
+        <h2 class="step-title">Montant à envoyer</h2>
+      </div>
+
+      <div class="currency-pills">
+        <button class="pill" [class.active]="selectedCurrency === 'EUR'" (click)="selectCurrency('EUR')">
+          EUR (€)
+        </button>
+        <button class="pill" [class.active]="selectedCurrency === 'GNF'" (click)="selectCurrency('GNF')">
+          GNF
+        </button>
+      </div>
+
+      <div class="amount-box">
+        <div class="big-input-group">
+          <input type="number" class="big-amount-input" [(ngModel)]="amount" placeholder="0" min="1" autofocus />
+          <span class="currency-prefix">{{ selectedCurrency }}</span>
+        </div>
+        <div class="input-hint">Cliquez pour saisir le montant</div>
+      </div>
+
+      <div class="info-summary" *ngIf="amount > 0">
+        <div class="info-line">
+          <span>Montant reçu</span>
+          <strong>
+            {{
+              selectedCurrency === 'EUR'
+                ? ((amount * 10700) | number: '1.0-0') + ' GNF'
+                : ((amount / 10700) | number: '1.2-2') + ' EUR'
+            }}
+          </strong>
+        </div>
+        <div class="info-line">
+          <span>Frais de service</span>
+          <strong>2.00 EUR</strong>
+        </div>
+        <div class="info-line total">
+          <span>Total</span>
+          <strong class="total-amount">{{ (amount + 2) | number: '1.2-2' }} EUR</strong>
+        </div>
+      </div>
+
+      <button class="btn-next" (click)="nextStep()" [disabled]="!amount || amount <= 0">
+        Continuer
+      </button>
+    </div>
+
+    <!-- ==================== ÉTAPE 2 : WALLET ==================== -->
+    <div class="step-content" *ngIf="currentStep === 2">
+      <div class="step-header">
+        <h2 class="step-title">Choisissez un wallet</h2>
+      </div>
+
+      <div class="wallet-options">
+        <div class="wallet-item" 
+             *ngFor="let w of wallets"
+             [class.selected]="selectedWallet === w.id"
+             (click)="selectWallet(w.id)">
+          <div class="wallet-icon-mini" [ngClass]="w.colorClass">
+            <i class="pi" [ngClass]="w.icon"></i>
+          </div>
+          <div class="wallet-label">
+            <div class="wallet-name">{{ w.name }}</div>
+            <div class="wallet-tag">{{ w.desc }}</div>
+          </div>
+          <i class="pi pi-check check-icon" *ngIf="selectedWallet === w.id"></i>
+        </div>
+      </div>
+
+      <div class="button-row">
+        <button class="btn-back" (click)="previousStep()">
+          <i class="pi pi-arrow-left"></i>
+        </button>
+        <button class="btn-next" (click)="nextStep()" [disabled]="!selectedWallet">
+          Continuer
+        </button>
+      </div>
+    </div>
+
+    <!-- ==================== ÉTAPE 3 : BÉNÉFICIAIRE ==================== -->
+    <div class="step-content" *ngIf="currentStep === 3">
+      <div class="step-header">
+        <h2 class="step-title">Destinataire</h2>
+      </div>
+
+      <div class="search-box">
+        <i class="pi pi-search"></i>
+        <input type="text"
+               placeholder="Rechercher..."
+               [(ngModel)]="searchBeneficiaire"
+               (ngModelChange)="filterBeneficiaires()" />
+      </div>
+
+      <!-- Liste des bénéficiaires -->
+      <div class="beneficiaire-compact-list">
+        <div class="beneficiaire-compact-item"
+             *ngFor="let beneficiaire of filteredBeneficiaires"
+             [class.selected]="selectedBeneficiaire?.id === beneficiaire.id"
+             (click)="selectBeneficiaire(beneficiaire)">
+          <div class="avatar-mini">
+            {{ getInitials(beneficiaire.nom, beneficiaire.prenom) }}
+          </div>
+          <div class="beneficiaire-info-mini">
+            <div class="name-mini">{{ beneficiaire.nom }} {{ beneficiaire.prenom }}</div>
+            <div class="phone-mini">{{ beneficiaire.phone }}</div>
+          </div>
+          <i class="pi pi-check check-icon" *ngIf="selectedBeneficiaire?.id === beneficiaire.id"></i>
+        </div>
+
+        <div class="empty-state" *ngIf="!loading && filteredBeneficiaires.length === 0">
+          <i class="pi pi-user-plus"></i>
+          <p>Aucun destinataire trouvé</p>
+        </div>
+      </div>
+
+      <!-- Ajouter un destinataire -->
+      <button class="btn-add-beneficiaire" (click)="openBeneficiaireDialog()">
+        <i class="pi pi-plus"></i>
+        Ajouter un destinataire
+      </button>
+
+      <!-- Formulaire infos compte -->
+      <div class="extra-fields"
+           *ngIf="showAccountFields && (selectedWallet === 'KS-PAY' || selectedWallet === 'payCard')">
+        <input type="text"
+               class="compact-input"
+               [(ngModel)]="accountId"
+               placeholder="Numéro de compte" />
+        <input type="tel"
+               class="compact-input"
+               [(ngModel)]="customerPhone"
+               placeholder="Téléphone" />
+        <button class="btn-cancel" (click)="showAccountFields = false">
+          <i class="pi pi-times"></i> Masquer
+        </button>
+      </div>
+
+      <div class="button-row">
+        <button class="btn-back" (click)="previousStep()">
+          <i class="pi pi-arrow-left"></i>
+        </button>
+        <button class="btn-next" (click)="nextStep()" [disabled]="!selectedBeneficiaire">
+          Continuer
+        </button>
+      </div>
+    </div>
+
+    <!-- ==================== ÉTAPE 4 : CONFIRMATION ==================== -->
+    <div class="step-content" *ngIf="currentStep === 4">
+      <div class="step-header">
+        <h2 class="step-title">Confirmer</h2>
+      </div>
+
+      <div class="recap-box">
+        <div class="recap-item">
+          <i class="pi pi-money-bill"></i>
+          <div class="recap-content">
+            <div class="recap-label">Montant</div>
+            <div class="recap-value">{{ amount | number: '1.2-2' }} {{ selectedCurrency }}</div>
+          </div>
+        </div>
+
+        <div class="recap-item">
+          <i class="pi pi-wallet"></i>
+          <div class="recap-content">
+            <div class="recap-label">Wallet</div>
+            <div class="recap-value">{{ getWalletName(selectedWallet) }}</div>
+          </div>
+        </div>
+
+        <div class="recap-item">
+          <i class="pi pi-user"></i>
+          <div class="recap-content">
+            <div class="recap-label">Destinataire</div>
+            <div class="recap-value">{{ selectedBeneficiaire?.nom }} {{ selectedBeneficiaire?.prenom }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-summary">
+        <div class="info-line">
+          <span>Montant reçu</span>
+          <strong>{{ (amount * 10700) | number: '1.0-0' }} GNF</strong>
+        </div>
+        <div class="info-line">
+          <span>Frais</span>
+          <strong>2.00 EUR</strong>
+        </div>
+        <div class="info-line total">
+          <span>Total à payer</span>
+          <strong class="total-amount">{{ (amount + 2) | number: '1.2-2' }} EUR</strong>
+        </div>
+      </div>
+
+      <div class="button-row">
+        <button class="btn-back" (click)="previousStep()">
+          <i class="pi pi-arrow-left"></i>
+        </button>
+        <button class="btn-pay" (click)="payWithStripeCheckout()" [disabled]="isProcessing">
+          <i class="pi pi-lock" *ngIf="!isProcessing"></i>
+          <i class="pi pi-spin pi-spinner" *ngIf="isProcessing"></i>
+          {{ isProcessing ? 'Traitement...' : 'Payer' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== DIALOG AJOUT BÉNÉFICIAIRE ==================== -->
+<p-dialog
+  [(visible)]="beneficiaireDialog"
+  [style]="{ width: '450px' }"
+  header="Détails du Bénéficiaire"
+  [modal]="true"
+  class="p-fluid"
+  [appendTo]="'body'"
+  [autoZIndex]="true"
+  [baseZIndex]="11000"
+  (onHide)="submitted = false">
+
+  <ng-template pTemplate="content">
+    <div class="field w-full">
+      <label for="b_nom">Nom</label>
+      <input type="text" pInputText id="b_nom" class="w-full"
+             [(ngModel)]="beneficiaire.nom"
+             [ngClass]="{'ng-invalid ng-dirty': submitted && !beneficiaire.nom}"
+             placeholder="Exemple: BARRY" />
+      <small class="p-error" *ngIf="submitted && !beneficiaire.nom">Nom requis.</small>
+    </div>
+
+    <div class="field w-full">
+      <label for="b_prenom">Prénom</label>
+      <input type="text" pInputText id="b_prenom" class="w-full"
+             [(ngModel)]="beneficiaire.prenom"
+             [ngClass]="{'ng-invalid ng-dirty': submitted && !beneficiaire.prenom}"
+             placeholder="Exemple: Ibrahima" />
+      <small class="p-error" *ngIf="submitted && !beneficiaire.prenom">Prénom requis.</small>
+    </div>
+
+    <div class="field w-full">
+      <label for="b_phone">Téléphone</label>
+      <input type="text"
+             pInputText
+             id="b_phone"
+             class="w-full"
+             [(ngModel)]="beneficiaire.phone"
+             (input)="onBenefPhoneInput($event)"
+             (keydown)="onBenefPhoneKeyDown($event)"
+             inputmode="numeric"
+             [ngClass]="{'ng-invalid ng-dirty': submitted && !beneficiaire.phone}"
+             placeholder="Ex: 62102170206" />
+      <small class="p-error" *ngIf="submitted && !beneficiaire.phone">Téléphone requis.</small>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+    <button pButton pRipple label="Enregistrer" icon="pi pi-check" class="p-button-text"
+            (click)="saveBeneficiaire()"
+            [loading]="beneficiaireLoading"></button>
+  </ng-template>
+</p-dialog>

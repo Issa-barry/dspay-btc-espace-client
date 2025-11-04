@@ -26,7 +26,7 @@
                 locale="fr-FR"
                 [minFractionDigits]="0"
                 [maxFractionDigits]="2" 
-                [max]="1000"
+                [max]="1000" 
                 (onInput)="convertirDepuisEuro()">
               </p-inputNumber>
               <span class="p-inputgroup-addon text-700">EUR</span>
@@ -287,8 +287,8 @@
   </ng-template>
 </p-dialog>
 
-     <!-- Dialog Paiement (fermé correctement, pas d'imbrication) -->
-     <p-dialog
+     <!-- Dialog benefeiciaire (fermé correctement, pas d'imbrication) -->
+  <p-dialog
   [(visible)]="beneficiaireDialog"
   [style]="{ width: '450px' }"
   header="DÉtails du Bénéficiaire"

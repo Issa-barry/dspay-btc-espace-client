@@ -8,6 +8,7 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
+import { PipeModule } from 'src/app/demo/pipes/pipe.module';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { TooltipModule } from 'primeng/tooltip';
     ButtonModule,
     InputTextModule,
     TagModule,
-    TooltipModule
+    TooltipModule,
+    PipeModule
   ]
 })
 export class HistoriqueModule { }

@@ -12,6 +12,19 @@ import { Beneficiaire } from '../../models/beneficiaire';
 import { PaginationMeta } from '../../models/PaginationMeta';
 
 
+export interface ApiResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
+}
+
+export interface Paginated<T> {
+  items: T[];
+  meta: PaginationMeta;
+}
+
+ 
+
 const httpOption = {
   headers: new HttpHeaders({
     'Content-Type': 'application/json',
@@ -77,6 +90,17 @@ export class BeneficiaireService {
       );
   }
 
+   getAll(search = '', perPage = 10): Observable<Beneficiaire[]> {
+    let params = new HttpParams();
+    if (search)  params = params.set('search', search);
+    if (perPage) params = params.set('per_page', perPage);
+
+    return this.http
+      .get<ApiResponse<Paginated<Beneficiaire>>>(this.apiUrl, { params })
+      .pipe(map(res => res.data.items)); // ← clé importante
+  }
+
+  
   /** Récupérer un bénéficiaire par id */
   getById(id: number): Observable<Beneficiaire> {
     return this.http
