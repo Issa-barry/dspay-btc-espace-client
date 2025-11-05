@@ -107,7 +107,18 @@
     <section *ngSwitchCase="2" class="grid">
       <div class="col-12 md:col-8">
         <div class="field mb-3">
-          <label class="font-medium text-900 mb-3 block">Bénéficiaire</label>
+          <!-- Header avec titre et bouton alignés -->
+          <div class="flex justify-content-between align-items-center mb-3">
+            <label class="font-medium text-900 m-0">Bénéficiaire</label>
+            <button
+              type="button"
+              pButton
+              class="p-button-text p-button-sm"
+              icon="pi pi-user-plus"
+              label="Ajouter un bénéficiaire"
+              (click)="onpenBeneficiaireDialog()">
+            </button>
+          </div>
 
           <!-- Liste des bénéficiaires -->
           <div *ngIf="!loading; else loadingTpl" class="beneficiaires-list">
@@ -134,16 +145,6 @@
               Aucun bénéficiaire disponible
             </div>
           </div>
-
-          <!-- Bouton ajouter -->
-          <button
-            type="button"
-            pButton
-            class="w-full mt-3 p-button-outlined"
-            icon="pi pi-user-plus"
-            label="Ajouter un bénéficiaire"
-            (click)="onpenBeneficiaireDialog()">
-          </button>
 
           <small class="p-error" *ngIf="errors['beneficiaire']">{{ errors['beneficiaire'] }}</small>
           <small class="p-error" *ngIf="submitted && !isBeneficiaireValide">Veuillez choisir un bénéficiaire.</small>
