@@ -1,7 +1,7 @@
 <div class="card">
   <p-toast></p-toast>
 
-  <!-- template de chargement rÉutilisable -->
+  <!-- template de chargement réutilisable -->
   <ng-template #loadingTpl>
     <div class="surface-100 border-round-md flex justify-content-center align-items-center py-3">
       <p-progressSpinner styleClass="w-2rem h-2rem"></p-progressSpinner>
@@ -64,7 +64,7 @@
       </div>
     </section>
 
-    <!-- Étape 1 : Mode de rÉception -->
+    <!-- Étape 1 : Mode de réception -->
     <section *ngSwitchCase="1" class="grid">
       <div class="col-12 md:col-8">
         <div class="field mb-3">
@@ -107,63 +107,43 @@
     <section *ngSwitchCase="2" class="grid">
       <div class="col-12 md:col-8">
         <div class="field mb-3">
-          <label class="font-medium text-900">Bénéficiaire</label>
+          <label class="font-medium text-900 mb-3 block">Bénéficiaire</label>
 
-          <div class="relative w-full">
-            <p-dropdown
-              *ngIf="!loading; else loadingTpl"
-              [options]="beneficiairesOptions"
-              optionValue="id"
-              optionLabel="label"
-              [(ngModel)]="selectedBeneficiaireId"
-              [filter]="false"
-              [showClear]="false"
-              placeholder="Sélectionnez un bénéficiaire"
-              styleClass="w-full"
-              [appendTo]="'body'"
-              [autoZIndex]="true"
-              [baseZIndex]="11000"
-              [emptyMessage]="'Aucun bénéficiaire'"
-              [emptyFilterMessage]="'Aucun résultat'"
-              (onChange)="onBeneficiaireChange($event.value)"
-              panelStyleClass="benef-panel"
-              [ngClass]="{
-                'ng-invalid ng-dirty':
-                  (submitted && !selectedBeneficiaireId) || !isBeneficiaireValide || errors['beneficiaire']
-              }">
+          <!-- Liste des bénéficiaires -->
+          <div *ngIf="!loading; else loadingTpl" class="beneficiaires-list">
+            <div 
+              *ngFor="let benef of beneficiairesOptions"
+              class="beneficiaire-item"
+              [class.selected]="selectedBeneficiaireId === benef.id"
+              (click)="onBeneficiaireChange(benef.id)">
+              
+              <div class="benef-avatar" [style.background-color]="getAvatarColor(benef.label)">
+                {{ getInitials(benef.label) }}
+              </div>
+              
+              <div class="benef-info">
+                <div class="benef-name">{{ benef.label }}</div>
+                <div class="benef-phone">{{ benef.phone | phoneFormat:'GN' }}</div>
+              </div>
+              
+              <i class="pi pi-chevron-right benef-chevron"></i>
+            </div>
 
-              <ng-template pTemplate="item" let-opt>
-                <div class="flex flex-column sm:flex-row sm:justify-content-between w-full">
-                  <span class="font-medium text-900 text-overflow-ellipsis white-space-nowrap overflow-hidden">
-                    {{ opt.label }}
-                  </span>
-                  <span class="text-600 text-sm sm:text-right">{{ opt.phone | phoneFormat:'GN' }}</span>
-                </div>
-              </ng-template>
-
-              <ng-template pTemplate="selectedItem" let-opt>
-                <div class="flex flex-column sm:flex-row sm:justify-content-between w-full">
-                  <span class="font-medium text-900 text-overflow-ellipsis white-space-nowrap overflow-hidden">
-                    {{ opt?.label }}
-                  </span>
-                  <span class="text-600 text-sm sm:text-right">{{ opt?.phone | phoneFormat:'GN' }}</span>
-                </div>
-              </ng-template>
-
-              <ng-template pTemplate="footer">
-                <div class="p-2 border-top-1 surface-border">
-                  <button
-                    type="button"
-                    pButton
-                    class="w-full p-button-text"
-                    icon="pi pi-user-plus"
-                    label="Ajouter un bénéficiaire"
-                    (click)="onpenBeneficiaireDialog()">
-                  </button>
-                </div>
-              </ng-template>
-            </p-dropdown>
+            <!-- Message si aucun bénéficiaire -->
+            <div *ngIf="beneficiairesOptions.length === 0" class="text-center py-4 text-600">
+              Aucun bénéficiaire disponible
+            </div>
           </div>
+
+          <!-- Bouton ajouter -->
+          <button
+            type="button"
+            pButton
+            class="w-full mt-3 p-button-outlined"
+            icon="pi pi-user-plus"
+            label="Ajouter un bénéficiaire"
+            (click)="onpenBeneficiaireDialog()">
+          </button>
 
           <small class="p-error" *ngIf="errors['beneficiaire']">{{ errors['beneficiaire'] }}</small>
           <small class="p-error" *ngIf="submitted && !isBeneficiaireValide">Veuillez choisir un bénéficiaire.</small>
@@ -271,11 +251,11 @@
   </ng-template>
 </p-dialog>
 
-     <!-- Dialog benefeiciaire (fermé correctement, pas d'imbrication) -->
-  <p-dialog
+<!-- Dialog benefeiciaire (fermé correctement, pas d'imbrication) -->
+<p-dialog
   [(visible)]="beneficiaireDialog"
   [style]="{ width: '450px' }"
-  header="DÉtails du Bénéficiaire"
+  header="Détails du Bénéficiaire"
   [modal]="true"
   class="p-fluid"
   [appendTo]="'body'"

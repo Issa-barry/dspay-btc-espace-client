@@ -474,4 +474,34 @@ export class SendComponent implements OnInit, OnDestroy {
     this.beneficiaireDialog = false;
     this.submitted = false;
   }
+
+  // iba bene 
+   // *****
+  getInitials(name: string): string {
+    const words = name.split(' ');
+    if (words.length >= 2) {
+      return (words[0][0] + words[1][0]).toUpperCase();
+    }
+    return name.substring(0, 2).toUpperCase();
+  }
+
+  getAvatarColor(name: string): string {
+    /**Multicolor avatar */
+    const colors = [
+      '#E91E63', // Rose
+      '#2196F3', // Bleu
+      '#FF9800', // Orange
+      '#4CAF50', // Vert
+      '#9C27B0', // Violet
+      '#FF5722', // Rouge-orange
+      '#00BCD4', // Cyan
+      '#FFC107'  // Jaune-orange
+    ];
+    
+    const index = name.length % colors.length;
+    return colors[index];
+
+    /**couleur unique avatar */
+    //  return '#00BCD4';
+  }
 }
