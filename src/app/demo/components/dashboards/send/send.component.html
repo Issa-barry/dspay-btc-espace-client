@@ -1,4 +1,4 @@
-<div class="card">
+<div class="card transfer-card--compac">
   <p-toast></p-toast>
 
   <!-- template de chargement réutilisable -->
@@ -70,14 +70,14 @@
         <div class="field mb-3">
           <label class="font-medium text-900 mb-3 block">Mode réception</label>
 
-          <div class="mode-reception-cards">
+          <div class="mode-reception-list">
             <div
               *ngFor="let mode of modesReception"
-              class="mode-card"
+              class="mode-reception-item"
               [class.selected]="selectedModeReception === mode.value"
               (click)="selectedModeReception = mode.value">
               
-              <div class="mode-card-icon">
+              <div class="mode-icon-wrapper">
                 <i class="pi"
                    [ngClass]="{
                      'pi-wallet': mode.value === 'ewallet',
@@ -87,10 +87,12 @@
                 </i>
               </div>
               
-              <div class="mode-card-content">
-                <span class="mode-card-title">{{ mode.label }}</span>
-                <span class="mode-card-subtitle">eWallet</span>
+              <div class="mode-content">
+                <div class="mode-title">{{ mode.label }}</div>
+                <div class="mode-subtitle">eWallet</div>
               </div>
+              
+              <i class="pi pi-chevron-right mode-chevron"></i>
             </div>
           </div>
 

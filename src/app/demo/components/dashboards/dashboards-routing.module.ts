@@ -3,7 +3,8 @@ import { RouterModule } from '@angular/router';
 
 @NgModule({
     imports: [RouterModule.forChild([
-        { path: '', loadChildren: () => import('./depot/depot.module').then(m => m.DepotModule) },
+        { path: '', data: {breadcrumb: 'Transfert'}, loadChildren: () => import('./send/send.module').then(m => m.SendModule) },
+        // { path: '', loadChildren: () => import('./depot/depot.module').then(m => m.DepotModule) },
         { path: 'depot', loadChildren: () => import('./depot/depot.module').then(m => m.DepotModule) },
         { path: 'send', data: {breadcrumb: 'Transfert'}, loadChildren: () => import('./send/send.module').then(m => m.SendModule) },
         { path: 'dashboard', data: {breadcrumb: 'Dashboard'}, loadChildren: () => import('./ecommerce/ecommerce.dashboard.module').then(m => m.EcommerceDashboardModule) },
