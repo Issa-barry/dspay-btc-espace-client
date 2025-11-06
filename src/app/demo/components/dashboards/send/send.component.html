@@ -181,7 +181,7 @@
         <div class="field mb-4 align-items-center recap-row">
           <label class="font-semibold text-900">Récapitulatif</label>
 
-          <p-divider styleClass="my-3"></p-divider>
+          <p-divider styleClass="my-2"></p-divider>
 
           <div class="grid align-items-start recap-row mt-2">
             <div class="col-12 md:col-6 text-900 font-medium">Bénéficiaire</div>
@@ -194,19 +194,19 @@
           </div>
  
 
-          <p-divider styleClass="my-3"></p-divider>
+          <p-divider styleClass="my-2"></p-divider>
 
  
-          <div class="grid align-items-center recap-row mt-2">
+          <div class="grid align-items-center recap-row mt-0">
             <div class="col-8 md:col-6 text-900 font-medium">Montant reçu</div>
             <div class="col-4 md:col-6 text-right text-900 font-bold">
-              {{ montantGNF | money:'GNF':'normal' }}
+              <span class="md:mr-6">{{ montantGNF | money:'GNF':'normal' }}</span>
             </div>
           </div>
 
-          <p-divider styleClass="my-3"></p-divider>
+          <p-divider styleClass="my-2"></p-divider>
 
-          <div class="grid align-items-center recap-row mt-2">
+          <div class="grid align-items-center recap-row mt-0">
             <div class="col-8 md:col-6">
               <div class="flex align-items-center gap-2">
                 <span class="text-900 font-medium">Frais</span>
@@ -223,9 +223,9 @@
             </div>
           </div>
 
-          <p-divider styleClass="my-3"></p-divider>
+          <p-divider styleClass="my-2"></p-divider>
 
-          <div class="grid align-items-center recap-row mt-2">
+          <div class="grid align-items-center recap-row mt-0">
             <div class="col-8 md:col-6 text-900 font-bold">Total à payer</div>
             <div class="col-4 md:col-6 text-right text-900 font-bold">
               {{ total_ttc | money:'EUR':'normal' }}
