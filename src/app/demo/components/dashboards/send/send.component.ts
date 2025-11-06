@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { finalize, Subject, takeUntil } from 'rxjs';
+import { ModeReception } from 'src/app/demo/enums/modeReception.enum';
 
 import { Beneficiaire } from 'src/app/demo/models/beneficiaire';
 import { Transfert, TransfertCreateDto } from 'src/app/demo/models/transfert';
@@ -11,12 +12,11 @@ import { PaiementService } from 'src/app/demo/service/paiement/paiement.service'
 import { TransfertService } from 'src/app/demo/service/transfert/transfert.service';
 import { formatPhoneOnType, toE164 } from 'src/app/shared/utils/phone.util';
 
-type ModeReception = 'orange_money' | 'ewallet' | 'retrait_cash';
-
+ 
 interface BeneficiaireOption {
   id: number;
   label: string;
-  phone: string;
+  phone: string; 
 }
 
 @Component({
@@ -44,12 +44,18 @@ export class SendComponent implements OnInit, OnDestroy {
   beneficiairesOptions: BeneficiaireOption[] = [];
   selectedBeneficiaireId: number | null = null;
   selectedTauxId = 1;
-  readonly modesReception: Array<{ label: string; value: ModeReception }> = [
-    { label: 'Retrait cash', value: 'retrait_cash' },
-    { label: 'Orange Money', value: 'orange_money' },
-    { label: 'eWallet', value: 'ewallet' },
-  ];
-  selectedModeReception: ModeReception = 'retrait_cash';
+readonly modesReception: Array<{ label: string; value: ModeReception }> = [
+  { label: 'Orange Money', value: ModeReception.orange_money },
+  { label: 'PayCard', value: ModeReception.paycard },
+  { label: 'KS-PAY', value: ModeReception.ks_pay },
+  { label: 'Soutrat Money', value: ModeReception.soutrat_money },
+  { label: 'Kulu', value: ModeReception.kulu },
+  { label: 'MTN', value: ModeReception.momo },
+];
+readonly ModeReception = ModeReception;
+
+selectedModeReception: ModeReception = ModeReception.orange_money;
+  // selectedModeReception: ModeReception = 'retrait_cash';
 
   // Frais & total
   includeFrais = true;

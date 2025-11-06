@@ -65,45 +65,48 @@
     </section>
 
     <!-- Étape 1 : Mode de réception -->
-    <section *ngSwitchCase="1" class="grid">
-      <div class="col-12 md:col-8">
-        <div class="field mb-3">
-          <label class="font-medium text-900 mb-3 block">Mode réception</label>
+   <section *ngSwitchCase="1" class="grid">
+  <div class="col-12 md:col-8">
+    <div class="field mb-3">
+      <label class="font-medium text-900 mb-3 block">Mode réception</label>
 
-          <div class="mode-reception-list">
-            <div
-              *ngFor="let mode of modesReception"
-              class="mode-reception-item"
-              [class.selected]="selectedModeReception === mode.value"
-              (click)="selectedModeReception = mode.value">
-              
-              <div class="mode-icon-wrapper">
-                <i class="pi"
-                   [ngClass]="{
-                     'pi-wallet': mode.value === 'ewallet',
-                     'pi-mobile': mode.value === 'orange_money',
-                     'pi-money-bill': mode.value === 'retrait_cash'
-                   }">
-                </i>
-              </div>
-              
-              <div class="mode-content">
-                <div class="mode-title">{{ mode.label }}</div>
-                <div class="mode-subtitle">eWallet</div>
-              </div>
-              
-              <i class="pi pi-chevron-right mode-chevron"></i>
-            </div>
+      <div class="mode-reception-list">
+        <div
+          *ngFor="let mode of modesReception"
+          class="mode-reception-item"
+          [class.selected]="selectedModeReception === mode.value"
+          (click)="selectedModeReception = mode.value">
+          
+          <div class="mode-icon-wrapper">
+            <i class="pi"
+               [ngClass]="{
+                 'pi-mobile': mode.value === ModeReception.orange_money,
+                 'pi-wallet': mode.value === ModeReception.ks_pay,
+                 'pi-credit-card': mode.value === ModeReception.paycard,
+                 'pi-building': mode.value === ModeReception.soutrat_money,
+                 'pi-shopping-bag': mode.value === ModeReception.kulu,
+                 'pi-qrcode': mode.value === ModeReception.momo
+               }">
+            </i>
           </div>
-
-          <small class="p-error" *ngIf="errors['mode_reception']">
-            {{ errors['mode_reception'] }}
-          </small>
+          
+          <div class="mode-content">
+            <div class="mode-title">{{ mode.label }}</div>
+            <div class="mode-subtitle">eWallet</div>
+          </div>
+          
+          <i class="pi pi-chevron-right mode-chevron"></i>
         </div>
-
-        <ui-step-actions (prev)="prev()" (next)="next()"></ui-step-actions>
       </div>
-    </section>
+
+      <small class="p-error" *ngIf="errors['mode_reception']">
+        {{ errors['mode_reception'] }}
+      </small>
+    </div>
+
+    <ui-step-actions (prev)="prev()" (next)="next()"></ui-step-actions>
+  </div>
+</section>
 
     <!-- Étape 2 : Bénéficiaire -->
     <section *ngSwitchCase="2" class="grid">
