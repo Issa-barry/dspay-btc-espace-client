@@ -565,10 +565,10 @@
 
 // Responsive montant reçu
 @media (max-width: 768px) {
-   .montantMobile {
-     margin-left: -1rem;
+   .marginRightMobileRecapitulatif {
+     margin-left: -1.5rem;
    }
-   .beneficiaireMobile {
+   .marginTopMobileRecapitulatif {
      margin-top: -1.5rem;
    }
 }

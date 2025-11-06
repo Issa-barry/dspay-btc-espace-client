@@ -327,6 +327,13 @@ export class SendComponent implements OnInit, OnDestroy {
     );
   }
 
+  get selectedModeReceptionLabel(): string {
+    return (
+      this.modesReception.find((m) => m.value === this.selectedModeReception)
+        ?.label ?? '—'
+    );
+  }
+
   get isMontantValide(): boolean {
     const eur = Number(this.montantEuro);
     return !Number.isNaN(eur) && eur > 0 && eur <= this.MAX_EUR;

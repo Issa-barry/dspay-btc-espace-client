@@ -123,17 +123,17 @@
       <div class="col-12 md:col-8">
         <div class="field mb-3">
           <!-- Header avec titre et bouton alignés -->
-          <div class="flex justify-content-between align-items-center mb-3">
-            <label class="font-medium text-900 m-0">Bénéficiaire</label>
-            <button
-              type="button"
-              pButton
-              class="p-button-text p-button-sm"
-              icon="pi pi-user-plus"
-              label="Ajouter un bénéficiaire"
-              (click)="onpenBeneficiaireDialog()">
-            </button>
-          </div>
+          <div class="flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+          <label class="font-medium text-900 m-0 flex-grow-1">Bénéficiaire</label>
+          <button
+            type="button"
+            pButton
+            class="p-button-text p-button-sm flex-shrink-0"
+            icon="pi pi-user-plus"
+            label="Ajouter un bénéficiaire"
+            (click)="onpenBeneficiaireDialog()">
+          </button>
+        </div>
 
           <!-- Liste des bénéficiaires -->
           <div *ngIf="!loading; else loadingTpl" class="beneficiaires-list">
@@ -183,39 +183,54 @@
 
           <p-divider styleClass="my-2"></p-divider>
 
+          <!-- Bénéficiaire -->
           <div class="grid align-items-start recap-row mt-0">
             <div class="col-12 md:col-6 text-900 font-medium">Bénéficiaire</div>
-            <div class="col-12 md:col-6 md:mt-0 text-left md:text-right beneficiaireMobile">
+            <div class="col-12 md:col-6 md:mt-0 text-left md:text-right marginTopMobileRecapitulatif">
               <div class="text-800 text-sm text-overflow-ellipsis white-space-nowrap overflow-hidden">
                 {{ selectedBeneficiaireLabel }}
               </div>
               <div class="text-600 text-sm md:mt-0">{{ selectedBeneficiairePhone | phoneFormat:'GN' }}</div>
             </div>
           </div>
-
-           <div class="grid align-items-start recap-row mt-0">
-            <div class="col-12 md:col-6 text-900 font-medium">Mode reception</div>
-            <div class="col-12 md:col-6 md:mt-0 text-left md:text-right beneficiaireMobile">
-              <div class="text-800 text-sm text-overflow-ellipsis white-space-nowrap overflow-hidden">
-                {{ selectedBeneficiaireLabel }}
-              </div>
-              <div class="text-600 text-sm md:mt-0">{{ selectedBeneficiairePhone | phoneFormat:'GN' }}</div>
-            </div>
-          </div>
- 
 
           <p-divider styleClass="my-2"></p-divider>
 
- 
+          <!-- Mode de réception avec icône -->
           <div class="grid align-items-center recap-row mt-0">
-            <div class="col-8 md:col-6 text-900 font-medium">Montant reçu</div>
-            <div class="col-4 md:col-6 text-right text-900 font-bold">
-              <span class="montantMobile">{{ montantGNF | money:'GNF':'normal' }}</span>
+            <div class="col-12 md:col-6 text-900 font-medium">Mode de réception</div>
+            <div class="col-12 md:col-6 md:mt-0 text-left md:text-right marginTopMobileRecapitulatif">
+              <div class="flex align-items-center gap-2 justify-content-start md:justify-content-end">
+                <div class="mode-icon-recap">
+                  <i class="pi"
+                     [ngClass]="{
+                       'pi-mobile': selectedModeReception === ModeReception.orange_money,
+                       'pi-wallet': selectedModeReception === ModeReception.ks_pay,
+                       'pi-credit-card': selectedModeReception === ModeReception.paycard,
+                       'pi-building': selectedModeReception === ModeReception.soutrat_money,
+                       'pi-shopping-bag': selectedModeReception === ModeReception.kulu,
+                       'pi-qrcode': selectedModeReception === ModeReception.momo
+                     }">
+                  </i>
+                </div>
+                <span class="text-800 text-sm font-medium">{{ selectedModeReceptionLabel }}</span>
+              </div>
             </div>
           </div>
 
           <p-divider styleClass="my-2"></p-divider>
 
+          <!-- Montant reçu -->
+          <div class="grid align-items-center recap-row mt-0">
+            <div class="col-8 md:col-6 text-900 font-medium ">Montant reçu</div>
+            <div class="col-4 md:col-6 text-right text-900 font-bold marginRightMobileRecapitulatif">
+              <span>{{ montantGNF | money:'GNF':'normal' }}</span>
+            </div>
+          </div>
+
+          <p-divider styleClass="my-2"></p-divider>
+
+          <!-- Frais -->
           <div class="grid align-items-center recap-row mt-0">
             <div class="col-8 md:col-6">
               <div class="flex align-items-center gap-2">
@@ -235,6 +250,7 @@
 
           <p-divider styleClass="my-2"></p-divider>
 
+          <!-- Total à payer -->
           <div class="grid align-items-center recap-row mt-0">
             <div class="col-8 md:col-6 text-900 font-bold">Total à payer</div>
             <div class="col-4 md:col-6 text-right text-900 font-bold">
