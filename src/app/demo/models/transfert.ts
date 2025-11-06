@@ -1,4 +1,5 @@
 // src/app/demo/models/transfert.ts
+import { ModeReception } from "../enums/modeReception.enum";
 import { Beneficiaire } from "./beneficiaire";
 import { Devises } from "./Devise";
 import { Taux } from "./Taux";
@@ -36,7 +37,7 @@ export class Transfert {
   updated_at?: string;
 
    // Mode de réception (NEW)
-  mode_reception: 'orange_money' | 'ewallet' | 'retrait_cash' = 'retrait_cash';
+  mode_reception: ModeReception = ModeReception.orange_money;
 
   constructor(init?: Partial<Transfert>) {
     Object.assign(this, init);

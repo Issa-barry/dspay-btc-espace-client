@@ -1,7 +1,7 @@
-<div class="card">
+<div class="card transfer-card--compac">
   <p-toast></p-toast>
 
-  <!-- template de chargement rÉutilisable -->
+  <!-- template de chargement réutilisable -->
   <ng-template #loadingTpl>
     <div class="surface-100 border-round-md flex justify-content-center align-items-center py-3">
       <p-progressSpinner styleClass="w-2rem h-2rem"></p-progressSpinner>
@@ -22,7 +22,7 @@
                 inputId="amountEur"
                 [(ngModel)]="montantEuro"
                 mode="currency"
-                currency="EUR"
+                currency="EUR" 
                 locale="fr-FR"
                 [minFractionDigits]="0"
                 [maxFractionDigits]="2" 
@@ -64,121 +64,91 @@
       </div>
     </section>
 
-    <!-- Étape 1 : Mode de rÉception -->
-    <section *ngSwitchCase="1" class="grid">
-      <div class="col-12 md:col-8">
-        <div class="field mb-3">
-          <label for="modeReception" class="font-medium text-900">Mode réception</label>
+    <!-- Étape 1 : Mode de réception -->
+   <section *ngSwitchCase="1" class="grid">
+  <div class="col-12 md:col-8">
+    <div class="field mb-3">
+      <label class="font-medium text-900 mb-3 block">Mode réception</label>
 
-          <p-dropdown
-            inputId="modeReception"
-            [options]="modesReception"
-            optionLabel="label"
-            optionValue="value"
-            [(ngModel)]="selectedModeReception"
-            [showClear]="false"
-            placeholder="Choisir un mode"
-            [appendTo]="'body'"
-            [autoZIndex]="true"
-            [baseZIndex]="11000"
-            styleClass="w-full">
-
-            <ng-template pTemplate="item" let-opt>
-              <div class="flex align-items-center gap-2">
-                <i class="pi"
-                   [ngClass]="{
-                     'pi-wallet': opt.value === 'ewallet',
-                     'pi-mobile': opt.value === 'orange_money',
-                     'pi-money-bill': opt.value === 'retrait_cash'
-                   }">
-                </i>
-                <span>{{ opt.label }}</span>
-              </div>
-            </ng-template>
-
-            <ng-template pTemplate="selectedItem" let-opt>
-              <div class="flex align-items-center gap-2">
-                <i class="pi"
-                   [ngClass]="{
-                     'pi-wallet': opt?.value === 'ewallet',
-                     'pi-mobile': opt?.value === 'orange_money',
-                     'pi-money-bill': opt?.value === 'retrait_cash'
-                   }">
-                </i>
-                <span>{{ opt?.label || 'Choisir un mode' }}</span>
-              </div>
-            </ng-template>
-          </p-dropdown>
-
-          <small class="p-error" *ngIf="errors['mode_reception']">
-            {{ errors['mode_reception'] }}
-          </small>
+      <div class="mode-reception-list">
+        <div
+          *ngFor="let mode of modesReception"
+          class="mode-reception-item"
+          [class.selected]="selectedModeReception === mode.value"
+          (click)="selectedModeReception = mode.value">
+          
+          <div class="mode-icon-wrapper">
+            <i class="pi"
+               [ngClass]="{
+                 'pi-mobile': mode.value === ModeReception.orange_money,
+                 'pi-wallet': mode.value === ModeReception.ks_pay,
+                 'pi-credit-card': mode.value === ModeReception.paycard,
+                 'pi-building': mode.value === ModeReception.soutrat_money,
+                 'pi-shopping-bag': mode.value === ModeReception.kulu,
+                 'pi-qrcode': mode.value === ModeReception.momo
+               }">
+            </i>
+          </div>
+          
+          <div class="mode-content">
+            <div class="mode-title">{{ mode.label }}</div>
+            <div class="mode-subtitle">eWallet</div>
+          </div>
+          
+          <i class="pi pi-chevron-right mode-chevron"></i>
         </div>
-
-        <ui-step-actions (prev)="prev()" (next)="next()"></ui-step-actions>
       </div>
-    </section>
+
+      <small class="p-error" *ngIf="errors['mode_reception']">
+        {{ errors['mode_reception'] }}
+      </small>
+    </div>
+
+    <ui-step-actions (prev)="prev()" (next)="next()"></ui-step-actions>
+  </div>
+</section>
 
     <!-- Étape 2 : Bénéficiaire -->
     <section *ngSwitchCase="2" class="grid">
       <div class="col-12 md:col-8">
         <div class="field mb-3">
-          <label class="font-medium text-900">Bénéficiaire</label>
+          <!-- Header avec titre et bouton alignés -->
+          <div class="flex justify-content-between align-items-center mb-3">
+            <label class="font-medium text-900 m-0">Bénéficiaire</label>
+            <button
+              type="button"
+              pButton
+              class="p-button-text p-button-sm"
+              icon="pi pi-user-plus"
+              label="Ajouter un bénéficiaire"
+              (click)="onpenBeneficiaireDialog()">
+            </button>
+          </div>
 
-          <div class="relative w-full">
-            <p-dropdown
-              *ngIf="!loading; else loadingTpl"
-              [options]="beneficiairesOptions"
-              optionValue="id"
-              optionLabel="label"
-              [(ngModel)]="selectedBeneficiaireId"
-              [filter]="false"
-              [showClear]="false"
-              placeholder="Sélectionnez un bénéficiaire"
-              styleClass="w-full"
-              [appendTo]="'body'"
-              [autoZIndex]="true"
-              [baseZIndex]="11000"
-              [emptyMessage]="'Aucun bénéficiaire'"
-              [emptyFilterMessage]="'Aucun résultat'"
-              (onChange)="onBeneficiaireChange($event.value)"
-              panelStyleClass="benef-panel"
-              [ngClass]="{
-                'ng-invalid ng-dirty':
-                  (submitted && !selectedBeneficiaireId) || !isBeneficiaireValide || errors['beneficiaire']
-              }">
+          <!-- Liste des bénéficiaires -->
+          <div *ngIf="!loading; else loadingTpl" class="beneficiaires-list">
+            <div 
+              *ngFor="let benef of beneficiairesOptions"
+              class="beneficiaire-item"
+              [class.selected]="selectedBeneficiaireId === benef.id"
+              (click)="onBeneficiaireChange(benef.id)">
+              
+              <div class="benef-avatar" [style.background-color]="getAvatarColor(benef.label)">
+                {{ getInitials(benef.label) }}
+              </div>
+              
+              <div class="benef-info">
+                <div class="benef-name">{{ benef.label }}</div>
+                <div class="benef-phone">{{ benef.phone | phoneFormat:'GN' }}</div>
+              </div>
+              
+              <i class="pi pi-chevron-right benef-chevron"></i>
+            </div>
 
-              <ng-template pTemplate="item" let-opt>
-                <div class="flex flex-column sm:flex-row sm:justify-content-between w-full">
-                  <span class="font-medium text-900 text-overflow-ellipsis white-space-nowrap overflow-hidden">
-                    {{ opt.label }}
-                  </span>
-                  <span class="text-600 text-sm sm:text-right">{{ opt.phone | phoneFormat:'GN' }}</span>
-                </div>
-              </ng-template>
-
-              <ng-template pTemplate="selectedItem" let-opt>
-                <div class="flex flex-column sm:flex-row sm:justify-content-between w-full">
-                  <span class="font-medium text-900 text-overflow-ellipsis white-space-nowrap overflow-hidden">
-                    {{ opt?.label }}
-                  </span>
-                  <span class="text-600 text-sm sm:text-right">{{ opt?.phone | phoneFormat:'GN' }}</span>
-                </div>
-              </ng-template>
-
-              <ng-template pTemplate="footer">
-                <div class="p-2 border-top-1 surface-border">
-                  <button
-                    type="button"
-                    pButton
-                    class="w-full p-button-text"
-                    icon="pi pi-user-plus"
-                    label="Ajouter un bénéficiaire"
-                    (click)="onpenBeneficiaireDialog()">
-                  </button>
-                </div>
-              </ng-template>
-            </p-dropdown>
+            <!-- Message si aucun bénéficiaire -->
+            <div *ngIf="beneficiairesOptions.length === 0" class="text-center py-4 text-600">
+              Aucun bénéficiaire disponible
+            </div>
           </div>
 
           <small class="p-error" *ngIf="errors['beneficiaire']">{{ errors['beneficiaire'] }}</small>
@@ -238,7 +208,7 @@
           <p-divider styleClass="my-3"></p-divider>
 
           <div class="grid align-items-center recap-row mt-2">
-            <div class="col-8 md:col-6 text-900 font-bold">Total à  payer</div>
+            <div class="col-8 md:col-6 text-900 font-bold">Total à  payer</div>
             <div class="col-4 md:col-6 text-right text-900 font-bold">
               {{ total_ttc | money:'EUR':'normal' }}
             </div>
@@ -287,11 +257,11 @@
   </ng-template>
 </p-dialog>
 
-     <!-- Dialog benefeiciaire (fermé correctement, pas d'imbrication) -->
-  <p-dialog
+<!-- Dialog benefeiciaire (fermé correctement, pas d'imbrication) -->
+<p-dialog
   [(visible)]="beneficiaireDialog"
   [style]="{ width: '450px' }"
-  header="DÉtails du Bénéficiaire"
+  header="Détails du Bénéficiaire"
   [modal]="true"
   class="p-fluid"
   [appendTo]="'body'"
@@ -333,4 +303,4 @@
     <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
     <button pButton pRipple label="Enregistrer" icon="pi pi-check" class="p-button-text" (click)="saveBeneficiaire()" [loading]="loading"></button>
   </ng-template>
-</p-dialog> 
+</p-dialog>
