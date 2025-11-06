@@ -11,7 +11,9 @@
   <!-- Étapes -->
   <ng-container [ngSwitch]="activeIndex">
 
+    <!-- ═══════════════════════════════════════════════════════════ -->
     <!-- Étape 0 : Montants -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
     <section *ngSwitchCase="0" class="grid">
       <div class="col-12 md:col-8">
         <div class="grid formgrid p-fluid">
@@ -64,51 +66,59 @@
       </div>
     </section>
 
+    <!-- ═══════════════════════════════════════════════════════════ -->
     <!-- Étape 1 : Mode de réception -->
-   <section *ngSwitchCase="1" class="grid">
-  <div class="col-12 md:col-8">
-    <div class="field mb-3">
-      <label class="font-medium text-900 mb-3 block">Mode réception</label>
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section *ngSwitchCase="1" class="grid">
+      <div class="col-12 md:col-8">
+        <div class="field mb-3">
+          <label class="font-medium text-900 mb-3 block">Mode réception</label>
 
-      <div class="mode-reception-list">
-        <div
-          *ngFor="let mode of modesReception"
-          class="mode-reception-item"
-          [class.selected]="selectedModeReception === mode.value"
-          (click)="selectedModeReception = mode.value">
-          
-          <div class="mode-icon-wrapper">
-            <i class="pi"
-               [ngClass]="{
-                 'pi-mobile': mode.value === ModeReception.orange_money,
-                 'pi-wallet': mode.value === ModeReception.ks_pay,
-                 'pi-credit-card': mode.value === ModeReception.paycard,
-                 'pi-building': mode.value === ModeReception.soutrat_money,
-                 'pi-shopping-bag': mode.value === ModeReception.kulu,
-                 'pi-qrcode': mode.value === ModeReception.momo
-               }">
-            </i>
+          <div class="mode-reception-list">
+            <div
+              *ngFor="let mode of modesReception"
+              class="mode-reception-item"
+              [class.selected]="selectedModeReception === mode.value"
+              (click)="onModeReceptionChange(mode.value)">
+              
+              <div class="mode-icon-wrapper">
+                <i class="pi"
+                   [ngClass]="{
+                     'pi-mobile': mode.value === ModeReception.orange_money,
+                     'pi-wallet': mode.value === ModeReception.ks_pay,
+                     'pi-credit-card': mode.value === ModeReception.paycard,
+                     'pi-building': mode.value === ModeReception.soutrat_money,
+                     'pi-shopping-bag': mode.value === ModeReception.kulu,
+                     'pi-qrcode': mode.value === ModeReception.momo
+                   }">
+                </i>
+              </div>
+              
+              <div class="mode-content">
+                <div class="mode-title">{{ mode.label }}</div>
+                <div class="mode-subtitle">eWallet</div>
+              </div>
+              
+              <i class="pi pi-chevron-right mode-chevron"></i>
+            </div>
           </div>
-          
-          <div class="mode-content">
-            <div class="mode-title">{{ mode.label }}</div>
-            <div class="mode-subtitle">eWallet</div>
-          </div>
-          
-          <i class="pi pi-chevron-right mode-chevron"></i>
+
+          <small class="p-error" *ngIf="errors['mode_reception']">
+            {{ errors['mode_reception'] }}
+          </small>
         </div>
+
+        <!-- Bouton Précédent uniquement -->
+        <ui-step-actions 
+          [showNext]="false" 
+          (prev)="prev()">
+        </ui-step-actions>
       </div>
+    </section>
 
-      <small class="p-error" *ngIf="errors['mode_reception']">
-        {{ errors['mode_reception'] }}
-      </small>
-    </div>
-
-    <ui-step-actions (prev)="prev()" (next)="next()"></ui-step-actions>
-  </div>
-</section>
-
+    <!-- ═══════════════════════════════════════════════════════════ -->
     <!-- Étape 2 : Bénéficiaire -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
     <section *ngSwitchCase="2" class="grid">
       <div class="col-12 md:col-8">
         <div class="field mb-3">
@@ -155,11 +165,17 @@
           <small class="p-error" *ngIf="submitted && !isBeneficiaireValide">Veuillez choisir un bénéficiaire.</small>
         </div>
 
-        <ui-step-actions (prev)="prev()" (next)="next()" [nextDisabled]="!isBeneficiaireValide"></ui-step-actions>
+        <!-- Bouton Précédent uniquement -->
+        <ui-step-actions 
+          [showNext]="false" 
+          (prev)="prev()">
+        </ui-step-actions>
       </div>
     </section>
 
+    <!-- ═══════════════════════════════════════════════════════════ -->
     <!-- Étape 3 : Récapitulatif -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
     <section *ngSwitchCase="3" class="grid">
       <div class="col-12 md:col-8">
         <div class="field mb-4 align-items-center recap-row">
@@ -208,7 +224,7 @@
           <p-divider styleClass="my-3"></p-divider>
 
           <div class="grid align-items-center recap-row mt-2">
-            <div class="col-8 md:col-6 text-900 font-bold">Total à  payer</div>
+            <div class="col-8 md:col-6 text-900 font-bold">Total à payer</div>
             <div class="col-4 md:col-6 text-right text-900 font-bold">
               {{ total_ttc | money:'EUR':'normal' }}
             </div>
@@ -222,7 +238,7 @@
             pButton
             pRipple
             class="w-full md:w-auto"
-            label="Confirmer et  Payer"
+            label="Confirmer et Payer"
             icon="pi pi-credit-card"
             iconPos="right"
             [loading]="loading"
@@ -235,6 +251,9 @@
   </ng-container>
 </div>
 
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- Dialog Paiement Stripe -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
 <p-dialog
   [(visible)]="payementDialog"
   [modal]="true"
@@ -248,7 +267,6 @@
   <ng-template pTemplate="header">Paiement par carte</ng-template>
 
   <div class="p-3">
-    <!-- Place ton Stripe Elements / message ici si besoin -->
     <p class="m-0 text-600">Veuillez finaliser votre paiement sur la page Stripe.</p>
   </div>
 
@@ -257,7 +275,9 @@
   </ng-template>
 </p-dialog>
 
-<!-- Dialog benefeiciaire (fermé correctement, pas d'imbrication) -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- Dialog Bénéficiaire -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
 <p-dialog
   [(visible)]="beneficiaireDialog"
   [style]="{ width: '450px' }"
