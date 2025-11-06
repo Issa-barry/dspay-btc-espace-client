@@ -183,13 +183,13 @@
 
           <p-divider styleClass="my-2"></p-divider>
 
-          <div class="grid align-items-start recap-row mt-2">
+          <div class="grid align-items-start recap-row mt-0">
             <div class="col-12 md:col-6 text-900 font-medium">Bénéficiaire</div>
-            <div class="col-12 md:col-6 md:mt-1 text-left md:text-right">
+            <div class="col-12 md:col-6 md:mt-0 text-left md:text-right beneficiaireMobile">
               <div class="text-800 text-sm text-overflow-ellipsis white-space-nowrap overflow-hidden">
                 {{ selectedBeneficiaireLabel }}
               </div>
-              <div class="text-600 text-sm md:mt-2">{{ selectedBeneficiairePhone | phoneFormat:'GN' }}</div>
+              <div class="text-600 text-sm md:mt-0">{{ selectedBeneficiairePhone | phoneFormat:'GN' }}</div>
             </div>
           </div>
  
@@ -200,7 +200,7 @@
           <div class="grid align-items-center recap-row mt-0">
             <div class="col-8 md:col-6 text-900 font-medium">Montant reçu</div>
             <div class="col-4 md:col-6 text-right text-900 font-bold">
-              <span class="md:mr-6">{{ montantGNF | money:'GNF':'normal' }}</span>
+              <span class="montantMobile">{{ montantGNF | money:'GNF':'normal' }}</span>
             </div>
           </div>
 

@@ -561,3 +561,14 @@
 :host ::ng-deep .p-dialog {
   animation: dialogSlideIn 0.2s ease-out;
 }
+
+
+// Responsive montant reçu
+@media (max-width: 768px) {
+   .montantMobile {
+     margin-left: -1rem;
+   }
+   .beneficiaireMobile {
+     margin-top: -1.5rem;
+   }
+}
