@@ -192,6 +192,16 @@
               <div class="text-600 text-sm md:mt-0">{{ selectedBeneficiairePhone | phoneFormat:'GN' }}</div>
             </div>
           </div>
+
+           <div class="grid align-items-start recap-row mt-0">
+            <div class="col-12 md:col-6 text-900 font-medium">Mode reception</div>
+            <div class="col-12 md:col-6 md:mt-0 text-left md:text-right beneficiaireMobile">
+              <div class="text-800 text-sm text-overflow-ellipsis white-space-nowrap overflow-hidden">
+                {{ selectedBeneficiaireLabel }}
+              </div>
+              <div class="text-600 text-sm md:mt-0">{{ selectedBeneficiairePhone | phoneFormat:'GN' }}</div>
+            </div>
+          </div>
  
 
           <p-divider styleClass="my-2"></p-divider>
