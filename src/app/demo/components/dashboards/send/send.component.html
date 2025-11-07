@@ -11,7 +11,9 @@
   <!-- Étapes -->
   <ng-container [ngSwitch]="activeIndex">
 
+    <!-- ═══════════════════════════════════════════════════════════ -->
     <!-- Étape 0 : Montants -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
     <section *ngSwitchCase="0" class="grid">
       <div class="col-12 md:col-8">
         <div class="grid formgrid p-fluid">
@@ -64,66 +66,74 @@
       </div>
     </section>
 
+    <!-- ═══════════════════════════════════════════════════════════ -->
     <!-- Étape 1 : Mode de réception -->
-   <section *ngSwitchCase="1" class="grid">
-  <div class="col-12 md:col-8">
-    <div class="field mb-3">
-      <label class="font-medium text-900 mb-3 block">Mode réception</label>
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section *ngSwitchCase="1" class="grid">
+      <div class="col-12 md:col-8">
+        <div class="field mb-3">
+          <label class="font-medium text-900 mb-3 block">Mode réception</label>
 
-      <div class="mode-reception-list">
-        <div
-          *ngFor="let mode of modesReception"
-          class="mode-reception-item"
-          [class.selected]="selectedModeReception === mode.value"
-          (click)="selectedModeReception = mode.value">
-          
-          <div class="mode-icon-wrapper">
-            <i class="pi"
-               [ngClass]="{
-                 'pi-mobile': mode.value === ModeReception.orange_money,
-                 'pi-wallet': mode.value === ModeReception.ks_pay,
-                 'pi-credit-card': mode.value === ModeReception.paycard,
-                 'pi-building': mode.value === ModeReception.soutrat_money,
-                 'pi-shopping-bag': mode.value === ModeReception.kulu,
-                 'pi-qrcode': mode.value === ModeReception.momo
-               }">
-            </i>
+          <div class="mode-reception-list">
+            <div
+              *ngFor="let mode of modesReception"
+              class="mode-reception-item"
+              [class.selected]="selectedModeReception === mode.value"
+              (click)="onModeReceptionChange(mode.value)">
+              
+              <div class="mode-icon-wrapper">
+                <i class="pi"
+                   [ngClass]="{
+                     'pi-mobile': mode.value === ModeReception.orange_money,
+                     'pi-wallet': mode.value === ModeReception.ks_pay,
+                     'pi-credit-card': mode.value === ModeReception.paycard,
+                     'pi-building': mode.value === ModeReception.soutrat_money,
+                     'pi-shopping-bag': mode.value === ModeReception.kulu,
+                     'pi-qrcode': mode.value === ModeReception.momo
+                   }">
+                </i>
+              </div>
+              
+              <div class="mode-content">
+                <div class="mode-title">{{ mode.label }}</div>
+                <div class="mode-subtitle">eWallet</div>
+              </div>
+              
+              <i class="pi pi-chevron-right mode-chevron"></i>
+            </div>
           </div>
-          
-          <div class="mode-content">
-            <div class="mode-title">{{ mode.label }}</div>
-            <div class="mode-subtitle">eWallet</div>
-          </div>
-          
-          <i class="pi pi-chevron-right mode-chevron"></i>
+
+          <small class="p-error" *ngIf="errors['mode_reception']">
+            {{ errors['mode_reception'] }}
+          </small>
         </div>
+
+        <!-- Bouton Précédent uniquement -->
+        <ui-step-actions 
+          [showNext]="false" 
+          (prev)="prev()">
+        </ui-step-actions>
       </div>
+    </section>
 
-      <small class="p-error" *ngIf="errors['mode_reception']">
-        {{ errors['mode_reception'] }}
-      </small>
-    </div>
-
-    <ui-step-actions (prev)="prev()" (next)="next()"></ui-step-actions>
-  </div>
-</section>
-
+    <!-- ═══════════════════════════════════════════════════════════ -->
     <!-- Étape 2 : Bénéficiaire -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
     <section *ngSwitchCase="2" class="grid">
       <div class="col-12 md:col-8">
         <div class="field mb-3">
           <!-- Header avec titre et bouton alignés -->
-          <div class="flex justify-content-between align-items-center mb-3">
-            <label class="font-medium text-900 m-0">Bénéficiaire</label>
-            <button
-              type="button"
-              pButton
-              class="p-button-text p-button-sm"
-              icon="pi pi-user-plus"
-              label="Ajouter un bénéficiaire"
-              (click)="onpenBeneficiaireDialog()">
-            </button>
-          </div>
+          <div class="flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+          <label class="font-medium text-900 m-0 flex-grow-1">Bénéficiaire</label>
+          <button
+            type="button"
+            pButton
+            class="p-button-text p-button-sm flex-shrink-0"
+            icon="pi pi-user-plus"
+            label="Ajouter un bénéficiaire"
+            (click)="onpenBeneficiaireDialog()">
+          </button>
+        </div>
 
           <!-- Liste des bénéficiaires -->
           <div *ngIf="!loading; else loadingTpl" class="beneficiaires-list">
@@ -155,49 +165,82 @@
           <small class="p-error" *ngIf="submitted && !isBeneficiaireValide">Veuillez choisir un bénéficiaire.</small>
         </div>
 
-        <ui-step-actions (prev)="prev()" (next)="next()" [nextDisabled]="!isBeneficiaireValide"></ui-step-actions>
+        <!-- Bouton Précédent uniquement -->
+        <ui-step-actions 
+          [showNext]="false" 
+          (prev)="prev()">
+        </ui-step-actions>
       </div>
     </section>
 
+    <!-- ═══════════════════════════════════════════════════════════ -->
     <!-- Étape 3 : Récapitulatif -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
     <section *ngSwitchCase="3" class="grid">
       <div class="col-12 md:col-8">
         <div class="field mb-4 align-items-center recap-row">
           <label class="font-semibold text-900">Récapitulatif</label>
 
-          <p-divider styleClass="my-3"></p-divider>
+          <p-divider styleClass="my-2"></p-divider>
 
-          <div class="grid align-items-start recap-row mt-2">
+          <!-- Bénéficiaire -->
+          <div class="grid align-items-start recap-row mt-0">
             <div class="col-12 md:col-6 text-900 font-medium">Bénéficiaire</div>
-            <div class="col-12 md:col-6 md:mt-1 text-left md:text-right">
+            <div class="col-12 md:col-6 md:mt-0 text-left md:text-right marginTopMobileRecapitulatif">
               <div class="text-800 text-sm text-overflow-ellipsis white-space-nowrap overflow-hidden">
                 {{ selectedBeneficiaireLabel }}
               </div>
-              <div class="text-600 text-sm md:mt-2">{{ selectedBeneficiairePhone | phoneFormat:'GN' }}</div>
+              <div class="text-600 text-sm md:mt-0">{{ selectedBeneficiairePhone | phoneFormat:'GN' }}</div>
             </div>
           </div>
 
-          <p-divider styleClass="my-3"></p-divider>
+          <p-divider styleClass="my-2"></p-divider>
 
-          <div class="grid align-items-start recap-row mt-2">
-            <div class="col-12 md:col-6 text-900 font-medium">Montant reçu</div>
-            <div class="col-12 md:col-6 text-left md:text-right">
-              <span class="text-900 text-sm">{{ montantGNF | money:'GNF':'normal' }}</span>
+          <!-- Mode de réception avec icône -->
+          <div class="grid align-items-center recap-row mt-0">
+            <div class="col-12 md:col-6 text-900 font-medium">Mode de réception</div>
+            <div class="col-12 md:col-6 md:mt-0 text-left md:text-right marginTopMobileRecapitulatif">
+              <div class="flex align-items-center gap-2 justify-content-start md:justify-content-end">
+                <div class="mode-icon-recap">
+                  <i class="pi"
+                     [ngClass]="{
+                       'pi-mobile': selectedModeReception === ModeReception.orange_money,
+                       'pi-wallet': selectedModeReception === ModeReception.ks_pay,
+                       'pi-credit-card': selectedModeReception === ModeReception.paycard,
+                       'pi-building': selectedModeReception === ModeReception.soutrat_money,
+                       'pi-shopping-bag': selectedModeReception === ModeReception.kulu,
+                       'pi-qrcode': selectedModeReception === ModeReception.momo
+                     }">
+                  </i>
+                </div>
+                <span class="text-800 text-sm font-medium">{{ selectedModeReceptionLabel }}</span>
+              </div>
             </div>
           </div>
 
-          <p-divider styleClass="my-3"></p-divider>
+          <p-divider styleClass="my-2"></p-divider>
 
-          <div class="grid align-items-center recap-row mt-2">
+          <!-- Montant reçu -->
+          <div class="grid align-items-center recap-row mt-0">
+            <div class="col-8 md:col-6 text-900 font-medium ">Montant reçu</div>
+            <div class="col-4 md:col-6 text-right text-900 font-bold marginRightMobileRecapitulatif">
+              <span>{{ montantGNF | money:'GNF':'normal' }}</span>
+            </div>
+          </div>
+
+          <p-divider styleClass="my-2"></p-divider>
+
+          <!-- Frais -->
+          <div class="grid align-items-center recap-row mt-0">
             <div class="col-8 md:col-6">
               <div class="flex align-items-center gap-2">
                 <span class="text-900 font-medium">Frais</span>
-                <p-inputSwitch
+                <!-- <p-inputSwitch
                   [(ngModel)]="includeFrais"
                   (onChange)="majFraisTotal_ttc()"
                   [disabled]="!montantEuro"
                   styleClass="inputswitch-sm">
-                </p-inputSwitch>
+                </p-inputSwitch> -->
               </div>
             </div>
             <div class="col-4 md:col-6 text-right text-900 font-bold">
@@ -205,10 +248,11 @@
             </div>
           </div>
 
-          <p-divider styleClass="my-3"></p-divider>
+          <p-divider styleClass="my-2"></p-divider>
 
-          <div class="grid align-items-center recap-row mt-2">
-            <div class="col-8 md:col-6 text-900 font-bold">Total à  payer</div>
+          <!-- Total à payer -->
+          <div class="grid align-items-center recap-row mt-0">
+            <div class="col-8 md:col-6 text-900 font-bold">Total à payer</div>
             <div class="col-4 md:col-6 text-right text-900 font-bold">
               {{ total_ttc | money:'EUR':'normal' }}
             </div>
@@ -222,7 +266,7 @@
             pButton
             pRipple
             class="w-full md:w-auto"
-            label="Confirmer et  Payer"
+            label="Confirmer et Payer"
             icon="pi pi-credit-card"
             iconPos="right"
             [loading]="loading"
@@ -235,6 +279,9 @@
   </ng-container>
 </div>
 
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- Dialog Paiement Stripe -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
 <p-dialog
   [(visible)]="payementDialog"
   [modal]="true"
@@ -248,7 +295,6 @@
   <ng-template pTemplate="header">Paiement par carte</ng-template>
 
   <div class="p-3">
-    <!-- Place ton Stripe Elements / message ici si besoin -->
     <p class="m-0 text-600">Veuillez finaliser votre paiement sur la page Stripe.</p>
   </div>
 
@@ -257,7 +303,9 @@
   </ng-template>
 </p-dialog>
 
-<!-- Dialog benefeiciaire (fermé correctement, pas d'imbrication) -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- Dialog Bénéficiaire -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
 <p-dialog
   [(visible)]="beneficiaireDialog"
   [style]="{ width: '450px' }"
