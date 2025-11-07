@@ -28,7 +28,7 @@ interface BeneficiaireOption {
 export class SendComponent implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
   private readonly MAX_EUR = 1000;
-  private readonly FRAIS_RATE = 0.05;
+  private readonly FRAIS_RATE = 0.00;
 
   // utilisateur
   currentUserEmail?: string | null = null;

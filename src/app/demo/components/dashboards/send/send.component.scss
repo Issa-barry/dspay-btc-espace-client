@@ -1,15 +1,15 @@
 // ═══════════════════════════════════════════════════════════════
-// MODE DE RÉCEPTION - LISTE VERTICALE
+// MODE DE RÉCEPTION - LISTE VERTICALE SANS CONTENEUR
 // ═══════════════════════════════════════════════════════════════
 
 .mode-reception-list {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  padding: 0.5rem;
-  border: 1px solid var(--surface-border);
-  border-radius: 8px;
-  background: var(--surface-card);
+  padding: 0; // Pas de padding
+  border: none; // Pas de bordure
+  border-radius: 0; // Pas de border-radius
+  background: transparent; // Fond transparent
 }
 
 .mode-reception-item {
@@ -127,6 +127,10 @@
 
 // Responsive pour mode réception
 @media (max-width: 768px) {
+  .mode-reception-list {
+    gap: 0.5rem; // Espacement réduit sur mobile
+  }
+
   .mode-reception-item {
     padding: 0.875rem;
   }
