@@ -68,7 +68,6 @@
   font-size: 1.5rem;
   transition: all 0.2s ease;
   
-  // Couleurs spécifiques par mode
   // Couleurs spécifiques par mode (non sélectionné)
   .mode-reception-item:not(.selected) & {
     .pi-mobile {
@@ -87,10 +86,10 @@
       color: #f59e0b; // Soutrat Money - Ambre/Or
     }
     .pi-shopping-bag {
-      color: #1f67ee; // Kulu - Rose
+      color: #1f67ee; // Kulu - Bleu
     }
     .pi-qrcode {
-      color: #e9da06; // Kulu - Rose
+      color: #e9da06; // MTN - Jaune
     }
   }
 }
@@ -149,7 +148,7 @@
 }
 
 // ═══════════════════════════════════════════════════════════════
-// LISTE DES BÉNÉFICIAIRES (style historique)
+// LISTE DES BÉNÉFICIAIRES - AFFICHAGE SIMPLE SANS CONTENEUR
 // ═══════════════════════════════════════════════════════════════
 
 // Bouton "Ajouter un bénéficiaire" aligné avec le titre
@@ -183,30 +182,16 @@
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  max-height: 400px;
-  overflow-y: auto;
-  padding: 0.5rem;
-  border: 1px solid var(--surface-border);
-  border-radius: 8px;
-  background: var(--surface-card);
+  padding: 0; // Pas de padding
+  border: none; // Pas de bordure
+  border-radius: 0; // Pas de border-radius
+  background: transparent; // Fond transparent
+  max-height: none; // Pas de limitation de hauteur
+  overflow-y: visible; // Pas de scroll
 
-  // Scrollbar personnalisée
+  // Masquer la scrollbar
   &::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: var(--surface-100);
-    border-radius: 4px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: var(--surface-300);
-    border-radius: 4px;
-
-    &:hover {
-      background: var(--surface-400);
-    }
+    display: none;
   }
 }
 
@@ -303,7 +288,7 @@
 // Responsive
 @media (max-width: 768px) {
   .beneficiaires-list {
-    max-height: 300px;
+    gap: 0.5rem; // Espacement réduit sur mobile
   }
 
   .beneficiaire-item {
@@ -326,7 +311,10 @@
   }
 }
 
-// Récapitulatif
+// ═══════════════════════════════════════════════════════════════
+// RÉCAPITULATIF
+// ═══════════════════════════════════════════════════════════════
+
 .recap-row {
   .p-divider {
     margin: 0.75rem 0;
@@ -338,6 +326,31 @@
     }
   }
 }
+
+// Icône du mode de réception dans le récap
+.mode-icon-recap {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  border-radius: 50%;
+  background: var(--surface-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+
+  .pi-mobile { color: #ff9800; }
+  .pi-money-bill { color: #10b981; }
+  .pi-credit-card { color: #01060c; }
+  .pi-wallet { color: #0b07f0; }
+  .pi-building { color: #f59e0b; }
+  .pi-shopping-bag { color: #1f67ee; }
+  .pi-qrcode { color: #e9da06; }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// STYLES GÉNÉRAUX
+// ═══════════════════════════════════════════════════════════════
 
 // Styles pour les champs de montant
 .p-inputgroup {
@@ -365,10 +378,10 @@
   }
 }
 
-
 // ═══════════════════════════════════════════════════════════════
 // CARD COMPACTE TRANSFERT
 // ═══════════════════════════════════════════════════════════════
+
 .transfer-card--compact {
   max-width: 880px;
   margin: 0 auto;
@@ -376,22 +389,34 @@
   border-radius: 12px;
 }
 
-.transfer-card--compact .grid { row-gap: 0.75rem; }
-.transfer-card--compact .field { margin-bottom: 0.75rem !important; }
+.transfer-card--compact .grid { 
+  row-gap: 0.75rem; 
+}
+
+.transfer-card--compact .field { 
+  margin-bottom: 0.75rem !important; 
+}
 
 /* Inputs plus compacts */
 .transfer-card--compact .p-inputgroup .p-inputtext,
-.transfer-card--compact .p-inputgroup .p-inputnumber-input { padding: 0.65rem 0.75rem; }
+.transfer-card--compact .p-inputgroup .p-inputnumber-input { 
+  padding: 0.65rem 0.75rem; 
+}
 
-.transfer-card--compact .p-inputgroup .p-inputgroup-addon { padding: 0.65rem 0.75rem; }
+.transfer-card--compact .p-inputgroup .p-inputgroup-addon { 
+  padding: 0.65rem 0.75rem; 
+}
 
 /* Actions serrées */
-.transfer-card--compact ui-step-actions { display: block; margin-top: 0.5rem; }
+.transfer-card--compact ui-step-actions { 
+  display: block; 
+  margin-top: 0.5rem; 
+}
 
 /* Listes plus denses */
 .transfer-card--compact .mode-reception-list,
 .transfer-card--compact .beneficiaires-list {
-  padding: 0.5rem;
+  padding: 0;
   gap: 0.5rem;
 }
 
@@ -411,15 +436,19 @@
 }
 
 /* Récap: dividers serrés */
-.transfer-card--compact .recap-row .p-divider { margin: 0.5rem 0 !important; }
+.transfer-card--compact .recap-row .p-divider { 
+  margin: 0.5rem 0 !important; 
+}
 
 @media (max-width: 768px) {
-  .transfer-card--compact { max-width: 100%; padding: 0.75rem; }
-  .transfer-card--compact .beneficiaires-list { max-height: 280px; }
+  .transfer-card--compact { 
+    max-width: 100%; 
+    padding: 0.75rem; 
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════
-// DIALOGS - STYLE AVEC MARGES SUR MOBILE (inspiré bénéficiaires)
+// DIALOGS - STYLE AVEC MARGES SUR MOBILE
 // ═══════════════════════════════════════════════════════════════
 
 /* Style général des dialogs */
@@ -562,13 +591,15 @@
   animation: dialogSlideIn 0.2s ease-out;
 }
 
+// ═══════════════════════════════════════════════════════════════
+// RESPONSIVE - RÉCAPITULATIF MOBILE
+// ═══════════════════════════════════════════════════════════════
 
-// Responsive montant reçu
 @media (max-width: 768px) {
-   .marginRightMobileRecapitulatif {
-     margin-left: -1.5rem;
-   }
-   .marginTopMobileRecapitulatif {
-     margin-top: -1.5rem;
-   }
+  .marginRightMobileRecapitulatif {
+    margin-left: -1.5rem;
+  }
+  .marginTopMobileRecapitulatif {
+    margin-top: -1.5rem;
+  }
 }
