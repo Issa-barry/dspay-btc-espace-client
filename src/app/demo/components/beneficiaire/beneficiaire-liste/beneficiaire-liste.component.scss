@@ -1,54 +1,444 @@
-/* Mobile First - beneficiaire Optimisé */
-.show-desktop{display:none!important}.show-mobile{display:table-row!important}
-.beneficiaires-card{padding:0!important;border-radius:0!important;box-shadow:none!important;margin:0!important}
-.beneficiaires-table .table-caption{padding:1rem 1.25rem .875rem;background-color:#fff;border-bottom:1px solid #e5e7eb}
-.beneficiaires-table .table-caption h5{font-size:1.125rem;font-weight:600;color:#1f2937;margin-bottom:.75rem!important}
-.beneficiaires-table .table-caption .p-button{margin-bottom:.875rem}
-.search-input-wrapper{width:100%;margin-top:0!important}
-.search-input-wrapper input{width:100%!important;border-radius:.5rem;padding:.625rem .75rem .625rem 2.5rem;font-size:.9375rem}
-.beneficiaires-table ::ng-deep .p-datatable{margin-top:0!important}
-.beneficiaires-table ::ng-deep .p-datatable-header{padding:0!important;border:none!important}
-.beneficiaires-table ::ng-deep .p-datatable-wrapper{border:none!important;margin-top:0!important}
-.beneficiaires-table ::ng-deep .p-datatable-thead{display:none}
-.beneficiaires-table ::ng-deep .p-datatable-tbody>tr>td{border:none!important;padding:0!important}
-.mobile-card-full{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;gap:1rem;background-color:#fff;border-bottom:1px solid #f3f4f6;transition:background-color .2s ease}
-.mobile-card-full:active{background-color:#f9fafb}
-.avatar-initials-mobile{width:3rem;height:3rem;border-radius:50%;background:linear-gradient(135deg,#1abc9c 0%,#16a085 100%);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.125rem;flex-shrink:0;text-transform:uppercase}
-.mobile-name{font-size:.9375rem;line-height:1.4;color:#111827;margin-bottom:.25rem}
-.mobile-phone{font-size:.875rem;line-height:1.3;color:#6b7280}
-.mobile-edit-btn{flex-shrink:0;width:2.75rem!important;height:2.75rem!important}
-.mobile-edit-btn .pi{font-size:1.125rem}
-.beneficiaires-table ::ng-deep .p-paginator{background-color:#fff;border-top:1px solid #e5e7eb;padding:.75rem 1rem;margin:0!important}
-.beneficiaires-table ::ng-deep .p-paginator .p-paginator-pages .p-paginator-page{min-width:2.5rem;height:2.5rem}
-.beneficiaires-table ::ng-deep .p-datatable-emptymessage td{padding:3rem 1.25rem!important;text-align:center;color:#9ca3af;font-size:.9375rem}
+/* Mobile First - beneficiaire Optimisé avec Avatars Colorés */
 
-@media (min-width:768px){
-.show-desktop{display:table-row!important}.show-mobile{display:none!important}
-.beneficiaires-card{padding:1.5rem!important;margin:1.5rem!important;border-radius:.5rem!important;box-shadow:0 1px 3px 0 rgba(0,0,0,.1),0 1px 2px 0 rgba(0,0,0,.06)!important}
-.beneficiaires-table .table-caption{padding:0 0 1.25rem 0;border-bottom:none}
-.beneficiaires-table .table-caption h5{font-size:1.25rem;margin-bottom:0!important}
-.beneficiaires-table .table-caption .p-button{margin-bottom:0}
-.search-input-wrapper{width:auto;margin-top:0!important}
-.search-input-wrapper input{width:auto!important}
-.avatar-initials{width:2.5rem;height:2.5rem;border-radius:50%;background:linear-gradient(135deg,#1abc9c 0%,#16a085 100%);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.875rem;text-transform:uppercase}
-.beneficiaires-table ::ng-deep .p-datatable-wrapper{border:1px solid #e5e7eb!important;border-radius:.5rem!important;overflow:hidden;margin-top:0!important}
-.beneficiaires-table ::ng-deep .p-datatable-thead{display:table-header-group!important}
-.beneficiaires-table ::ng-deep .p-datatable-thead>tr>th{background-color:#f9fafb;padding:1rem;font-weight:600;color:#374151;border-bottom:1px solid #e5e7eb}
-.beneficiaires-table ::ng-deep .p-datatable-tbody>tr>td{padding:1rem!important;border-bottom:1px solid #f3f4f6!important}
-.beneficiaires-table ::ng-deep .p-datatable-tbody>tr:hover{background-color:#f9fafb}
-.beneficiaires-table ::ng-deep .p-paginator{padding:1rem;border-top:1px solid #e5e7eb}
+// ═══════════════════════════════════════════════════════════════
+// MOBILE FIRST - BASE STYLES
+// ═══════════════════════════════════════════════════════════════
+
+.show-desktop {
+  display: none !important;
 }
 
-@media (min-width:1024px){
-.beneficiaires-card{padding:2rem!important;margin:2rem!important}
-.beneficiaires-table .table-caption{padding:0 0 1.5rem 0}
-.beneficiaires-table .table-caption h5{font-size:1.5rem}
+.show-mobile {
+  display: table-row !important;
 }
 
-@media (max-width:767px){
-.p-button-rounded{transition:transform .2s ease,background-color .2s ease}
-.p-button-rounded:active{transform:scale(.95)}
-.beneficiaires-table ::ng-deep .p-skeleton{background-color:#f3f4f6}
-.beneficiaires-table ::ng-deep .p-datatable .p-datatable-header{background:transparent}
-.beneficiaires-table ::ng-deep .p-component{margin:0!important}
+.beneficiaires-card {
+  padding: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TABLE CAPTION (HEADER)
+// ═══════════════════════════════════════════════════════════════
+
+.beneficiaires-table .table-caption {
+  padding: 1rem 1.25rem 0.875rem;
+  background-color: #fff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.beneficiaires-table .table-caption h5 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.75rem !important;
+}
+
+.beneficiaires-table .table-caption .p-button {
+  margin-bottom: 0.875rem;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SEARCH INPUT
+// ═══════════════════════════════════════════════════════════════
+
+.search-input-wrapper {
+  width: 100%;
+  margin-top: 0 !important;
+}
+
+.search-input-wrapper input {
+  width: 100% !important;
+  border-radius: 0.5rem;
+  padding: 0.625rem 0.75rem 0.625rem 2.5rem;
+  font-size: 0.9375rem;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TABLE STRUCTURE (MOBILE)
+// ═══════════════════════════════════════════════════════════════
+
+.beneficiaires-table ::ng-deep .p-datatable {
+  margin-top: 0 !important;
+}
+
+.beneficiaires-table ::ng-deep .p-datatable-header {
+  padding: 0 !important;
+  border: none !important;
+}
+
+.beneficiaires-table ::ng-deep .p-datatable-wrapper {
+  border: none !important;
+  margin-top: 0 !important;
+}
+
+.beneficiaires-table ::ng-deep .p-datatable-thead {
+  display: none;
+}
+
+.beneficiaires-table ::ng-deep .p-datatable-tbody > tr > td {
+  border: none !important;
+  padding: 0 !important;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MOBILE CARD FULL WIDTH
+// ═══════════════════════════════════════════════════════════════
+
+.mobile-card-full {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  gap: 1rem;
+  background-color: #fff;
+  border-bottom: 1px solid #f3f4f6;
+  transition: background-color 0.2s ease;
+}
+
+.mobile-card-full:active {
+  background-color: #f9fafb;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// AVATARS AVEC COULEURS VARIÉES (MOBILE)
+// ═══════════════════════════════════════════════════════════════
+
+.avatar-initials-mobile {
+  width: 3rem;
+  height: 3rem;
+  min-width: 3rem;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.125rem;
+  flex-shrink: 0;
+  text-transform: uppercase;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  // La couleur de fond sera appliquée dynamiquement via [style.background-color]
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MOBILE CARD CONTENT
+// ═══════════════════════════════════════════════════════════════
+
+.mobile-name {
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.mobile-phone {
+  font-size: 0.875rem;
+  line-height: 1.3;
+  color: #6b7280;
+}
+
+.mobile-edit-btn {
+  flex-shrink: 0;
+  width: 2.5rem !important;
+  height: 2.5rem !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  background: transparent !important;
+  border: none !important;
+  color: var(--primary-color) !important;
+  
+  &:hover {
+    background: transparent !important;
+    color: var(--primary-color) !important;
+    opacity: 0.8;
+  }
+}
+
+.mobile-edit-btn .pi {
+  font-size: 1rem;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PAGINATOR (MOBILE)
+// ═══════════════════════════════════════════════════════════════
+
+.beneficiaires-table ::ng-deep .p-paginator {
+  background-color: #fff;
+  border-top: 1px solid #e5e7eb;
+  padding: 0.75rem 1rem;
+  margin: 0 !important;
+}
+
+.beneficiaires-table ::ng-deep .p-paginator .p-paginator-pages .p-paginator-page {
+  min-width: 2.5rem;
+  height: 2.5rem;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// EMPTY MESSAGE
+// ═══════════════════════════════════════════════════════════════
+
+.beneficiaires-table ::ng-deep .p-datatable-emptymessage td {
+  padding: 3rem 1.25rem !important;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 0.9375rem;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TABLET & DESKTOP (768px+)
+// ═══════════════════════════════════════════════════════════════
+
+@media (min-width: 768px) {
+  .show-desktop {
+    display: table-row !important;
+  }
+
+  .show-mobile {
+    display: none !important;
+  }
+
+  .beneficiaires-card {
+    padding: 1.5rem !important;
+    margin: 1.5rem !important;
+    border-radius: 0.5rem !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
+  }
+
+  .beneficiaires-table .table-caption {
+    padding: 0 0 1.25rem 0;
+    border-bottom: none;
+  }
+
+  .beneficiaires-table .table-caption h5 {
+    font-size: 1.25rem;
+    margin-bottom: 0 !important;
+  }
+
+  .beneficiaires-table .table-caption .p-button {
+    margin-bottom: 0;
+  }
+
+  .search-input-wrapper {
+    width: auto;
+    margin-top: 0 !important;
+  }
+
+  .search-input-wrapper input {
+    width: auto !important;
+  }
+
+  // AVATARS DESKTOP AVEC COULEURS VARIÉES
+  .avatar-initials {
+    width: 2.5rem;
+    height: 2.5rem;
+    min-width: 2.5rem;
+    border-radius: 50%;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    // La couleur de fond sera appliquée dynamiquement via [style.background-color]
+  }
+
+  .beneficiaires-table ::ng-deep .p-datatable-wrapper {
+    border: 1px solid #e5e7eb !important;
+    border-radius: 0.5rem !important;
+    overflow: hidden;
+    margin-top: 0 !important;
+  }
+
+  .beneficiaires-table ::ng-deep .p-datatable-thead {
+    display: table-header-group !important;
+  }
+
+  .beneficiaires-table ::ng-deep .p-datatable-thead > tr > th {
+    background-color: #f9fafb;
+    padding: 1rem;
+    font-weight: 600;
+    color: #374151;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .beneficiaires-table ::ng-deep .p-datatable-tbody > tr > td {
+    padding: 1rem !important;
+    border-bottom: 1px solid #f3f4f6 !important;
+  }
+
+  .beneficiaires-table ::ng-deep .p-datatable-tbody > tr:hover {
+    background-color: #f9fafb;
+  }
+
+  .beneficiaires-table ::ng-deep .p-paginator {
+    padding: 1rem;
+    border-top: 1px solid #e5e7eb;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// LARGE DESKTOP (1024px+)
+// ═══════════════════════════════════════════════════════════════
+
+@media (min-width: 1024px) {
+  .beneficiaires-card {
+    padding: 2rem !important;
+    margin: 2rem !important;
+  }
+
+  .beneficiaires-table .table-caption {
+    padding: 0 0 1.5rem 0;
+  }
+
+  .beneficiaires-table .table-caption h5 {
+    font-size: 1.5rem;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MOBILE SPECIFIC ENHANCEMENTS (< 768px)
+// ═══════════════════════════════════════════════════════════════
+
+@media (max-width: 767px) {
+  .p-button-rounded {
+    transition: transform 0.2s ease, background-color 0.2s ease;
+  }
+
+  .p-button-rounded:active {
+    transform: scale(0.95);
+  }
+
+  .beneficiaires-table ::ng-deep .p-skeleton {
+    background-color: #f3f4f6;
+  }
+
+  .beneficiaires-table ::ng-deep .p-datatable .p-datatable-header {
+    background: transparent;
+  }
+
+  .beneficiaires-table ::ng-deep .p-component {
+    margin: 0 !important;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// DIALOG STYLES
+// ═══════════════════════════════════════════════════════════════
+
+.p-dialog {
+  .field {
+    margin-bottom: 1.25rem;
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--text-color);
+    }
+
+    input {
+      width: 100%;
+
+      &.ng-invalid.ng-dirty {
+        border-color: #ef4444;
+      }
+    }
+
+    small.ng-invalid {
+      display: block;
+      margin-top: 0.25rem;
+      color: #ef4444;
+      font-size: 0.875rem;
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SKELETON LOADING ANIMATION
+// ═══════════════════════════════════════════════════════════════
+
+::ng-deep .p-skeleton {
+  background-color: var(--surface-200);
+  border-radius: 6px;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-loading {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// BUTTONS STYLES
+// ═══════════════════════════════════════════════════════════════
+
+.p-button-rounded {
+  width: 2.5rem;
+  height: 2.5rem;
+
+  &.p-button-success {
+    background-color: #22c55e;
+    border-color: #22c55e;
+
+    &:hover {
+      background-color: #16a34a;
+      border-color: #16a34a;
+    }
+  }
+
+  &.p-button-danger {
+    background-color: #ef4444;
+    border-color: #ef4444;
+
+    &:hover {
+      background-color: #dc2626;
+      border-color: #dc2626;
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════════════════════
+
+.inline-flex {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.flex-1 {
+  flex: 1;
+  min-width: 0;
+}
+
+.flex-shrink-0 {
+  flex-shrink: 0;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.text-900 {
+  color: var(--text-color);
+}
+
+.text-600 {
+  color: var(--text-color-secondary);
 }

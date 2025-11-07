@@ -446,4 +446,23 @@ getInitials(fullName: string): string {
       debloquerContact(contact: Contact) {
           this.updateStatutContact(contact, Statut.ACTIVE, 'success', 'débloquée');
       }
+
+
+
+      
+  getAvatarColor(name: string): string {
+    const colors = [
+      '#E91E63', // Rose
+      '#2196F3', // Bleu
+      '#FF9800', // Orange
+      '#4CAF50', // Vert
+      '#9C27B0', // Violet
+      '#FF5722', // Rouge-orange
+      '#00BCD4', // Cyan
+      '#FFC107', // Jaune-orange
+    ];
+
+    const index = name.length % colors.length;
+    return colors[index];
+  }
 }
