@@ -164,15 +164,35 @@ export class SendComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Metadata pour le webhook
-    this.paymentMetadata = {
-      beneficiaire_id: this.selectedBeneficiaireId!,
-      taux_echange_id: this.selectedTauxId,
-      montant_envoie: Number(this.montantEuro.toFixed(2)),
-      serviceId: this.selectedServiceId,
-      frais_eur: Number(this.frais.toFixed(2)),
-      total_ttc: Number(this.total_ttc.toFixed(2)),
-    };
+    // Services qui utilisent le téléphone directement
+    const servicesAvecPhone = [ServiceId.orange_money, ServiceId.momo];
+    const usePhone = servicesAvecPhone.includes(this.selectedServiceId);
+
+    // Metadata pour le webhook avec logique conditionnelle
+    if (usePhone) {
+      // Metadata pour Orange Money et MTN MoMo (utilise recipientTel)
+      this.paymentMetadata = {
+        beneficiaire_id: this.selectedBeneficiaireId!,
+        taux_echange_id: this.selectedTauxId,
+        montant_envoie: Number(this.montantEuro.toFixed(2)),
+        serviceId: this.selectedServiceId,
+        frais_eur: Number(this.frais.toFixed(2)),
+        total_ttc: Number(this.total_ttc.toFixed(2)),
+        recipientTel: this.selectedBeneficiairePhone,
+      };
+    } else {
+      // Metadata pour les autres services (utilise accountId + customerPhoneNumber)
+      this.paymentMetadata = {
+        beneficiaire_id: this.selectedBeneficiaireId!,
+        taux_echange_id: this.selectedTauxId,
+        montant_envoie: Number(this.montantEuro.toFixed(2)),
+        serviceId: this.selectedServiceId,
+        frais_eur: Number(this.frais.toFixed(2)),
+        total_ttc: Number(this.total_ttc.toFixed(2)),
+        customerPhoneNumber: this.selectedBeneficiairePhone,
+        accountId: "KS123456789", // TODO: à dynamiser selon le bénéficiaire
+      };
+    }
 
     // Idempotence
     this.orderId = `trf_${this.selectedBeneficiaireId}_${Date.now()}`;
@@ -536,111 +556,110 @@ export class SendComponent implements OnInit, OnDestroy {
 
  
   /**
- * ==========================================================
- *  DESCRIPTION : Simulation Transfert (sans paiement).
- * 
- *  AUTEUR : Issa Barry
- * ==========================================================
- */
-
+   * ==========================================================
+   *  DESCRIPTION : Simulation Transfert (sans paiement).
+   * 
+   *  AUTEUR : Issa Barry
+   * ==========================================================
+   */
   saveTransfertSimulation(): void {
-  this.submitted = true;
-  this.errors = {};
+    this.submitted = true;
+    this.errors = {};
 
-  if (!this.isBeneficiaireValide) {
-    this.messageService.add({
-      severity: 'warn',
-      summary: 'Bénéficiaire',
-      detail: 'Veuillez sélectionner un bénéficiaire.',
-    });
-    return;
+    if (!this.isBeneficiaireValide) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Bénéficiaire',
+        detail: 'Veuillez sélectionner un bénéficiaire.',
+      });
+      return;
+    }
+    if (!this.isMontantValide) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Montant',
+        detail: `Veuillez saisir un montant en EUR (1 à ${this.MAX_EUR} €).`,
+      });
+      return;
+    }
+
+    this.montantEuro = Math.min(this.montantEuro, this.MAX_EUR);
+
+    // Services qui utilisent le téléphone directement
+    const servicesAvecPhone = [ServiceId.orange_money, ServiceId.momo];
+    const usePhone = servicesAvecPhone.includes(this.selectedServiceId);
+
+    let dto: TransfertCreateDto;
+
+    if (usePhone) {
+      // DTO pour Orange Money et MTN MoMo (utilise recipientTel)
+      dto = {
+        beneficiaire_id: this.selectedBeneficiaireId!,
+        recipientTel: this.selectedBeneficiairePhone,
+        taux_echange_id: this.selectedTauxId,
+        montant_envoie: this.round2(this.montantEuro),
+        serviceId: this.selectedServiceId,
+      };
+    } else {
+      // DTO pour les autres services (utilise accountId + customerPhoneNumber)
+      dto = {
+        beneficiaire_id: this.selectedBeneficiaireId!,
+        customerPhoneNumber: this.selectedBeneficiairePhone,
+        taux_echange_id: this.selectedTauxId,
+        montant_envoie: this.round2(this.montantEuro),
+        serviceId: this.selectedServiceId,
+        accountId: "KS123456789", // TODO: à dynamiser selon le bénéficiaire
+      };
+    }
+
+    this.loading = true;
+
+    console.log('DTO envoyé:', dto);
+    
+    this.transfertService
+      .createTransfert(dto)
+      .pipe(
+        finalize(() => (this.loading = false)),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: (t) => {
+          this.transfert = t;
+          this.frais = (t as any)?.frais ?? 0;
+          this.total_ttc = Number((t as any)?.total_ttc ?? 0);
+          this.montantGNF = Number((t as any)?.montant_gnf ?? 0);
+
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Succès',
+            detail: 'Transfert effectué. Vérifiez votre boite E-mail',
+            life: 4000,
+          });
+
+          const id =
+            (t as any)?.id ??
+            (t as any)?.data?.id ??
+            (t as any)?.transfert?.id ??
+            (t as any)?.transfert_id;
+          this.hideDialog();
+          setTimeout(() => {
+            if (id)
+              this.router.navigate(['/dashboard/transfert/detail', id], {
+                replaceUrl: true,
+              });
+            else this.router.navigate(['/dashboard/transfert']);
+          }, 2500);
+        },
+        error: (err) => {
+          this.errors = err?.validationErrors || {};
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erreur',
+            detail: err?.message || 'Échec de l\'envoi.',
+          });
+        },
+      });
   }
-  if (!this.isMontantValide) {
-    this.messageService.add({
-      severity: 'warn',
-      summary: 'Montant',
-      detail: `Veuillez saisir un montant en EUR (1 à ${this.MAX_EUR} €).`,
-    });
-    return;
-  }
-
-  this.montantEuro = Math.min(this.montantEuro, this.MAX_EUR);
-
-  // Services qui utilisent le téléphone directement
-  const servicesAvecPhone = [ServiceId.orange_money, ServiceId.momo];
-  const usePhone = servicesAvecPhone.includes(this.selectedServiceId);
-
-  let dto: TransfertCreateDto;
-
-  if (usePhone) {
-    // DTO pour Orange Money et MTN MoMo (utilise recipientTel)
-    dto = {
-      beneficiaire_id: this.selectedBeneficiaireId!,
-      recipientTel: this.selectedBeneficiairePhone,
-      taux_echange_id: this.selectedTauxId,
-      montant_envoie: this.round2(this.montantEuro),
-      serviceId: this.selectedServiceId,
-    };
-  } else {
-    // DTO pour les autres services (utilise accountId + customerPhoneNumber)
-    dto = {
-      beneficiaire_id: this.selectedBeneficiaireId!,
-      customerPhoneNumber: this.selectedBeneficiairePhone,
-      taux_echange_id: this.selectedTauxId,
-      montant_envoie: this.round2(this.montantEuro),
-      serviceId: this.selectedServiceId,
-      accountId: "KS123456789", // TODO: à dynamiser selon le bénéficiaire
-    };
-  }
-
-  this.loading = true;
-
-  console.log('DTO envoyé:', dto);
-  
-  this.transfertService
-    .createTransfert(dto)
-    .pipe(
-      finalize(() => (this.loading = false)),
-      takeUntil(this.destroy$)
-    )
-    .subscribe({
-      next: (t) => {
-        this.transfert = t;
-        this.frais = (t as any)?.frais ?? 0;
-        this.total_ttc = Number((t as any)?.total_ttc ?? 0);
-        this.montantGNF = Number((t as any)?.montant_gnf ?? 0);
-
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Succès',
-          detail: 'Transfert effectué. Vérifiez votre boite E-mail',
-          life: 4000,
-        });
-
-        const id =
-          (t as any)?.id ??
-          (t as any)?.data?.id ??
-          (t as any)?.transfert?.id ??
-          (t as any)?.transfert_id;
-        this.hideDialog();
-        setTimeout(() => {
-          if (id)
-            this.router.navigate(['/dashboard/transfert/detail', id], {
-              replaceUrl: true,
-            });
-          else this.router.navigate(['/dashboard/transfert']);
-        }, 2500);
-      },
-      error: (err) => {
-        this.errors = err?.validationErrors || {};
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Erreur',
-          detail: err?.message || 'Échec de l\'envoi.',
-        });
-      },
-    });
-}
 
   // ───────── Ancien flux Elements (conservé si besoin) ─────────
   openPayement() {
@@ -670,14 +689,34 @@ export class SendComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.paymentMetadata = {
-      beneficiaire_id: this.selectedBeneficiaireId!,
-      taux_echange_id: this.selectedTauxId,
-      montant_envoie: this.round2(this.montantEuro),
-      mode_reception: this.selectedServiceId,
-      frais_eur: this.frais,
-      total_ttc: this.total_ttc,
-    };
+    // Services qui utilisent le téléphone directement
+    const servicesAvecPhone = [ServiceId.orange_money, ServiceId.momo];
+    const usePhone = servicesAvecPhone.includes(this.selectedServiceId);
+
+    if (usePhone) {
+      // Metadata pour Orange Money et MTN MoMo (utilise recipientTel)
+      this.paymentMetadata = {
+        beneficiaire_id: this.selectedBeneficiaireId!,
+        taux_echange_id: this.selectedTauxId,
+        montant_envoie: this.round2(this.montantEuro),
+        serviceId: this.selectedServiceId,
+        frais_eur: this.frais,
+        total_ttc: this.total_ttc,
+        recipientTel: this.selectedBeneficiairePhone,
+      };
+    } else {
+      // Metadata pour les autres services (utilise accountId + customerPhoneNumber)
+      this.paymentMetadata = {
+        beneficiaire_id: this.selectedBeneficiaireId!,
+        taux_echange_id: this.selectedTauxId,
+        montant_envoie: this.round2(this.montantEuro),
+        serviceId: this.selectedServiceId,
+        frais_eur: this.frais,
+        total_ttc: this.total_ttc,
+        customerPhoneNumber: this.selectedBeneficiairePhone,
+        accountId: "KS123456789", // TODO: à dynamiser selon le bénéficiaire
+      };
+    }
 
     this.orderId = `trf_${this.selectedBeneficiaireId}_${Date.now()}`;
     this.clientSecret = '';
