@@ -16,6 +16,7 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { PipeModule } from 'src/app/demo/pipes/pipe.module';
+import { DividerModule } from 'primeng/divider';
   
 @NgModule({
     declarations: [TransfertDetailComponent],
@@ -38,7 +39,8 @@ import { PipeModule } from 'src/app/demo/pipes/pipe.module';
         DialogModule,
         ToastModule,
         ConfirmDialogModule,
-        PipeModule
+        PipeModule,
+         
     ],
 })
 export class TransfertDetailModule {}

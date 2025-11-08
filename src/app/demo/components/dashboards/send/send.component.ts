@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { finalize, Subject, takeUntil } from 'rxjs';
+import { ServiceId } from 'src/app/demo/enums/ServiceId.enum';
 
 import { Beneficiaire } from 'src/app/demo/models/beneficiaire';
 import { Transfert, TransfertCreateDto } from 'src/app/demo/models/transfert';
@@ -11,8 +12,6 @@ import { PaiementService } from 'src/app/demo/service/paiement/paiement.service'
 import { TransfertService } from 'src/app/demo/service/transfert/transfert.service';
 import { formatPhoneOnType, toE164 } from 'src/app/shared/utils/phone.util';
 
-type ModeReception = 'orange_money' | 'ewallet' | 'retrait_cash';
-
 interface BeneficiaireOption {
   id: number;
   label: string;
@@ -20,7 +19,7 @@ interface BeneficiaireOption {
 }
 
 @Component({
-  selector: 'app-send', 
+  selector: 'app-send',
   standalone: false,
   templateUrl: './send.component.html',
   styleUrls: ['./send.component.scss'],
@@ -29,7 +28,7 @@ interface BeneficiaireOption {
 export class SendComponent implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
   private readonly MAX_EUR = 1000;
-  private readonly FRAIS_RATE = 0.05;
+  private readonly FRAIS_RATE = 0.00;
 
   // utilisateur
   currentUserEmail?: string | null = null;
@@ -44,12 +43,20 @@ export class SendComponent implements OnInit, OnDestroy {
   beneficiairesOptions: BeneficiaireOption[] = [];
   selectedBeneficiaireId: number | null = null;
   selectedTauxId = 1;
-  readonly modesReception: Array<{ label: string; value: ModeReception }> = [
-    { label: 'Retrait cash', value: 'retrait_cash' },
-    { label: 'Orange Money', value: 'orange_money' },
-    { label: 'eWallet', value: 'ewallet' },
+
+  readonly modesReception: Array<{ label: string; value: ServiceId }> = [
+    { label: 'Orange Money', value: ServiceId.orange_money },
+    { label: 'PayCard', value: ServiceId.paycard },
+    { label: 'KS-PAY', value: ServiceId.ks_pay },
+    { label: 'Soutrat Money', value: ServiceId.soutrat_money },
+    { label: 'Kulu', value: ServiceId.kulu },
+    { label: 'MTN', value: ServiceId.momo },
   ];
-  selectedModeReception: ModeReception = 'retrait_cash';
+
+  // Rendre l'enum accessible dans le template
+  readonly ServiceId = ServiceId;
+
+  selectedServiceId: ServiceId = ServiceId.orange_money;
 
   // Frais & total
   includeFrais = true;
@@ -66,7 +73,7 @@ export class SendComponent implements OnInit, OnDestroy {
   items: MenuItem[] = [];
   activeIndex = 0;
 
-  // Paiement (héritage, si tu gardes Elements plus tard)
+  // Paiement
   payementDialog = false;
   payLoading = false;
   clientSecret = '';
@@ -81,18 +88,17 @@ export class SendComponent implements OnInit, OnDestroy {
     private readonly messageService: MessageService,
     private readonly confirmationService: ConfirmationService,
     private readonly paiementService: PaiementService,
-    private authService: AuthService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.loadBeneficiaires();
     this.prefillFromQuery();
     this.handleStripeReturn();
-    this.authService.currentUser$.subscribe(u => {
-         this.currentUserEmail = u?.email || null;
-         console.log(this.currentUserEmail);
-         
-     });
+    this.authService.currentUser$.subscribe((u) => {
+      this.currentUserEmail = u?.email || null;
+      console.log(this.currentUserEmail);
+    });
   }
 
   ngOnDestroy(): void {
@@ -104,7 +110,7 @@ export class SendComponent implements OnInit, OnDestroy {
   private handleStripeReturn(): void {
     const qp = this.route.snapshot.queryParamMap;
     const sessionId = qp.get('session_id');
-    const canceled  = qp.get('canceled');
+    const canceled = qp.get('canceled');
 
     if (sessionId) {
       this.messageService.add({
@@ -128,11 +134,19 @@ export class SendComponent implements OnInit, OnDestroy {
     this.submitted = true;
 
     if (!this.isMontantValide) {
-      this.messageService.add({ severity: 'warn', summary: 'Montant', detail: `Montant invalide (1 à ${this.MAX_EUR} €).` });
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Montant',
+        detail: `Montant invalide (1 à ${this.MAX_EUR} €).`,
+      });
       return;
     }
     if (!this.isBeneficiaireValide) {
-      this.messageService.add({ severity: 'warn', summary: 'Bénéficiaire', detail: 'Veuillez sélectionner un bénéficiaire.' });
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Bénéficiaire',
+        detail: 'Veuillez sélectionner un bénéficiaire.',
+      });
       return;
     }
 
@@ -141,19 +155,44 @@ export class SendComponent implements OnInit, OnDestroy {
     const totalTtc = Math.max(0, Number(this.total_ttc) || 0);
     const amountCents = Math.round(totalTtc * 100);
     if (!Number.isFinite(amountCents) || amountCents < 50) {
-      this.messageService.add({ severity: 'warn', summary: 'Montant', detail: 'Minimum 0,50 €.', life: 3500 });
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Montant',
+        detail: 'Minimum 0,50 €.',
+        life: 3500,
+      });
       return;
     }
 
-    // Metadata pour le webhook
-    this.paymentMetadata = {
-      beneficiaire_id: this.selectedBeneficiaireId!,
-      taux_echange_id: this.selectedTauxId,
-      montant_envoie: Number(this.montantEuro.toFixed(2)),
-      mode_reception: this.selectedModeReception,
-      frais_eur: Number(this.frais.toFixed(2)),
-      total_ttc: Number(this.total_ttc.toFixed(2)),
-    };
+    // Services qui utilisent le téléphone directement
+    const servicesAvecPhone = [ServiceId.orange_money, ServiceId.momo];
+    const usePhone = servicesAvecPhone.includes(this.selectedServiceId);
+
+    // Metadata pour le webhook avec logique conditionnelle
+    if (usePhone) {
+      // Metadata pour Orange Money et MTN MoMo (utilise recipientTel)
+      this.paymentMetadata = {
+        beneficiaire_id: this.selectedBeneficiaireId!,
+        taux_echange_id: this.selectedTauxId,
+        montant_envoie: Number(this.montantEuro.toFixed(2)),
+        serviceId: this.selectedServiceId,
+        frais_eur: Number(this.frais.toFixed(2)),
+        total_ttc: Number(this.total_ttc.toFixed(2)),
+        recipientTel: this.selectedBeneficiairePhone,
+      };
+    } else {
+      // Metadata pour les autres services (utilise accountId + customerPhoneNumber)
+      this.paymentMetadata = {
+        beneficiaire_id: this.selectedBeneficiaireId!,
+        taux_echange_id: this.selectedTauxId,
+        montant_envoie: Number(this.montantEuro.toFixed(2)),
+        serviceId: this.selectedServiceId,
+        frais_eur: Number(this.frais.toFixed(2)),
+        total_ttc: Number(this.total_ttc.toFixed(2)),
+        customerPhoneNumber: this.selectedBeneficiairePhone,
+        accountId: "KS123456789", // TODO: à dynamiser selon le bénéficiaire
+      };
+    }
 
     // Idempotence
     this.orderId = `trf_${this.selectedBeneficiaireId}_${Date.now()}`;
@@ -161,47 +200,68 @@ export class SendComponent implements OnInit, OnDestroy {
     // URLs absolues
     const base = window.location.origin;
     const successUrl = `${base}/dashboard/success`;
-    const cancelUrl  = `${base}/dashboard/send?canceled=1`;
+    const cancelUrl = `${base}/dashboard/send?canceled=1`;
 
     this.loading = true;
-    this.paiementService.createCheckoutSession({
-      amount: amountCents,
-      currency: this.currency,
-      success_url: successUrl,
-      cancel_url: cancelUrl,
-      customer_email: (this.currentUserEmail && /\S+@\S+\.\S+/.test(this.currentUserEmail)) ? this.currentUserEmail : null,
-      order_id: this.orderId,
-      metadata: this.paymentMetadata,
-    })
-    .pipe(finalize(() => (this.loading = false)), takeUntil(this.destroy$))
-    .subscribe({
-       next: (res: any) => {
-        const url = res?.data?.url ?? res?.url;
-        if (url) {
-          window.location.assign(url);
-        } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Stripe',
-            detail: res?.message || 'Réponse inattendue du serveur (url manquante).',
-            life: 4000,
-          });
-        }
-      },
-      error: (err) => {
-        console.log('Erreur création session Stripe', err); 
-        
-        const valErrs = err?.error?.data?.errors;
-        const apiMsg  = err?.error?.message || err?.message;
+    this.paiementService
+      .createCheckoutSession({
+        amount: amountCents,
+        currency: this.currency,
+        success_url: successUrl,
+        cancel_url: cancelUrl,
+        customer_email:
+          this.currentUserEmail && /\S+@\S+\.\S+/.test(this.currentUserEmail)
+            ? this.currentUserEmail
+            : null,
+        order_id: this.orderId,
+        metadata: this.paymentMetadata,
+      })
+      .pipe(
+        finalize(() => (this.loading = false)),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: (res: any) => {
+          const url = res?.data?.url ?? res?.url;
+          if (url) {
+            window.location.assign(url);
+          } else {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Stripe',
+              detail:
+                res?.message ||
+                'Réponse inattendue du serveur (url manquante).',
+              life: 4000,
+            });
+          }
+        },
+        error: (err) => {
+          console.log('Erreur création session Stripe', err);
 
-        if (valErrs) {
-          const first = (Object.values(valErrs).flat().find(Boolean) as string | undefined) ?? 'Erreur de validation.';
-          this.messageService.add({ severity: 'warn', summary: 'Validation', detail: first });
-        } else {
-          this.messageService.add({ severity: 'error', summary: 'Stripe', detail: apiMsg || 'Échec de création de la session.', life: 4000 });
-        }
-      },
-    });
+          const valErrs = err?.error?.data?.errors;
+          const apiMsg = err?.error?.message || err?.message;
+
+          if (valErrs) {
+            const first =
+              (Object.values(valErrs)
+                .flat()
+                .find(Boolean) as string | undefined) ?? 'Erreur de validation.';
+            this.messageService.add({
+              severity: 'warn',
+              summary: 'Validation',
+              detail: first,
+            });
+          } else {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Stripe',
+              detail: apiMsg || 'Échec de création de la session.',
+              life: 4000,
+            });
+          }
+        },
+      });
   }
 
   // ───────── Pré-remplissage ─────────
@@ -230,7 +290,7 @@ export class SendComponent implements OnInit, OnDestroy {
   // ───────── Bénéficiaires ─────────
   private toOption(b: Partial<Beneficiaire>): BeneficiaireOption {
     const label =
-      (b.nom_complet?.trim()) ||
+      b.nom_complet?.trim() ||
       [b.prenom, b.nom].filter(Boolean).join(' ').trim() ||
       (b as any).phone;
 
@@ -241,11 +301,18 @@ export class SendComponent implements OnInit, OnDestroy {
     };
   }
 
-  private loadBeneficiaires(search = '', limit = 50, preselectId?: number): void {
+  private loadBeneficiaires(
+    search = '',
+    limit = 50,
+    preselectId?: number
+  ): void {
     this.loading = true;
     this.beneficiaireService
       .listForSelect(search, limit)
-      .pipe(finalize(() => (this.loading = false)), takeUntil(this.destroy$))
+      .pipe(
+        finalize(() => (this.loading = false)),
+        takeUntil(this.destroy$)
+      )
       .subscribe({
         next: (options) => {
           this.beneficiairesOptions = options;
@@ -265,19 +332,38 @@ export class SendComponent implements OnInit, OnDestroy {
 
   // ───────── Getters validation ─────────
   get selectedBeneficiaireLabel(): string {
-    return this.beneficiairesOptions.find(o => o.id === this.selectedBeneficiaireId)?.label ?? '—';
+    return (
+      this.beneficiairesOptions.find(
+        (o) => o.id === this.selectedBeneficiaireId
+      )?.label ?? '—'
+    );
   }
+
   get selectedBeneficiairePhone(): string {
-    return this.beneficiairesOptions.find(o => o.id === this.selectedBeneficiaireId)?.phone ?? '—';
+    return (
+      this.beneficiairesOptions.find(
+        (o) => o.id === this.selectedBeneficiaireId
+      )?.phone ?? '—'
+    );
   }
+
+  get selectedServiceIdLabel(): string {
+    return (
+      this.modesReception.find((m) => m.value === this.selectedServiceId)
+        ?.label ?? '—'
+    );
+  }
+
   get isMontantValide(): boolean {
     const eur = Number(this.montantEuro);
     return !Number.isNaN(eur) && eur > 0 && eur <= this.MAX_EUR;
   }
+
   get isBeneficiaireValide(): boolean {
     const id = this.selectedBeneficiaireId;
-    return id != null && this.beneficiairesOptions.some(o => o.id === id);
+    return id != null && this.beneficiairesOptions.some((o) => o.id === id);
   }
+
   get canContinue(): boolean {
     if (this.activeIndex === 0) return this.isMontantValide;
     if (this.activeIndex === 2) return this.isBeneficiaireValide;
@@ -288,9 +374,10 @@ export class SendComponent implements OnInit, OnDestroy {
   majFraisTotal_ttc(): void {
     const eur = Math.max(0, Number(this.montantEuro) || 0);
     this.frais = this.round2(eur * this.FRAIS_RATE);
-    const totalEur = this.includeFrais ? (eur + this.frais) : eur;
+    const totalEur = this.includeFrais ? eur + this.frais : eur;
     this.total_ttc = this.round2(totalEur);
   }
+
   convertirDepuisEuro(): void {
     if (this.montantEuro == null) {
       this.montantGNF = 0;
@@ -301,6 +388,7 @@ export class SendComponent implements OnInit, OnDestroy {
     this.montantGNF = Math.floor(this.montantEuro * this.tauxConversion);
     this.majFraisTotal_ttc();
   }
+
   convertirDepuisGNF(): void {
     if (this.montantGNF == null) {
       this.montantEuro = 0;
@@ -316,51 +404,123 @@ export class SendComponent implements OnInit, OnDestroy {
     }
     this.majFraisTotal_ttc();
   }
-  private round2(n: number): number { return Math.round(n * 100) / 100; }
 
-  // ───────── Navigation étapes ─────────
-  onBeneficiaireChange(id: number | null): void { this.selectedBeneficiaireId = id; }
-  next(): void { const nextIndex = Math.min(this.activeIndex + 1, 3); if (nextIndex === 2) this.majFraisTotal_ttc(); this.activeIndex = nextIndex; }
-  prev(): void { this.activeIndex = Math.max(this.activeIndex - 1, 0); }
+  private round2(n: number): number {
+    return Math.round(n * 100) / 100;
+  }
+
+  // ───────── Navigation étapes avec auto-avancement ─────────
+  onServiceIdChange(mode: ServiceId): void {
+    this.selectedServiceId = mode;
+    // Auto-avancement vers l'étape suivante après sélection
+    setTimeout(() => this.next(), 300); // Petit délai pour l'animation visuelle
+  }
+
+  onBeneficiaireChange(id: number | null): void {
+    this.selectedBeneficiaireId = id;
+    // Auto-avancement vers l'étape suivante après sélection
+    if (id !== null) {
+      setTimeout(() => this.next(), 300); // Petit délai pour l'animation visuelle
+    }
+  }
+
+  next(): void {
+    const nextIndex = Math.min(this.activeIndex + 1, 3);
+    if (nextIndex === 2) this.majFraisTotal_ttc();
+    this.activeIndex = nextIndex;
+  }
+
+  prev(): void {
+    this.activeIndex = Math.max(this.activeIndex - 1, 0);
+  }
 
   // ───────── CRUD bénéficiaire ─────────
   beneficiaires: Beneficiaire[] = [];
   beneficiaire: Beneficiaire = new Beneficiaire();
   beneficiaireDialog = false;
-  onpenBeneficiaireDialog(): void { this.beneficiaireDialog = true; }
-  hideBeneficiaireDialog(): void { this.beneficiaireDialog = false; this.submitted = false; this.loading = false; }
+
+  onpenBeneficiaireDialog(): void {
+    this.beneficiaireDialog = true;
+  }
+
+  hideBeneficiaireDialog(): void {
+    this.beneficiaireDialog = false;
+    this.submitted = false;
+    this.loading = false;
+  }
 
   saveBeneficiaire(): void {
     this.submitted = true;
-    if (!this.beneficiaire?.phone || (!this.beneficiaire.nom && !this.beneficiaire.nom_complet)) {
-      this.messageService.add({ severity: 'warn', summary: 'Champs requis', detail: 'Veuillez saisir au moins le Nom (ou Nom complet) et le Téléphone.', life: 3000 });
+    if (
+      !this.beneficiaire?.phone ||
+      (!this.beneficiaire.nom && !this.beneficiaire.nom_complet)
+    ) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Champs requis',
+        detail:
+          'Veuillez saisir au moins le Nom (ou Nom complet) et le Téléphone.',
+        life: 3000,
+      });
       return;
     }
+
     // Normaliser le téléphone au format E.164 pour la Guinée (GN)
     const e164 = toE164(this.beneficiaire.phone || '', 'GN');
     if (!e164) {
-      this.messageService.add({ severity: 'warn', summary: 'Téléphone invalide', detail: `Le numéro n'est pas valide pour la Guinée-Conakry.`, life: 3000 });
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Téléphone invalide',
+        detail: `Le numéro n'est pas valide pour la Guinée-Conakry.`,
+        life: 3000,
+      });
       return;
     }
-    const payload = { nom: this.beneficiaire.nom ?? '', prenom: this.beneficiaire.prenom ?? '', phone: e164 };
-    const isUpdate = typeof this.beneficiaire.id === 'number' && this.beneficiaire.id > 0;
+
+    const payload = {
+      nom: this.beneficiaire.nom ?? '',
+      prenom: this.beneficiaire.prenom ?? '',
+      phone: e164,
+    };
+    const isUpdate =
+      typeof this.beneficiaire.id === 'number' && this.beneficiaire.id > 0;
 
     this.loading = true;
-    const call$ = isUpdate ? this.beneficiaireService.update(this.beneficiaire.id!, payload) : this.beneficiaireService.create(payload);
+    const call$ = isUpdate
+      ? this.beneficiaireService.update(this.beneficiaire.id!, payload)
+      : this.beneficiaireService.create(payload);
 
-    call$.pipe(finalize(() => (this.loading = false)), takeUntil(this.destroy$))
+    call$
+      .pipe(
+        finalize(() => (this.loading = false)),
+        takeUntil(this.destroy$)
+      )
       .subscribe({
         next: (res: any) => {
           const b = res?.data ?? res?.beneficiaire ?? res;
           const id = Number(b?.id);
-          this.messageService.add({ severity: 'success', summary: 'Succès', detail: isUpdate ? 'Bénéficiaire mis à jour avec succès' : 'Bénéficiaire créé avec succès' });
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Succès',
+            detail: isUpdate
+              ? 'Bénéficiaire mis à jour avec succès'
+              : 'Bénéficiaire créé avec succès',
+          });
           this.hideBeneficiaireDialog();
           const opt = this.toOption(b);
-          const exists = this.beneficiairesOptions.some(o => o.id === id);
-          this.beneficiairesOptions = exists ? this.beneficiairesOptions.map(o => (o.id === id ? opt : o)) : [opt, ...this.beneficiairesOptions];
+          const exists = this.beneficiairesOptions.some((o) => o.id === id);
+          this.beneficiairesOptions = exists
+            ? this.beneficiairesOptions.map((o) => (o.id === id ? opt : o))
+            : [opt, ...this.beneficiairesOptions];
           this.selectedBeneficiaireId = id;
         },
-        error: (err: any) => this.messageService.add({ severity: 'error', summary: 'Erreur', detail: err?.message || "L'opération a échoué", life: 3000 }),
+        error: (err: any) =>
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erreur',
+            detail: err?.message || "L'opération a échoué",
+            life: 3000,
+          }),
       });
   }
 
@@ -371,40 +531,97 @@ export class SendComponent implements OnInit, OnDestroy {
     const digitsOnly = raw.replace(/\D+/g, '');
     this.beneficiaire.phone = formatPhoneOnType(digitsOnly, 'GN');
   }
+
   onBenefPhoneKeyDown(event: KeyboardEvent) {
     const allowedCtrl = event.ctrlKey || event.metaKey;
     const key = event.key;
-    const controlKeys = [ 'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Home', 'End', 'Tab', 'Enter', 'Escape' ];
-    if (controlKeys.includes(key) || (allowedCtrl && ['a','c','v','x'].includes(key.toLowerCase()))) return;
+    const controlKeys = [
+      'Backspace',
+      'Delete',
+      'ArrowLeft',
+      'ArrowRight',
+      'Home',
+      'End',
+      'Tab',
+      'Enter',
+      'Escape',
+    ];
+    if (
+      controlKeys.includes(key) ||
+      (allowedCtrl && ['a', 'c', 'v', 'x'].includes(key.toLowerCase()))
+    )
+      return;
     if (!/^[0-9]$/.test(key)) event.preventDefault();
   }
 
-  // ───────── Simulation Transfert (sans paiement) ─────────
-  save(): void {
+ 
+  /**
+   * ==========================================================
+   *  DESCRIPTION : Simulation Transfert (sans paiement).
+   * 
+   *  AUTEUR : Issa Barry
+   * ==========================================================
+   */
+  saveTransfertSimulation(): void {
     this.submitted = true;
     this.errors = {};
 
     if (!this.isBeneficiaireValide) {
-      this.messageService.add({ severity: 'warn', summary: 'Bénéficiaire', detail: 'Veuillez sélectionner un bénéficiaire.' });
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Bénéficiaire',
+        detail: 'Veuillez sélectionner un bénéficiaire.',
+      });
       return;
     }
     if (!this.isMontantValide) {
-      this.messageService.add({ severity: 'warn', summary: 'Montant', detail: `Veuillez saisir un montant en EUR (1 à ${this.MAX_EUR} €).` });
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Montant',
+        detail: `Veuillez saisir un montant en EUR (1 à ${this.MAX_EUR} €).`,
+      });
       return;
     }
 
     this.montantEuro = Math.min(this.montantEuro, this.MAX_EUR);
 
-    const dto: TransfertCreateDto = {
-      beneficiaire_id: this.selectedBeneficiaireId!,
-      taux_echange_id: this.selectedTauxId,
-      montant_envoie: this.round2(this.montantEuro),
-      mode_reception: this.selectedModeReception,
-    };
+    // Services qui utilisent le téléphone directement
+    const servicesAvecPhone = [ServiceId.orange_money, ServiceId.momo];
+    const usePhone = servicesAvecPhone.includes(this.selectedServiceId);
+
+    let dto: TransfertCreateDto;
+
+    if (usePhone) {
+      // DTO pour Orange Money et MTN MoMo (utilise recipientTel)
+      dto = {
+        beneficiaire_id: this.selectedBeneficiaireId!,
+        recipientTel: this.selectedBeneficiairePhone,
+        taux_echange_id: this.selectedTauxId,
+        montant_envoie: this.round2(this.montantEuro),
+        serviceId: this.selectedServiceId,
+      };
+    } else {
+      // DTO pour les autres services (utilise accountId + customerPhoneNumber)
+      dto = {
+        beneficiaire_id: this.selectedBeneficiaireId!,
+        customerPhoneNumber: this.selectedBeneficiairePhone,
+        taux_echange_id: this.selectedTauxId,
+        montant_envoie: this.round2(this.montantEuro),
+        serviceId: this.selectedServiceId,
+        accountId: "KS123456789", // TODO: à dynamiser selon le bénéficiaire
+      };
+    }
 
     this.loading = true;
-    this.transfertService.createTransfert(dto)
-      .pipe(finalize(() => (this.loading = false)), takeUntil(this.destroy$))
+
+    console.log('DTO envoyé:', dto);
+    
+    this.transfertService
+      .createTransfert(dto)
+      .pipe(
+        finalize(() => (this.loading = false)),
+        takeUntil(this.destroy$)
+      )
       .subscribe({
         next: (t) => {
           this.transfert = t;
@@ -412,59 +629,121 @@ export class SendComponent implements OnInit, OnDestroy {
           this.total_ttc = Number((t as any)?.total_ttc ?? 0);
           this.montantGNF = Number((t as any)?.montant_gnf ?? 0);
 
-          this.messageService.add({ severity: 'success', summary: 'Succès', detail: 'Transfert effectué. Vérifiez votre boite E-mail', life: 4000 });
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Succès',
+            detail: 'Transfert effectué. Vérifiez votre boite E-mail',
+            life: 4000,
+          });
 
-          const id = (t as any)?.id ?? (t as any)?.data?.id ?? (t as any)?.transfert?.id ?? (t as any)?.transfert_id;
+          const id =
+            (t as any)?.id ??
+            (t as any)?.data?.id ??
+            (t as any)?.transfert?.id ??
+            (t as any)?.transfert_id;
           this.hideDialog();
           setTimeout(() => {
-            if (id) this.router.navigate(['/dashboard/transfert/detail', id], { replaceUrl: true });
+            if (id)
+              this.router.navigate(['/dashboard/transfert/detail', id], {
+                replaceUrl: true,
+              });
             else this.router.navigate(['/dashboard/transfert']);
           }, 2500);
         },
         error: (err) => {
           this.errors = err?.validationErrors || {};
-          this.messageService.add({ severity: 'error', summary: 'Erreur', detail: err?.message || 'Échec de l’envoi.' });
-        }
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erreur',
+            detail: err?.message || 'Échec de l\'envoi.',
+          });
+        },
       });
   }
 
   // ───────── Ancien flux Elements (conservé si besoin) ─────────
   openPayement() {
     if (!this.isMontantValide) {
-      this.messageService.add({ severity: 'warn', summary: 'Montant', detail: `Montant invalide (1 à ${this.MAX_EUR} €).` });
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Montant',
+        detail: `Montant invalide (1 à ${this.MAX_EUR} €).`,
+      });
       return;
     }
     if (!this.isBeneficiaireValide) {
-      this.messageService.add({ severity: 'warn', summary: 'Bénéficiaire', detail: 'Veuillez sélectionner un bénéficiaire.' });
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Bénéficiaire',
+        detail: 'Veuillez sélectionner un bénéficiaire.',
+      });
       return;
     }
     this.majFraisTotal_ttc();
     if (Math.round((this.total_ttc || 0) * 100) < 50) {
-      this.messageService.add({ severity: 'warn', summary: 'Montant', detail: 'Minimum 0,50 €.' });
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Montant',
+        detail: 'Minimum 0,50 €.',
+      });
       return;
     }
 
-    this.paymentMetadata = {
-      beneficiaire_id: this.selectedBeneficiaireId!,
-      taux_echange_id: this.selectedTauxId,
-      montant_envoie: this.round2(this.montantEuro),
-      mode_reception: this.selectedModeReception,
-      frais_eur: this.frais,
-      total_ttc: this.total_ttc,
-    };
+    // Services qui utilisent le téléphone directement
+    const servicesAvecPhone = [ServiceId.orange_money, ServiceId.momo];
+    const usePhone = servicesAvecPhone.includes(this.selectedServiceId);
+
+    if (usePhone) {
+      // Metadata pour Orange Money et MTN MoMo (utilise recipientTel)
+      this.paymentMetadata = {
+        beneficiaire_id: this.selectedBeneficiaireId!,
+        taux_echange_id: this.selectedTauxId,
+        montant_envoie: this.round2(this.montantEuro),
+        serviceId: this.selectedServiceId,
+        frais_eur: this.frais,
+        total_ttc: this.total_ttc,
+        recipientTel: this.selectedBeneficiairePhone,
+      };
+    } else {
+      // Metadata pour les autres services (utilise accountId + customerPhoneNumber)
+      this.paymentMetadata = {
+        beneficiaire_id: this.selectedBeneficiaireId!,
+        taux_echange_id: this.selectedTauxId,
+        montant_envoie: this.round2(this.montantEuro),
+        serviceId: this.selectedServiceId,
+        frais_eur: this.frais,
+        total_ttc: this.total_ttc,
+        customerPhoneNumber: this.selectedBeneficiairePhone,
+        accountId: "KS123456789", // TODO: à dynamiser selon le bénéficiaire
+      };
+    }
 
     this.orderId = `trf_${this.selectedBeneficiaireId}_${Date.now()}`;
     this.clientSecret = '';
     this.payementDialog = true;
   }
 
-  onPaymentCancel() { this.payementDialog = false; }
+  onPaymentCancel() {
+    this.payementDialog = false;
+  }
+
   onPaymentSuccess(e: { paymentIntentId: string }) {
     this.payementDialog = false;
-    this.messageService.add({ severity: 'success', summary: 'Paiement', detail: 'Paiement confirmé ✅', life: 3000 });
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Paiement',
+      detail: 'Paiement confirmé ✅',
+      life: 3000,
+    });
   }
+
   onPaymentFail(e: { message: string }) {
-    this.messageService.add({ severity: 'error', summary: 'Paiement', detail: e?.message || 'Paiement refusé', life: 4000 });
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Paiement',
+      detail: e?.message || 'Paiement refusé',
+      life: 4000,
+    });
   }
 
   public hideDialog(): void {
@@ -473,5 +752,30 @@ export class SendComponent implements OnInit, OnDestroy {
     this.payementDialog = false;
     this.beneficiaireDialog = false;
     this.submitted = false;
+  }
+
+  // ───────── Helpers UI ─────────
+  getInitials(name: string): string {
+    const words = name.split(' ');
+    if (words.length >= 2) {
+      return (words[0][0] + words[1][0]).toUpperCase();
+    }
+    return name.substring(0, 2).toUpperCase();
+  }
+
+  getAvatarColor(name: string): string {
+    const colors = [
+      '#E91E63', // Rose
+      '#2196F3', // Bleu
+      '#FF9800', // Orange
+      '#4CAF50', // Vert
+      '#9C27B0', // Violet
+      '#FF5722', // Rouge-orange
+      '#00BCD4', // Cyan
+      '#FFC107', // Jaune-orange
+    ];
+
+    const index = name.length % colors.length;
+    return colors[index];
   }
 }

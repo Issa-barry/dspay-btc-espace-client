@@ -68,8 +68,8 @@ export class AppProfileSidebarComponent implements OnInit {
       });
   }
   getContactById(){
-    console.log("recuperation du contact", this.me$);
-    this.contactService.getContactById(1).subscribe({
+    console.log("recuperation du contact profile", this.me$);
+    this.contactService.getContactById(5).subscribe({
       next:(res) => {
         this.contact = res
 

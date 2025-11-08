@@ -12,14 +12,14 @@ export interface ApiResponse<T = any> {
   message: string;
   data?: T | null;
 }
-
+ 
 export interface LoginResponse {
   user: Contact;
   access_token: string;
   token_type: string;
   expires_in: number;
   expires_at: string;
-}
+} 
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -165,26 +165,32 @@ getMe(): Observable<Contact> {
 
 
   /** INSCRIPTION */
-  register(payload: Contact): Observable<LoginResponse> {
-    return this.http
-      .post<ApiResponse<LoginResponse>>(`${this.apiUrl}/users/clients/create`, payload)
-      .pipe(
-        map(res => {
-          if (!res.data) throw new Error('Erreur lors de la création du compte');
-          return res.data;
-        }),
-        tap(data => {
-          if (data.access_token) {
-            this.setAuthData(data.access_token, data.user, data.expires_in);
-          } else {
-            this.currentUserSubject.next(data.user);
-            localStorage.setItem(this.STORAGE_USER, JSON.stringify(data.user));
-            localStorage.setItem(this.STORAGE_USER_ID, String(data.user.id));
-          }
-        }),
-        catchError(this.handleError)
-      );
-  }
+/** INSCRIPTION */
+register(payload: Contact): Observable<LoginResponse> {
+  return this.http
+    .post<ApiResponse<LoginResponse>>(`${this.apiUrl}/users/clients/create`, payload)
+    .pipe(
+      map(res => {
+        if (!res.data) throw new Error('Erreur lors de la création du compte');
+        return res.data;
+      }),
+      tap(data => {
+        // Vérifier si on a un access_token ET un user valide
+        if (data.access_token && data.user && data.user.id) {
+          this.setAuthData(data.access_token, data.user, data.expires_in);
+        } else if (data.user && data.user.id) {
+          // Si pas de token mais user valide
+          this.currentUserSubject.next(data.user);
+          localStorage.setItem(this.STORAGE_USER, JSON.stringify(data.user));
+          localStorage.setItem(this.STORAGE_USER_ID, String(data.user.id));
+        } else {
+          // Si l'user n'a pas d'ID, on ne stocke rien
+          console.warn('User créé mais sans ID valide:', data.user);
+        }
+      }),
+      catchError(this.handleError)
+    );
+}
 
   /** L'utilisateur est-il authentifié ? */
   isAuthenticated(): boolean {

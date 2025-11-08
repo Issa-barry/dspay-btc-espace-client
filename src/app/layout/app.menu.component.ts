@@ -15,25 +15,30 @@ export class AppMenuComponent implements OnInit {
                 label: 'MENU',
                 icon: 'pi pi-home',
                 items: [
+                    //   {
+                    //     label: 'Depot',
+                    //     icon: 'pi pi-fw pi-sort-alt-slash',
+                    //     routerLink: ['/dashboard']
+                    // },
                     {
                         label: 'Transfert',
                         icon: 'pi pi-fw pi-sort-alt-slash',
-                        routerLink: ['/dashboard']
+                        routerLink: ['/dashboard/send']
                     },
                     {
                         label: "Bénéficiaires",
                         icon: 'pi pi-fw pi-users',
                         routerLink: ['/dashboard/beneficiaire']
                     },
-                    {
-                        label: "Point de retrait",
-                        icon: 'pi pi-fw pi-map-marker',
-                        routerLink: ['/dashboard/agence']
-                    },
+                    // {
+                    //     label: "Point de retrait",
+                    //     icon: 'pi pi-fw pi-map-marker',
+                    //     routerLink: ['/dashboard/agence']
+                    // },
                     {
                         label: "Historique",
                         icon: 'pi pi-fw pi-history',
-                        routerLink: ['/dashboard/transfert/liste']
+                        routerLink: ['/dashboard/historique']
                     }
                 ]
             },

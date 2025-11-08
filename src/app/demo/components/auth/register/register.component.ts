@@ -43,7 +43,7 @@ export class RegisterComponent implements OnInit {
     private layoutService: LayoutService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService
-  ) {}
+  ) { }
 
   get dark(): boolean {
     return this.layoutService.config().colorScheme !== 'light';
@@ -97,7 +97,7 @@ export class RegisterComponent implements OnInit {
     this.syncAddressFromCountry(this.selectedCountry);
   }
 
- 
+
 
   private clearFieldError(field: string) {
     if (!this.errors[field]) return;
@@ -105,7 +105,7 @@ export class RegisterComponent implements OnInit {
     this.errors = rest;
   }
 
-   // ----------------- Helpers erreurs champ -----------------
+  // ----------------- Helpers erreurs champ -----------------
   private setFieldError(field: string, message: string) {
     this.errors = { ...this.errors, [field]: [message] };
   }
@@ -216,7 +216,7 @@ export class RegisterComponent implements OnInit {
     // conf auto du password_confirmation
     this.contact.password_confirmation = this.contact.password;
 
-       // 1) validation front
+    // 1) validation front
     const frontOk = this.validateFront();
     if (!frontOk) {
       return; // on laisse l’utilisateur corriger les erreurs inline
@@ -247,19 +247,22 @@ export class RegisterComponent implements OnInit {
           this.createdEmail = this.contact.email || '';
           this.successMessage =
             'Compte créé avec succès. Un email de vérification vous a été envoyé.';
-          // On garde le toast de succès si tu veux un feedback global
+
           this.messageService.add({
             severity: 'success',
             summary: 'Succès',
             detail: this.successMessage,
             life: 4000
           });
+
           this.showSuccess = true;
-          this.router.navigate(['/auth/registersuccess']);
-        }, 
+
+          // Redirection vers la page de vérification
+          this.router.navigate(['/auth/verification']);
+        },
         error: (err) => {
           // On fusionne les erreurs API dans ton modèle d’erreurs
-           this.errors = err?.error?.data ?? {};
+          this.errors = err?.error?.data ?? {};
           // Si l’API renvoie un message global, tu peux l’exposer ici :
           // this.errorMessage = err?.error?.message ?? '';
           // (évite le toast ici si tu veux rester 100% inline)
@@ -273,4 +276,3 @@ export class RegisterComponent implements OnInit {
     this.router.navigate(['/auth/login']);
   }
 }
- 
