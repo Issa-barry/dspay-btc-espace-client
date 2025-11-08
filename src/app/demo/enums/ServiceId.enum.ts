@@ -1,4 +1,4 @@
-export enum ModeReception {
+export enum ServiceId {
     orange_money = 'orange_money',
     ks_pay = 'ks_pay',
     paycard = 'paycard',

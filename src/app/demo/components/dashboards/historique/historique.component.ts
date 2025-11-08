@@ -37,7 +37,7 @@ export class HistoriqueComponent implements OnInit {
       next: (response: any) => {
         this.transferts = response;
         this.loading = false;
-        console.log(this.transferts); 
+        console.log("historique", this.transferts); 
         
       },
       error: (err: any) => {

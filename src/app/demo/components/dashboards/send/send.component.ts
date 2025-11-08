@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { finalize, Subject, takeUntil } from 'rxjs';
-import { ModeReception } from 'src/app/demo/enums/modeReception.enum';
+import { ServiceId } from 'src/app/demo/enums/ServiceId.enum';
 
 import { Beneficiaire } from 'src/app/demo/models/beneficiaire';
 import { Transfert, TransfertCreateDto } from 'src/app/demo/models/transfert';
@@ -44,19 +44,19 @@ export class SendComponent implements OnInit, OnDestroy {
   selectedBeneficiaireId: number | null = null;
   selectedTauxId = 1;
 
-  readonly modesReception: Array<{ label: string; value: ModeReception }> = [
-    { label: 'Orange Money', value: ModeReception.orange_money },
-    { label: 'PayCard', value: ModeReception.paycard },
-    { label: 'KS-PAY', value: ModeReception.ks_pay },
-    { label: 'Soutrat Money', value: ModeReception.soutrat_money },
-    { label: 'Kulu', value: ModeReception.kulu },
-    { label: 'MTN', value: ModeReception.momo },
+  readonly modesReception: Array<{ label: string; value: ServiceId }> = [
+    { label: 'Orange Money', value: ServiceId.orange_money },
+    { label: 'PayCard', value: ServiceId.paycard },
+    { label: 'KS-PAY', value: ServiceId.ks_pay },
+    { label: 'Soutrat Money', value: ServiceId.soutrat_money },
+    { label: 'Kulu', value: ServiceId.kulu },
+    { label: 'MTN', value: ServiceId.momo },
   ];
 
   // Rendre l'enum accessible dans le template
-  readonly ModeReception = ModeReception;
+  readonly ServiceId = ServiceId;
 
-  selectedModeReception: ModeReception = ModeReception.orange_money;
+  selectedServiceId: ServiceId = ServiceId.orange_money;
 
   // Frais & total
   includeFrais = true;
@@ -169,7 +169,7 @@ export class SendComponent implements OnInit, OnDestroy {
       beneficiaire_id: this.selectedBeneficiaireId!,
       taux_echange_id: this.selectedTauxId,
       montant_envoie: Number(this.montantEuro.toFixed(2)),
-      mode_reception: this.selectedModeReception,
+      serviceId: this.selectedServiceId,
       frais_eur: Number(this.frais.toFixed(2)),
       total_ttc: Number(this.total_ttc.toFixed(2)),
     };
@@ -327,9 +327,9 @@ export class SendComponent implements OnInit, OnDestroy {
     );
   }
 
-  get selectedModeReceptionLabel(): string {
+  get selectedServiceIdLabel(): string {
     return (
-      this.modesReception.find((m) => m.value === this.selectedModeReception)
+      this.modesReception.find((m) => m.value === this.selectedServiceId)
         ?.label ?? '—'
     );
   }
@@ -390,8 +390,8 @@ export class SendComponent implements OnInit, OnDestroy {
   }
 
   // ───────── Navigation étapes avec auto-avancement ─────────
-  onModeReceptionChange(mode: ModeReception): void {
-    this.selectedModeReception = mode;
+  onServiceIdChange(mode: ServiceId): void {
+    this.selectedServiceId = mode;
     // Auto-avancement vers l'étape suivante après sélection
     setTimeout(() => this.next(), 300); // Petit délai pour l'animation visuelle
   }
@@ -534,82 +534,113 @@ export class SendComponent implements OnInit, OnDestroy {
     if (!/^[0-9]$/.test(key)) event.preventDefault();
   }
 
-  // ───────── Simulation Transfert (sans paiement) ─────────
-  save(): void {
-    this.submitted = true;
-    this.errors = {};
+ 
+  /**
+ * ==========================================================
+ *  DESCRIPTION : Simulation Transfert (sans paiement).
+ * 
+ *  AUTEUR : Issa Barry
+ * ==========================================================
+ */
 
-    if (!this.isBeneficiaireValide) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Bénéficiaire',
-        detail: 'Veuillez sélectionner un bénéficiaire.',
-      });
-      return;
-    }
-    if (!this.isMontantValide) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Montant',
-        detail: `Veuillez saisir un montant en EUR (1 à ${this.MAX_EUR} €).`,
-      });
-      return;
-    }
+  saveTransfertSimulation(): void {
+  this.submitted = true;
+  this.errors = {};
 
-    this.montantEuro = Math.min(this.montantEuro, this.MAX_EUR);
+  if (!this.isBeneficiaireValide) {
+    this.messageService.add({
+      severity: 'warn',
+      summary: 'Bénéficiaire',
+      detail: 'Veuillez sélectionner un bénéficiaire.',
+    });
+    return;
+  }
+  if (!this.isMontantValide) {
+    this.messageService.add({
+      severity: 'warn',
+      summary: 'Montant',
+      detail: `Veuillez saisir un montant en EUR (1 à ${this.MAX_EUR} €).`,
+    });
+    return;
+  }
 
-    const dto: TransfertCreateDto = {
+  this.montantEuro = Math.min(this.montantEuro, this.MAX_EUR);
+
+  // Services qui utilisent le téléphone directement
+  const servicesAvecPhone = [ServiceId.orange_money, ServiceId.momo];
+  const usePhone = servicesAvecPhone.includes(this.selectedServiceId);
+
+  let dto: TransfertCreateDto;
+
+  if (usePhone) {
+    // DTO pour Orange Money et MTN MoMo (utilise recipientTel)
+    dto = {
       beneficiaire_id: this.selectedBeneficiaireId!,
+      recipientTel: this.selectedBeneficiairePhone,
       taux_echange_id: this.selectedTauxId,
       montant_envoie: this.round2(this.montantEuro),
-      mode_reception: this.selectedModeReception,
+      serviceId: this.selectedServiceId,
     };
-
-    this.loading = true;
-    this.transfertService
-      .createTransfert(dto)
-      .pipe(
-        finalize(() => (this.loading = false)),
-        takeUntil(this.destroy$)
-      )
-      .subscribe({
-        next: (t) => {
-          this.transfert = t;
-          this.frais = (t as any)?.frais ?? 0;
-          this.total_ttc = Number((t as any)?.total_ttc ?? 0);
-          this.montantGNF = Number((t as any)?.montant_gnf ?? 0);
-
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Succès',
-            detail: 'Transfert effectué. Vérifiez votre boite E-mail',
-            life: 4000,
-          });
-
-          const id =
-            (t as any)?.id ??
-            (t as any)?.data?.id ??
-            (t as any)?.transfert?.id ??
-            (t as any)?.transfert_id;
-          this.hideDialog();
-          setTimeout(() => {
-            if (id)
-              this.router.navigate(['/dashboard/transfert/detail', id], {
-                replaceUrl: true,
-              });
-            else this.router.navigate(['/dashboard/transfert']);
-          }, 2500);
-        },
-        error: (err) => {
-          this.errors = err?.validationErrors || {};
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Erreur',
-            detail: err?.message || 'Échec de l\'envoi.',
-          });
-        },
-      });
+  } else {
+    // DTO pour les autres services (utilise accountId + customerPhoneNumber)
+    dto = {
+      beneficiaire_id: this.selectedBeneficiaireId!,
+      customerPhoneNumber: this.selectedBeneficiairePhone,
+      taux_echange_id: this.selectedTauxId,
+      montant_envoie: this.round2(this.montantEuro),
+      serviceId: this.selectedServiceId,
+      accountId: "KS123456789", // TODO: à dynamiser selon le bénéficiaire
+    };
   }
+
+  this.loading = true;
+
+  console.log('DTO envoyé:', dto);
+  
+  this.transfertService
+    .createTransfert(dto)
+    .pipe(
+      finalize(() => (this.loading = false)),
+      takeUntil(this.destroy$)
+    )
+    .subscribe({
+      next: (t) => {
+        this.transfert = t;
+        this.frais = (t as any)?.frais ?? 0;
+        this.total_ttc = Number((t as any)?.total_ttc ?? 0);
+        this.montantGNF = Number((t as any)?.montant_gnf ?? 0);
+
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Succès',
+          detail: 'Transfert effectué. Vérifiez votre boite E-mail',
+          life: 4000,
+        });
+
+        const id =
+          (t as any)?.id ??
+          (t as any)?.data?.id ??
+          (t as any)?.transfert?.id ??
+          (t as any)?.transfert_id;
+        this.hideDialog();
+        setTimeout(() => {
+          if (id)
+            this.router.navigate(['/dashboard/transfert/detail', id], {
+              replaceUrl: true,
+            });
+          else this.router.navigate(['/dashboard/transfert']);
+        }, 2500);
+      },
+      error: (err) => {
+        this.errors = err?.validationErrors || {};
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erreur',
+          detail: err?.message || 'Échec de l\'envoi.',
+        });
+      },
+    });
+}
 
   // ───────── Ancien flux Elements (conservé si besoin) ─────────
   openPayement() {
@@ -643,7 +674,7 @@ export class SendComponent implements OnInit, OnDestroy {
       beneficiaire_id: this.selectedBeneficiaireId!,
       taux_echange_id: this.selectedTauxId,
       montant_envoie: this.round2(this.montantEuro),
-      mode_reception: this.selectedModeReception,
+      mode_reception: this.selectedServiceId,
       frais_eur: this.frais,
       total_ttc: this.total_ttc,
     };

@@ -78,18 +78,18 @@
             <div
               *ngFor="let mode of modesReception"
               class="mode-reception-item"
-              [class.selected]="selectedModeReception === mode.value"
-              (click)="onModeReceptionChange(mode.value)">
+              [class.selected]="selectedServiceId === mode.value"
+              (click)="onServiceIdChange(mode.value)">
               
               <div class="mode-icon-wrapper">
                 <i class="pi"
                    [ngClass]="{
-                     'pi-mobile': mode.value === ModeReception.orange_money,
-                     'pi-wallet': mode.value === ModeReception.ks_pay,
-                     'pi-credit-card': mode.value === ModeReception.paycard,
-                     'pi-building': mode.value === ModeReception.soutrat_money,
-                     'pi-shopping-bag': mode.value === ModeReception.kulu,
-                     'pi-qrcode': mode.value === ModeReception.momo
+                     'pi-mobile': mode.value === ServiceId.orange_money,
+                     'pi-wallet': mode.value === ServiceId.ks_pay,
+                     'pi-credit-card': mode.value === ServiceId.paycard,
+                     'pi-building': mode.value === ServiceId.soutrat_money,
+                     'pi-shopping-bag': mode.value === ServiceId.kulu,
+                     'pi-qrcode': mode.value === ServiceId.momo
                    }">
                 </i>
               </div>
@@ -204,16 +204,16 @@
                 <div class="mode-icon-recap">
                   <i class="pi"
                      [ngClass]="{
-                       'pi-mobile': selectedModeReception === ModeReception.orange_money,
-                       'pi-wallet': selectedModeReception === ModeReception.ks_pay,
-                       'pi-credit-card': selectedModeReception === ModeReception.paycard,
-                       'pi-building': selectedModeReception === ModeReception.soutrat_money,
-                       'pi-shopping-bag': selectedModeReception === ModeReception.kulu,
-                       'pi-qrcode': selectedModeReception === ModeReception.momo
+                       'pi-mobile': selectedServiceId === ServiceId.orange_money,
+                       'pi-wallet': selectedServiceId === ServiceId.ks_pay,
+                       'pi-credit-card': selectedServiceId === ServiceId.paycard,
+                       'pi-building': selectedServiceId === ServiceId.soutrat_money,
+                       'pi-shopping-bag': selectedServiceId === ServiceId.kulu,
+                       'pi-qrcode': selectedServiceId === ServiceId.momo
                      }">
                   </i>
                 </div>
-                <span class="text-800 text-sm font-medium">{{ selectedModeReceptionLabel }}</span>
+                <span class="text-800 text-sm font-medium">{{ selectedServiceIdLabel }}</span>
               </div>
             </div>
           </div>
@@ -260,7 +260,19 @@
         </div>
 
         <ui-step-actions [showNext]="false" (prev)="prev()">
-          <button
+           <button
+            right
+            type="button"
+            pButton
+            pRipple
+            class="w-full md:w-auto"
+            label="Confirmer et Payer"
+            icon="pi pi-credit-card"
+            iconPos="right"
+            [loading]="loading"
+            (click)="saveTransfertSimulation()">
+          </button>
+          <!-- <button
             right
             type="button"
             pButton
@@ -271,7 +283,7 @@
             iconPos="right"
             [loading]="loading"
             (click)="payWithStripeCheckout()">
-          </button>
+          </button> -->
         </ui-step-actions>
       </div>
     </section>
