@@ -1,9 +1,27 @@
 <div class="card">
   <h2 class="mb-4">Historique des transferts</h2>
   
-  <div class="transfert-list">
+  <!-- Skeleton Loading -->
+  <div class="transfert-list" *ngIf="loading">
+    <div class="transfert-item" *ngFor="let _ of [1,2,3,4,5]">
+      <div class="transfert-left">
+        <p-skeleton shape="circle" size="3rem" styleClass="mr-3"></p-skeleton>
+        <div class="transfert-info" style="flex: 1;">
+          <p-skeleton width="60%" height="1.2rem" styleClass="mb-2"></p-skeleton>
+          <p-skeleton width="40%" height="0.9rem"></p-skeleton>
+        </div>
+      </div>
+      <div class="transfert-right">
+        <p-skeleton width="5rem" height="1.2rem" styleClass="mb-2"></p-skeleton>
+        <p-skeleton shape="circle" size="1.5rem"></p-skeleton>
+      </div>
+    </div>
+  </div>
+
+  <!-- Liste réelle des transferts -->
+  <div class="transfert-list" *ngIf="!loading && transferts.length > 0">
     <div class="transfert-item" *ngFor="let transfert of transferts" (click)="goToTransfertDetail(transfert)">
-      <div class="transfert-left" >
+      <div class="transfert-left">
         <div class="avatar" [style.background-color]="getAvatarColor(transfert.beneficiaire.nom + ' ' + transfert.beneficiaire.prenom)">
           {{ getInitials(transfert.beneficiaire.nom + ' ' + transfert.beneficiaire.prenom) }} 
         </div>
@@ -13,9 +31,17 @@
         </div>
       </div>
       <div class="transfert-right">
-        <div class="montant">{{ transfert.total_ttc | money:"EUR":"normal" }} </div>
+        <div class="montant">{{ transfert.total_ttc | money:"EUR":"normal" }}</div>
         <i class="pi pi-chevron-right"></i>
       </div>
+    </div>
+  </div>
+
+  <!-- Message si aucun transfert -->
+  <div class="empty-state" *ngIf="!loading && transferts.length === 0">
+    <div class="text-center py-5">
+      <i class="pi pi-inbox" style="font-size: 3rem; color: var(--text-color-secondary);"></i>
+      <p class="text-600 mt-3 mb-0">Aucun transfert pour le moment</p>
     </div>
   </div>
 </div>

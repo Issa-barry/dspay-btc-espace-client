@@ -10,7 +10,8 @@
     <path [attr.fill]="dark ? 'var(--primary-500)' : 'var(--primary-100)'"
         d="M1397.5 154.8c47.2-10.6 93.6-25.3 138.6-43.8c21.7-8.9 43-18.8 63.9-29.5V0H643.4c62.9 41.7 129.7 78.2 202.1 107.4C1020.4 178.1 1214.2 196.1 1397.5 154.8z" />
 </svg>
-<div class="px-5 min-h-screen flex justify-content-center align-items-center">
+<!-- A UTILISER POUR VALIDATION PAR CODE -->
+<!-- <div class="px-5 min-h-screen flex justify-content-center align-items-center">
     <div class="border-1 surface-border surface-card border-round py-7 px-4 md:px-7 z-1">
         <div class="mb-4">
             <div class="text-900 text-xl font-bold mb-2">Verification</div>
@@ -38,6 +39,21 @@
                 <button pButton pRipple label="Verify" class="flex-auto" [routerLink]="['/dashboard']"></button>
             </div>
         </div>
+    </div>
+</div> -->
+
+
+<!-- MESSAGE PROVISOIR APRES CREATION DE COMPTE -->
+ <div class="px-5 min-h-screen flex justify-content-center align-items-center">
+    <div class="border-1 surface-border surface-card border-round py-7 px-4 md:px-7 z-1">
+        <div class="mb-4">
+            <div class="text-900 text-xl font-bold mb-2">Votre compte a bien été créé 🎉</div>
+            <span class="text-600 font-medium">Vérifiez votre boîte mail et cliquez sur le lien de confirmation pour finaliser votre inscription.</span>
+            <div class="flex align-items-center mt-1">
+                <i class="pi pi-envelope text-600"></i>
+                <!-- <span class="text-900 font-bold ml-2">dm&#64;gmail.com</span> -->
+            </div>  
+        </div> 
     </div>
 </div>
 
